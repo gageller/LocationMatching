@@ -1,5 +1,7 @@
 package com.locationmatching.domain;
 
+import java.util.Date;
+
 /**
  * Base class from which Location scouts and providers will inherit from.
  * 
@@ -29,6 +31,14 @@ public abstract class User {
 	 * Phone number of this user.
 	 */
 	String phoneNumber;
+	/**
+	 * Current date
+	 */
+	Date currentDate;
+	/**
+	 * Date of last access.
+	 */
+	Date lastAccessDate;
 	
 	// Getter Methods
 	public Long getId() {
@@ -46,6 +56,12 @@ public abstract class User {
 	public String getPhoneNumber() {
 		return phoneNumber;
 	}
+	public Date getCurrentDate() {
+		return currentDate;
+	}
+	public Date getLastAccessDate() {
+		return lastAccessDate;
+	}
 	
 	// Setter Methods
 	public void setId(Long id) {
@@ -62,5 +78,11 @@ public abstract class User {
 	}
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+	public void setCurrentDate(Date currentDate) {
+		this.currentDate = currentDate;
+	}
+	public void setLastAccessDate(Date lastAccessDate) {
+		this.lastAccessDate = lastAccessDate;
 	}
 }
