@@ -40,6 +40,11 @@ public class LocationRequest {
 	 * Description of the location the scout is looking for.
 	 */
 	private String description;
+	/**
+	 * Rate that the production is looking to pay for the use
+	 * of the location.
+	 */
+	private String rate;
 	
 	// Getter Methods
 	public Long getId() {
@@ -63,6 +68,9 @@ public class LocationRequest {
 	public String getDescription() {
 		return description;
 	}
+	public String getRate() {
+		return rate;
+	}
 	
 	// Setter Methods
 	public void setId(Long id) {
@@ -85,5 +93,8 @@ public class LocationRequest {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	public void setRate(String rate) {
+		this.rate = rate;
 	}
 }
