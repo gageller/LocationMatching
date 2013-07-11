@@ -16,4 +16,12 @@ public class LocationScout extends User {
 	 * Set of Request objects for this scout.
 	 */
 	Set<LocationRequest> locationRequests;
+
+	public Set<LocationRequest> getLocationRequests() {
+		return locationRequests;
+	}
+
+	public void setLocationRequests(Set<LocationRequest> locationRequests) {
+		this.locationRequests = locationRequests;
+	}
 }

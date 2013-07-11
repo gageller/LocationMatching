@@ -15,6 +15,14 @@ import java.util.Set;
  *
  */
 public class LocationProvider extends User {
+	public Set<Location> getProviderLocations() {
+		return providerLocations;
+	}
+
+	public void setProviderLocations(Set<Location> providerLocations) {
+		this.providerLocations = providerLocations;
+	}
+
 	/**
 	 * Collection of Location objects associated with this provider.
 	 */
