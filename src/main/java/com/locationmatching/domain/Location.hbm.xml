@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jul 9, 2013 2:30:47 PM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.locationmatching.domain.Location" table="LOCATION">
+        <id name="id" type="java.lang.Long">
+            <column name="ID" />
+            <generator class="assigned" />
+        </id>
+        <property name="active" type="java.lang.Boolean" access="field">
+            <column name="ACTIVE" />
+        </property>
+        <property name="locationAddress" type="java.lang.String">
+            <column name="LOCATION_ADDRESS" />
+        </property>
+        <property name="locationAddress2" type="java.lang.String">
+            <column name="LOCATION_ADDRESS2" />
+        </property>
+        <property name="locationCity" type="java.lang.String">
+            <column name="LOCATION_CITY" />
+        </property>
+        <property name="locationStateCode" type="java.lang.String">
+            <column name="LOCATION_STATE_CODE" />
+        </property>
+        <property name="locationZipcode" type="java.lang.String">
+            <column name="LOCATION_ZIPCODE" />
+        </property>
+    </class>
+</hibernate-mapping>
