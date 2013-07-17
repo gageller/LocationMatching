@@ -8,6 +8,19 @@
             <column name="ID" />
             <generator class="increment" />
         </id>
+        <property name="userType">
+            <column name="USERTYPE" />
+            <type name="org.hibernate.type.EnumType">
+                <param name="type">12</param>
+                <param name="enumClass">com.locationmatching.component.UserType</param>
+            </type>
+        </property>
+        <property name="userName" type="java.lang.String">
+        	<column name="USER_NAME"/>
+        </property>
+        <property name="password" type="java.lang.String">
+        	<column name="PASSWORD"/>
+        </property>
        <property name="firstName" type="java.lang.String">
             <column name="FIRST_NAME" />
         </property>
@@ -26,9 +39,11 @@
         <property name="lastAccessDate" type="java.util.Date">
             <column name="LAST_ACCESS_DATE" />
         </property>
-         
-        <set name="providerLocations" table="LOCATION" inverse="true" lazy="true" access="field">
-            <key>LocationProvider_Id</key>
+        <property name="numberOfImages"></property>
+        <set name="providerLocations" table="LOCATION" inverse="true" outer-join="true" cascade="all-delete-orphan">
+            <key>
+            	<column name="LocationProvider_Id"/>
+            </key>
             <one-to-many class="com.locationmatching.domain.Location" />
         </set>
     </class>

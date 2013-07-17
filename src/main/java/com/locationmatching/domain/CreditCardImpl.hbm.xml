@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jul 16, 2013 7:39:35 PM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.locationmatching.domain.CreditCardImpl" table="CREDITCARD">
+        <id name="id" type="java.lang.Long">
+            <column name="ID" />
+            <generator class="assigned" />
+        </id>
+        <property name="creditCardType">
+            <column name="CREDIT_CARD_TYPE" />
+            <type name="org.hibernate.type.EnumType">
+                <param name="type">12</param>
+                <param name="enumClass">com.locationmatching.component.CreditCardType</param>
+            </type>
+        </property>
+        <property name="accountNumber" type="java.lang.String">
+            <column name="ACCOUNT_NUMBER" />
+        </property>
+        <property name="userName" type="java.lang.String">
+            <column name="USER_NAME" />
+        </property>
+        <property name="cvvNumber" type="java.lang.String">
+            <column name="CVV_NUMBER" />
+        </property>
+        <property name="expirationDate" type="java.util.Date">
+            <column name="EXPIRATION_DATE" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,5 +1,10 @@
 package com.locationmatching.domain;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import com.locationmatching.component.LocationPlanType;
+
 /**
  * Location details including any pictures provided by the Location Provider.
  * 
@@ -13,6 +18,10 @@ public class Location {
 	 * Database identity of this location object
 	 */
 	private Long id;
+	/**
+	 * Parent of this location
+	 */
+	User locationOwner;
 	/**
 	 * Whether or not the location is currently available for use.
 	 */
@@ -38,6 +47,25 @@ public class Location {
 	 * Zipcode of the location
 	 */
 	private String locationZipcode;
+	/**
+	 * Plan type of this location. 
+	 * Each location can have it's own individual plan.
+	 * If the provider has a premium subscription, all
+	 * of the locations are premium plan types.
+	 */
+	private LocationPlanType locationPlanType;
+	/**
+	 * Number of images associated with this location.
+	 * The number of images will determine whether the
+	 * provider needs to pay for additional photos or
+	 * they can subscribe to the premium plan and get unlimited
+	 * images.
+	 */
+	private Integer numberOfImages;
+	/**
+	 * Collection of images associated with this location.
+	 */
+	Set<Image>locationImages;
 	
 	// Getter Methods
 	public Long getId() {
@@ -60,6 +88,18 @@ public class Location {
 	}
 	public String getLocationZipcode() {
 		return locationZipcode;
+	}
+	public User getLocationOwner() {
+		return locationOwner;
+	}
+	public LocationPlanType getLocationPlanType() {
+		return locationPlanType;
+	}
+	public Integer getNumberOfImages() {
+		return numberOfImages;
+	}
+	public Set<Image> getLocationImages() {
+		return locationImages;
 	}
 	
 	// Setter Methods
@@ -84,4 +124,16 @@ public class Location {
 	public void setLocationZipcode(String locationZipcode) {
 		this.locationZipcode = locationZipcode;
 	}
+	public void setLocationOwner(User locationOwner) {
+		this.locationOwner = locationOwner;
+	}
+	public void setLocationPlanType(LocationPlanType locationPlanType) {
+		this.locationPlanType = locationPlanType;
+	}
+	public void setNumberOfImages(Integer numberOfImages) {
+		this.numberOfImages = numberOfImages;
+	}
+	public void setLocationImages(HashSet<Image> locationImages) {
+		this.locationImages = locationImages;
+	}	
 }

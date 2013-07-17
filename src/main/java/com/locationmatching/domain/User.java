@@ -2,7 +2,7 @@ package com.locationmatching.domain;
 
 import java.util.Date;
 
-import com.locationmatching.component.UserPlanType;
+import com.locationmatching.component.UserType;
 
 /**
  * Base class from which Location scouts and providers will inherit from.
@@ -17,6 +17,14 @@ public abstract class User {
 	 * Database identity of this user.
 	 */
 	private Long id;
+	/**
+	 * User name for this account
+	 */
+	private String userName;
+	/**
+	 * Password for this account
+	 */
+	private String password;
 	/**
 	 * First name of this user.
 	 */
@@ -42,9 +50,10 @@ public abstract class User {
 	 */
 	private Date lastAccessDate;
 	/**
-	 * Plan type of the user
+	 * Which type of user this is. 
+	 * Provider or Scout
 	 */
-	private UserPlanType userPlanType;
+	private UserType userType;
 	
 	// Getter Methods
 	public Long getId() {
@@ -68,8 +77,15 @@ public abstract class User {
 	public Date getLastAccessDate() {
 		return lastAccessDate;
 	}
-	public UserPlanType getUserPlanType() {
-		return userPlanType;
+	public String getUserName() {
+		return userName;
+	}
+	public String getPassword() {
+		return password;
+	}
+	
+	public UserType getUserType() {
+		return userType;
 	}
 	
 	// Setter Methods
@@ -94,7 +110,13 @@ public abstract class User {
 	public void setLastAccessDate(Date lastAccessDate) {
 		this.lastAccessDate = lastAccessDate;
 	}
-	public void setUserPlanType(UserPlanType userPlanType) {
-		this.userPlanType = userPlanType;
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public void setUserType(UserType userType) {
+		this.userType = userType;
 	}
 }

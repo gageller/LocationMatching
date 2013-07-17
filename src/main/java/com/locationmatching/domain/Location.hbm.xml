@@ -26,5 +26,19 @@
         <property name="locationZipcode" type="java.lang.String">
             <column name="LOCATION_ZIPCODE" />
         </property>
+        <property name="locationPlanType">
+        	<column name="LOCATION_PLAN_TYPE" />
+            <type name="org.hibernate.type.EnumType">
+                <param name="type">12</param>
+                <param name="enumClass">com.locationmatching.component.ImageType</param>
+            </type>
+        </property>
+        <set name="locationImages" table="IMAGE" inverse="true" outer-join="true" cascade="all-delete-orphan">
+        	<key>
+        		<column name="LOCATION_ID"/>
+        	</key>
+        	<one-to-many class="com.locationmatching.domain.Image"/>
+        </set>
+        <many-to-one name="provider" class="com.locationmatching.domain.LocationProvider" not-null="true"/>
     </class>
 </hibernate-mapping>

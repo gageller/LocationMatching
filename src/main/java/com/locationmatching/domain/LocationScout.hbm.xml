@@ -8,7 +8,14 @@
             <column name="ID" />
             <generator class="increment" />
         </id>
-         <property name="firstName" type="java.lang.String">
+        <property name="userType">
+			<column name="USER_TYPE" />
+            <type name="org.hibernate.type.EnumType">
+                <param name="type">12</param>
+                <param name="enumClass">com.locationmatching.component.UserType</param>
+            </type>
+        </property>
+        <property name="firstName" type="java.lang.String">
             <column name="FIRST_NAME" />
         </property>
         <property name="lastName" type="java.lang.String">
