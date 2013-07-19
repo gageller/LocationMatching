@@ -2,8 +2,7 @@ package com.locationmatching.controller;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.locationmatching.domain.LocationProvider;
 import com.locationmatching.domain.User;
-import com.locationmatching.service.LocationUserService;
+import com.locationmatching.service.LocationProviderService;
 
 /**
  * Restful Controller to handle request made by the Location Provider
@@ -24,12 +23,11 @@ import com.locationmatching.service.LocationUserService;
  *
  */
 @Controller
-@RequestMapping("/providers/")
 public class LocationProviderController {
-	@Inject
-	LocationUserService service;
+	@Autowired
+	LocationProviderService service;
 	
-	public void setService(LocationUserService service) {
+	public void setService(LocationProviderService service) {
 		this.service = service;
 	}
 	
@@ -51,7 +49,7 @@ public class LocationProviderController {
 	 * Get all of the Location Providers in the system
 	 */
 	public String getAllProviders(Model model) {
-		List<User> providerList;
+		List<LocationProvider> providerList;
 		
 		providerList = service.getAllUsers();
 		
@@ -68,5 +66,19 @@ public class LocationProviderController {
 		service.deleteUser(Long.valueOf(id));
 		
 		return "deletedUser";
+	}
+	
+	/**
+	 * We got here from the request to create a new Provider account
+	 * 
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value="/createNewProvider.request", method=RequestMethod.POST)
+	public ModelAndView createLocationProvider() {
+		ModelAndView modelView;
+		//LocationProvider provider = new LocationProvider();
+		modelView = new ModelAndView("provider");
+		
+		return modelView;
 	}
 }
