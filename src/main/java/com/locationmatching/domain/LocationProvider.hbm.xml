@@ -9,7 +9,7 @@
             <generator class="increment" />
         </id>
         <property name="userType">
-            <column name="USERTYPE" />
+            <column name="USER_TYPE" />
             <type name="org.hibernate.type.EnumType">
                 <param name="type">12</param>
                 <param name="enumClass">com.locationmatching.component.UserType</param>
