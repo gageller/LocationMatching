@@ -51,6 +51,26 @@
     		</exclusions>
     		<scope>compile</scope>
     	</dependency>
+    	<dependency>
+    		<groupId>org.springframework</groupId>
+    		<artifactId>spring-core</artifactId>
+    		<version>3.1.0.RELEASE</version>
+    	</dependency>
+    	<dependency>
+    		<groupId>org.springframework</groupId>
+    		<artifactId>spring-web</artifactId>
+    		<version>3.1.0.RELEASE</version>
+    	</dependency>
+    	<dependency>
+    		<groupId>org.springframework</groupId>
+    		<artifactId>spring-webmvc</artifactId>
+    		<version>3.1.0.RELEASE</version>
+    	</dependency>
+    	<dependency>
+    		<groupId>javax.inject</groupId>
+    		<artifactId>javax.inject</artifactId>
+    		<version>1</version>
+    	</dependency>
 	</dependencies>
   	<build>
     	<finalName>LocationMatching</finalName>
