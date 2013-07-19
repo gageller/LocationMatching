@@ -86,6 +86,10 @@
     				<debuglevel>lines,vars,source</debuglevel>
     			</configuration>
     		</plugin>
-        </plugins>
+    		<plugin>
+        		<artifactId>maven-war-plugin</artifactId>
+        		<version>2.3</version>
+    		</plugin>
+		</plugins>
   	</build>
 </project>
