@@ -6,7 +6,7 @@
     <class name="com.locationmatching.domain.CreditCardImpl" table="CREDITCARD">
         <id name="id" type="java.lang.Long">
             <column name="ID" />
-            <generator class="assigned" />
+            <generator class="increment" />
         </id>
         <property name="creditCardType">
             <column name="CREDIT_CARD_TYPE" />

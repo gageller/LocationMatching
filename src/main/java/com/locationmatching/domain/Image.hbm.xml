@@ -6,7 +6,7 @@
     <class name="com.locationmatching.domain.Image" table="IMAGE">
         <id name="id" type="java.lang.Long">
             <column name="ID" />
-            <generator class="assigned" />
+            <generator class="increment" />
         </id>
         <property name="fileName" type="java.lang.String">
             <column name="FILENAME" />
