@@ -39,12 +39,14 @@
         <property name="lastAccessDate" type="java.util.Date">
             <column name="LAST_ACCESS_DATE" />
         </property>
-        <property name="numberOfImages"></property>
         <set name="providerLocations" table="LOCATION" inverse="true" outer-join="true" cascade="all-delete-orphan">
             <key>
             	<column name="LocationProvider_Id"/>
             </key>
             <one-to-many class="com.locationmatching.domain.Location" />
         </set>
+        <query name="findProviderByUserName">
+        	<![CDATA[ from LocationProvider p where p.userName = :userName]]>
+        </query>
     </class>
 </hibernate-mapping>

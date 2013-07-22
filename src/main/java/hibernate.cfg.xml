@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+                                         "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+ <session-factory name="LocationMatchingSessionFactory">
+  <property name="hibernate.connection.datasource">jdbc/LocationMatching</property>
+  <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+  <property name="hibernate.show_sql">true</property>
+  <property name="hibernate.format_sql">true</property>
+  <mapping class="com.locationmatching.domain.CreditCardImpl" resource="com/locationmatching/domain/CreditCardImpl.hbm.xml"/>
+  <mapping class="com.locationmatching.domain.Image" resource="com/locationmatching/domain/Image.hbm.xml"/>
+  <mapping class="com.locationmatching.domain.Location" resource="com/locationmatching/domain/Location.hbm.xml"/>
+  <mapping class="com.locationmatching.domain.LocationProvider" resource="com/locationmatching/domain/LocationProvider.hbm.xml"/>
+  <mapping class="com.locationmatching.domain.LocationRequest" resource="com/locationmatching/domain/LocationRequest.hbm.xml"/>
+  <mapping class="com.locationmatching.domain.LocationScout" resource="com/locationmatching/domain/LocationScout.hbm.xml"/>
+ </session-factory>
+</hibernate-configuration>

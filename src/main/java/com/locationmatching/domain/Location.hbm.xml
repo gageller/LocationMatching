@@ -33,6 +33,9 @@
                 <param name="enumClass">com.locationmatching.component.ImageType</param>
             </type>
         </property>
+        <property name="numberOfImages" type="java.lang.Integer">
+        	<column name="NUMBER_OF_IMAGES"/>
+        </property>
         <set name="locationImages" table="IMAGE" inverse="true" outer-join="true" cascade="all-delete-orphan">
         	<key>
         		<column name="LOCATION_ID"/>

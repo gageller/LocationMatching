@@ -1,17 +1,19 @@
 package com.locationmatching.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.locationmatching.component.UserType;
 import com.locationmatching.domain.LocationProvider;
-import com.locationmatching.domain.User;
 import com.locationmatching.service.LocationProviderService;
 
 /**
@@ -69,16 +71,37 @@ public class LocationProviderController {
 	}
 	
 	/**
-	 * We got here from the request to create a new Provider account
+	 * Get that takes us to the Create New Provider page. Add in a new
+	 * LocationProvider object to the Model to store any data entered by
+	 * the user
+	 */
+	@RequestMapping(value="createNewProvider.request", method=RequestMethod.GET)
+	public String prepareCreateNewLocationProvider(Model model) {
+		LocationProvider newProvider = new LocationProvider();
+		
+		model.addAttribute("newLocationProvider", newProvider);
+		
+		return "newLocationProvider";
+	}
+	
+	/**
+	 * We got here from the request to create a new Provider account after all
+	 * of the provider data has been filled out.
 	 * 
 	 * @return ModelAndView
 	 */
-	@RequestMapping(value="/createNewProvider.request", method=RequestMethod.POST)
-	public ModelAndView createLocationProvider() {
-		ModelAndView modelView;
-		//LocationProvider provider = new LocationProvider();
-		modelView = new ModelAndView("provider");
+	@RequestMapping(value="createNewProvider.request", method=RequestMethod.POST)
+	public String createLocationProvider(@ModelAttribute("newLocationProvider")LocationProvider newProvider) {
+		Date date = new Date(System.currentTimeMillis());
 		
-		return modelView;
+		// Set the current time and last accessed time for this new provider.
+		newProvider.setCurrentDate(date);
+		newProvider.setLastAccessDate(date);
+		// Set the user type
+		newProvider.setUserType(UserType.PROVIDER);
+
+		service.createUser(newProvider);
+		
+		return "index";
 	}
 }

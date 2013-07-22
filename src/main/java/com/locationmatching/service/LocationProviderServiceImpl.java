@@ -2,10 +2,14 @@ package com.locationmatching.service;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
 import com.locationmatching.domain.LocationProvider;
@@ -32,11 +36,26 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 		Transaction transaction = null;
 		
 		try {
+			Criteria criteria;
+			String userName;
+			Long rowCount;
+			
 			session = HibernateUtil.getSession();
 			transaction = session.beginTransaction();
 			
-			session.save(user);
+			// We need to see if the userName is already being used
+			userName = user.getUserName();			
+			criteria = session.createCriteria("LocationProvider");
+			criteria.add(Restrictions.eqProperty("firstName", userName));
+			criteria.setProjection(Projections.rowCount());
+			rowCount = (Long) criteria.uniqueResult();
 			
+			if(rowCount == 0) {
+				System.out.println("Provider already exists");
+			}
+			else {
+				session.save(user);
+			}
 			transaction.commit();
 		}
 		catch(HibernateException ex) {
@@ -57,7 +76,9 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 		}
 		finally {
 			try {
-				session.close();
+				if(session != null) {
+					session.close();
+				}
 			}
 			catch(HibernateException ex) {
 				ex.printStackTrace();

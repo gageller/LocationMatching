@@ -45,7 +45,7 @@
 			<td>&nbsp;</td>
 		</tr>
 		<tr>
-			<td><a href="newLocationProvider.jsp">Register for a new Provider account</a></td>
+			<td><a href="createNewProvider.request">Register for a new Provider account</a></td>
 			<!-- <td>&nbsp;</td> -->
 			<td><a href="newScout.request">Register for a new Scout account</a></td>
 		</tr>
