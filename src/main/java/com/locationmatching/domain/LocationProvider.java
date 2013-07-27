@@ -1,6 +1,22 @@
 package com.locationmatching.domain;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
+import com.locationmatching.component.LocationPlanType;
+//import org.hibernate.FetchMode;
 
 /**
  * Location Provider searches through list of Location Scout requests to see
@@ -14,19 +30,42 @@ import java.util.Set;
  * @version 0.1.1
  *
  */
+@Entity
+@Table(name="LocationProvider")
 public class LocationProvider extends User {
 	/**
 	 * Collection of Location objects associated with this provider.
 	 */
-	Set<Location>providerLocations;
+	@OneToMany(mappedBy="locationOwner") // mappedBy is equivalent to inverse=true in the mapping file.
+	@org.hibernate.annotations.Cascade(value={org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+	@LazyCollection(value = LazyCollectionOption.FALSE)
+//	@Fetch(value = FetchMode.SELECT)
+//	Map<String, Location>providerLocations = new LinkedHashMap<String, Location>();
+	Set<Location> providerLocations = new LinkedHashSet<Location>();
 	
+	@Enumerated(EnumType.STRING)
+	@Column(name="USER_PLAN_TYPE")
+	private LocationPlanType userPlanType;
+	
+	// Getter Methods
 	public Set<Location> getProviderLocations() {
 		return providerLocations;
 	}
-
+	public LocationPlanType getUserPlanType() {
+		return userPlanType;
+	}
+	
+	// Setter Methods
 	public void setProviderLocations(Set<Location> providerLocations) {
 		this.providerLocations = providerLocations;
 	}
-
-
+	public void setUserPlanType(LocationPlanType userPlanType) {
+		this.userPlanType = userPlanType;
+	}
+	
+	public void addLocation(Location location) {
+		location.setLocationOwner(this);
+		
+		providerLocations.add(location);
+	}
 }

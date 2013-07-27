@@ -7,11 +7,8 @@
   <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
   <property name="hibernate.show_sql">true</property>
   <property name="hibernate.format_sql">true</property>
-  <mapping class="com.locationmatching.domain.CreditCardImpl" resource="com/locationmatching/domain/CreditCardImpl.hbm.xml"/>
-  <mapping class="com.locationmatching.domain.Image" resource="com/locationmatching/domain/Image.hbm.xml"/>
-  <mapping class="com.locationmatching.domain.Location" resource="com/locationmatching/domain/Location.hbm.xml"/>
-  <mapping class="com.locationmatching.domain.LocationProvider" resource="com/locationmatching/domain/LocationProvider.hbm.xml"/>
-  <mapping class="com.locationmatching.domain.LocationRequest" resource="com/locationmatching/domain/LocationRequest.hbm.xml"/>
-  <mapping class="com.locationmatching.domain.LocationScout" resource="com/locationmatching/domain/LocationScout.hbm.xml"/>
+  <mapping class="com.locationmatching.domain.Image"/>
+  <mapping class="com.locationmatching.domain.Location"/>
+  <mapping class="com.locationmatching.domain.LocationProvider"/>
  </session-factory>
 </hibernate-configuration>

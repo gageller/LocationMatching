@@ -3,7 +3,7 @@ package com.locationmatching.util;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import org.hibernate.cfg.AnnotationConfiguration;
 
 /**
  * Utility class to create the Hibernate SessionFactory. Also used to fetch
@@ -27,16 +27,21 @@ public class HibernateUtil {
 	public static SessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
-
+ 
 	/**
 	 * Instantiates the Session Factory
 	 */
 	public static void resetSessionFactory() {
-		Configuration configuration;
-		
-		configuration = new Configuration();
-		configuration = configuration.configure();
-		sessionFactory = configuration.buildSessionFactory();
+		AnnotationConfiguration configuration;
+		try {
+			configuration = new AnnotationConfiguration();
+			configuration = configuration.configure();
+			sessionFactory = configuration.buildSessionFactory();
+		}
+		catch(Throwable ex) {
+			ex.printStackTrace();
+			throw new ExceptionInInitializerError(ex);
+		}
 	}
 
 	/**

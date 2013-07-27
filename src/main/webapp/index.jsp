@@ -1,9 +1,20 @@
 <html>
 <body>
+<script language="javascript">
+	<!--
+		function submitButtonClick(action, method){
+			document.forms("homeForm").action = action;
+			document.forms("homeForm").method = method;
+
+			document.forms("homeForm").submit();
+		}
+	-->
+</script>
 <title>Location Matching</title>
 <h2>Location Matching</h2>
 <br/>
-<form action="locationGet.request" method="get">
+<form name="homeForm" action="" method="POST">
+<!-- 	<input type="hidden" name="_method"/> -->
 	<table border=0>
 		<tr>
 			<th>Location Provider</th>
@@ -36,16 +47,16 @@
 			<td><input type="password" name="scoutPassword"/></td>
 		</tr>
 		<tr>
-			<td><input type="submit" name="providerSubmit" value="Submit" onClick=""/></td>
+			<td><input type="button" name="providerSubmit" value="Submit" onClick='submitButtonClick("provider.request", "POST")'/></td>
 			<!-- <td>&nbsp;</td> -->
-			<td><input type="button" name="scoutSubmit" value="Submit" onClick=""/></td>
+			<td><input type="button" name="scoutSubmit" value="Submit" onClick='submitButtonClick("scout.request")'/></td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
 		</tr>
 		<tr>
-			<td><a href="createNewProvider.request">Register for a new Provider account</a></td>
+			<td><input type="button" name="newProviderBttn" value="Create New Location Provider..." onClick='submitButtonClick("createNewProvider.request", "GET")'/><!-- <a href="createNewProvider.request">Register for a new Provider account</a> --></td>
 			<!-- <td>&nbsp;</td> -->
 			<td><a href="newScout.request">Register for a new Scout account</a></td>
 		</tr>

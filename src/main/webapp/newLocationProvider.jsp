@@ -8,40 +8,40 @@
 <title>Register for Location Provider Account</title>
 </head>
 	<body>
-		<form:form action="createNewProvider.request" method="POST" modelAttribute="newLocationProvider">
+		<form:form action="createNewProvider.request" method="POST" commandName="locationProvider">
 			<h2>Register for new Location Provider Account</h2>
 			<table>
 				<tr>
 					<td>User Name*</td>
-					<td><form:input path="userName"/>
+					<td><form:input path="userName" />
 				</tr>
 				<tr>
 					<td>First Name*</td>
-					<td><form:input path="firstName"/></td>
+					<td><form:input path="firstName" /></td>
 				</tr>
 				<tr>
 					<td>Last Name*</td>
-					<td><form:input path="lastName"/>
+					<td><form:input path="lastName" />
 				</tr>
 				<tr>
 					<td>Phone Number</td>
-					<td><form:input path="phoneNumber"/></td>
+					<td><form:input path="phoneNumber" /></td>
 				<tr>
 					<td>Email Address*</td>
-					<td><input type="text" name="emailAddress"/></td>
+					<td><form:input path="emailAddress" /></td>
 				</tr>
 				<tr>
 					<td>Confirm Email Address*</td>
-					<td><input type="text" name="confirmEmailAddress"/></td>
+					<td><input type="text" name="confirmEmailAddress" /></td>
 				</tr>
 
 				<tr>
 					<td>Password*</td>
-					<td><form:password path="password"/></td>
+					<td><form:password path="password" /></td>
 				</tr>
 				<tr>
 					<td>Confirm Password*</td>
-					<td><input type="password" name="confirmPassword"/></td>
+					<td><input type="password" name="confirmPassword" /></td>
 				</tr>
 			
 				<tr colspan=2>
@@ -54,10 +54,13 @@
 					<td>&nbsp;</td>
 				</tr>
 				<tr>
-					<td><input type="submit"/></td>
+					<td><input type="submit" value="Create Account"/></td>
 				</tr>
 				<tr colspan=2>
 					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><a href="./index.jsp">Home</a></td>
 				</tr>
 			</table>
 		</form:form>

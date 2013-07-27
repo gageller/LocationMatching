@@ -7,12 +7,14 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
+import com.locationmatching.domain.Location;
 import com.locationmatching.domain.LocationProvider;
+import com.locationmatching.exception.LocationProcessingException;
+import com.locationmatching.exception.UserAlreadyExistsException;
 import com.locationmatching.util.HibernateUtil;
 
 /**
@@ -38,20 +40,26 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 		try {
 			Criteria criteria;
 			String userName;
-			Long rowCount;
+			Integer rowCount;
 			
 			session = HibernateUtil.getSession();
 			transaction = session.beginTransaction();
 			
 			// We need to see if the userName is already being used
 			userName = user.getUserName();			
-			criteria = session.createCriteria("LocationProvider");
-			criteria.add(Restrictions.eqProperty("firstName", userName));
+			criteria = session.createCriteria(LocationProvider.class);
+			criteria.add(Restrictions.eq("userName", userName));
 			criteria.setProjection(Projections.rowCount());
-			rowCount = (Long) criteria.uniqueResult();
-			
-			if(rowCount == 0) {
-				System.out.println("Provider already exists");
+			rowCount = (Integer) criteria.uniqueResult();
+
+			if(rowCount > 0) {
+				// User name already exists so let the user know.
+				StringBuilder message = new StringBuilder();
+				
+				message.append("The user name ");
+				message.append(userName);
+				message.append(" is already being used. Please select another user name.");
+				throw new UserAlreadyExistsException(message.toString());
 			}
 			else {
 				session.save(user);
@@ -268,4 +276,103 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 		
 		return providerList;
 	}
-}
+
+	@Override
+	/**
+	 * Retrieve the user based on the user name and password passed in. If not
+	 * found, return null;
+	 * 
+	 * @return LocationProvider
+	 */
+	public LocationProvider authenticateUser(String userName, String password) {
+		Session session = null;
+		Transaction transaction = null;
+		LocationProvider provider;
+		
+		try {
+			Criteria criteria;
+
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			criteria = session.createCriteria(LocationProvider.class);
+			criteria.add(Restrictions.eq("userName", userName));
+			criteria.add(Restrictions.eq("password", password));
+			provider = (LocationProvider) criteria.uniqueResult();
+
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			throw ex;
+		}
+		finally {
+			try {
+				if(session != null) {
+					session.close();
+				}
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
+		}
+		
+		return provider;
+	}
+	
+	/**
+	 * Add a new location for this provider to the database. 
+	 * If successful also add it to the provider collection.
+	 */
+	public void addLocation(LocationProvider provider, Location location) {
+		Session session = null;
+		Transaction transaction = null;
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			//session.l
+//			session.save(location);
+			session.update(provider);
+//			session.save(location);
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			StringBuilder exceptionMessage;
+			
+			ex.printStackTrace();
+			
+			exceptionMessage = new StringBuilder();
+			exceptionMessage.append("There was an error adding Location ");
+			exceptionMessage.append(location.getLocationName());
+			exceptionMessage.append(". Please try to request at a later time. If the problem ");
+			exceptionMessage.append("persists, contact technical support. Sorry for the inconvience.");
+			
+			throw new LocationProcessingException(exceptionMessage.toString());
+		}
+		finally {
+			if(session != null) {
+				try {
+					session.close();
+				}
+				catch(HibernateException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+	}
+}	
+
