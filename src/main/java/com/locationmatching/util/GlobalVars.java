@@ -1,10 +1,14 @@
 package com.locationmatching.util;
 
+import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.locationmatching.component.LocationType;
+
 public class GlobalVars {
 	public static Map<String, String> stateMap = new LinkedHashMap<String, String>();
+	public static EnumMap<LocationType, String> locationTypes = new EnumMap<LocationType, String>(LocationType.class);
 	
 	static {
 		stateMap.put("", "");
@@ -59,5 +63,14 @@ public class GlobalVars {
 		stateMap.put("Washington", "Washington(WA)");
 		stateMap.put("West Virginia", "West Virginia(WV)");
 		stateMap.put("Wisconsin", "Wisconsin(WI)");
-		stateMap.put("Wyoming", "Wyoming(WY)");	}
+		stateMap.put("Wyoming", "Wyoming(WY)");	
+	
+		locationTypes.put(LocationType.BLANK, "");
+		locationTypes.put(LocationType.APARTMENT, "Apartment");
+		locationTypes.put(LocationType.CONDOMINIUM, "Condominium");
+		locationTypes.put(LocationType.HOUSE, "House");
+		locationTypes.put(LocationType.OFFICE, "Office Building");
+		locationTypes.put(LocationType.PARK, "Park");
+		locationTypes.put(LocationType.TOWNHOUSE, "Townhouse");	
+	}
 }

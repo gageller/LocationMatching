@@ -2,8 +2,7 @@ package com.locationmatching.service;
 
 import java.util.List;
 
-import com.locationmatching.domain.Location;
-import com.locationmatching.domain.LocationProvider;
+import com.locationmatching.domain.LocationRequest;
 import com.locationmatching.domain.User;
 
 public interface LocationProviderService {
@@ -13,5 +12,5 @@ public interface LocationProviderService {
 	public void modifyUser(User user);
 	public List<User> getAllUsers();
 	public User authenticateUser(String userName, String password);
-	public void modifyLocation(LocationProvider locationProvider, Location location);
+	public List<LocationRequest>getLocationRequests(LocationRequest searchRequest);
 }

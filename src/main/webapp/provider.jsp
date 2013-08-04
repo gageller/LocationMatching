@@ -49,7 +49,7 @@
 	<br/>
 	<h3>Locations</h3>
 			<c:forEach items="${locationProvider.providerLocations}" var="location">
-				<table border="1">
+				<table border="1" width="600">
 					<tr>
 						<td colspan="4"><b>Location Name:</b> ${location.locationName}</td>
 						<td><input type="button" value="Edit Location..." onClick='editLocationButtonClick("${location.id}")'/></td>						

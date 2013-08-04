@@ -1,5 +1,7 @@
 package com.locationmatching.service;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -11,8 +13,10 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
+import com.locationmatching.component.LocationType;
 import com.locationmatching.domain.Location;
 import com.locationmatching.domain.LocationProvider;
+import com.locationmatching.domain.LocationRequest;
 import com.locationmatching.domain.User;
 import com.locationmatching.exception.LocationProcessingException;
 import com.locationmatching.exception.UserAlreadyExistsException;
@@ -373,44 +377,89 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 		}
 	}
 
-	@Override
-	public void modifyLocation(LocationProvider locationProvider,
-			Location location) {
+	public List<LocationRequest>getLocationRequests(LocationRequest searchRequest) {
+		ArrayList<LocationRequest>locationRequests = null;
 		Session session = null;
 		Transaction transaction = null;
 		
 		try {
+			Criteria criteria;
+			String value;
+			LocationType locationType;
+			
 			session = HibernateUtil.getSession();
 			transaction = session.beginTransaction();
-			session.update(location);
-//			session.update(locationProvider);
+			
+			criteria = session.createCriteria(LocationRequest.class);
+			
+			// Location Request Name
+			value = searchRequest.getLocationRequestName();
+			if(value != null && value.isEmpty() == false) {
+				criteria.add(Restrictions.eq("locationRequestName", value));				
+			}
+
+			// Location Request City
+			value = searchRequest.getLocationRequestCity();
+			if(value != null && value.isEmpty() == false) {
+				criteria.add(Restrictions.eq("locationRequestCity", value));				
+			}
+
+			// Location Request State
+			value = searchRequest.getLocationRequestState();
+			if(value != null && value.isEmpty() == false) {
+				criteria.add(Restrictions.eq("locationRequestState", value));				
+			}
+
+			// Location Request Zip Code
+			value = searchRequest.getLocationRequestZipcode();
+			if(value != null && value.isEmpty() == false) {
+				criteria.add(Restrictions.eq("locationRequestZipcode", value));				
+			}
+
+			// Location Request County
+			value = searchRequest.getLocationRequestCounty();
+			if(value != null && value.isEmpty() == false) {
+				criteria.add(Restrictions.eq("locationRequestCounty", value));				
+			}
+
+			// Location Type
+			locationType = searchRequest.getLocationType();
+			if(locationType != null && locationType != LocationType.BLANK) {
+				criteria.add(Restrictions.eq("locationType", locationType));				
+			}
+
+			locationRequests = (ArrayList<LocationRequest>) criteria.list();
 
 			transaction.commit();
 		}
 		catch(HibernateException ex) {
-			StringBuilder exceptionMessage;
-			
-			ex.printStackTrace();
-			
-			exceptionMessage = new StringBuilder();
-			exceptionMessage.append("There was an error adding Location ");
-			exceptionMessage.append(location.getLocationName());
-			exceptionMessage.append(". Please try to request at a later time. If the problem ");
-			exceptionMessage.append("persists, contact technical support. Sorry for the inconvience.");
-			
-			throw new LocationProcessingException(exceptionMessage.toString());
-		}
-		finally {
-			if(session != null) {
-				try {
-					session.close();
-				}
-				catch(HibernateException ex) {
-					ex.printStackTrace();
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
 				}
 			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			throw ex;
 		}
-		
+		finally {
+			try {
+				if(session != null) {
+					session.close();
+				}
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
+		}
+	
+		return locationRequests;
 	}
 }	
 
