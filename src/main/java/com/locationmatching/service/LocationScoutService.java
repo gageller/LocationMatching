@@ -2,12 +2,17 @@ package com.locationmatching.service;
 
 import java.util.List;
 
+import com.locationmatching.domain.LocationRequest;
 import com.locationmatching.domain.LocationScout;
+import com.locationmatching.domain.User;
 
 public interface LocationScoutService {
 	public void createUser(LocationScout user);
-	public LocationScout getUser(Long id);
+	public User getUser(Long id);
 	public void deleteUser(Long id);
-	public void modifyUser(LocationScout user);
-	public List<LocationScout> getAllUsers();
+	public void modifyUser(User user);
+	public List<User> getAllUsers();
+	User authenticateUser(String userName, String password);
+	public void addLocationRequest(LocationScout locationScout,
+			LocationRequest locationRequest);
 }

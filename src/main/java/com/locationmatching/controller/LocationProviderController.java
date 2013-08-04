@@ -1,9 +1,10 @@
 package com.locationmatching.controller;
 
 import java.util.Date;
-import java.util.LinkedHashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,9 +25,13 @@ import com.locationmatching.component.LocationPlanType;
 import com.locationmatching.component.UserType;
 import com.locationmatching.domain.Location;
 import com.locationmatching.domain.LocationProvider;
+import com.locationmatching.domain.LocationRequest;
+import com.locationmatching.domain.User;
 import com.locationmatching.exception.LocationProcessingException;
 import com.locationmatching.exception.UserAlreadyExistsException;
 import com.locationmatching.service.LocationProviderService;
+import com.locationmatching.service.LocationProviderServiceImpl;
+import com.locationmatching.util.GlobalVars;
 
 /**
  * Controller to handle request made by the Location Provider
@@ -37,7 +42,7 @@ import com.locationmatching.service.LocationProviderService;
  *
  */
 @Controller
-@SessionAttributes({"locationProvider", "location"})
+@SessionAttributes({"locationProvider", "location", "editLocation", "searchLocationRequest"})
 public class LocationProviderController {
 	@Autowired
 	LocationProviderService service;
@@ -46,70 +51,18 @@ public class LocationProviderController {
 		this.service = service;
 	}
 	
-	@ModelAttribute("stateCodeList")
-	protected Map<String, String> stateCodeList() {
-		Map<String, String>stateCodeList = new LinkedHashMap<String, String>();
-		
-		stateCodeList.put("", "");
-		stateCodeList.put("AL", "Alabama");
-		stateCodeList.put("AK", "Alaska");
-		stateCodeList.put("AZ", "Arizona");
-		stateCodeList.put("AR", "Arkansas");
-		stateCodeList.put("CA", "California");
-		stateCodeList.put("CO", "Colorado");
-		stateCodeList.put("DE", "Delaware");
-		stateCodeList.put("DC", "District of Columbia");
-		stateCodeList.put("FL", "Florida");
-		stateCodeList.put("GA", "Georgia");
-		stateCodeList.put("HI", "Hawaii");
-		stateCodeList.put("ID", "Idaho");
-		stateCodeList.put("IL", "Illinois");
-		stateCodeList.put("IN", "Indiana");
-		stateCodeList.put("IA", "Iowa");
-		stateCodeList.put("", "");
-		stateCodeList.put("", "");
-		stateCodeList.put("", "");
-		stateCodeList.put("", "");
-		stateCodeList.put("", "");
-		stateCodeList.put("", "");
-		stateCodeList.put("", "");
-		stateCodeList.put("", "");
-		stateCodeList.put("", "");
-		stateCodeList.put("", "");
-		stateCodeList.put("", "");
-		stateCodeList.put("", "");
-		stateCodeList.put("", "");
-		stateCodeList.put("", "");
-		stateCodeList.put("", "");
-		stateCodeList.put("", "");
-		stateCodeList.put("", "");
-		stateCodeList.put("", "");
-		stateCodeList.put("", "");
-		stateCodeList.put("", "");
-		stateCodeList.put("NH", "New Hampshire");
-		stateCodeList.put("NY", "New Yori");
-		stateCodeList.put("OH", "Ohio");
-		stateCodeList.put("OK", "Oklahona");
-		stateCodeList.put("PA", "Pennsylvania");
-		stateCodeList.put("RI", "Rhode Island");
-		stateCodeList.put("SC", "South Carolina");
-		stateCodeList.put("SD", "South Dakota");
-		stateCodeList.put("TN", "Tennessee");
-		stateCodeList.put("TX", "Texas");
-		stateCodeList.put("UT", "Utah");
-		stateCodeList.put("VT", "Vermont");
-		stateCodeList.put("VA", "Virginia");
-		stateCodeList.put("WA", "Washington");
-		stateCodeList.put("WV", "West Virginia");
-		stateCodeList.put("WI", "Wisconsin");
-		stateCodeList.put("WY", "Wyoming");
-
-		return stateCodeList;
+	/**
+	 * Used for the State select controls on the jsp pages.
+	 */
+	@ModelAttribute("stateSelectList")
+	protected Map<String, String> stateSelectList() {
+		return GlobalVars.stateMap;
 	}
+	
 	/**
 	 * Get the Location Provider based on the id passed in.
 	 */
-	@RequestMapping(value="{id}", method=RequestMethod.GET)
+	@RequestMapping(value="getProvider.request", method=RequestMethod.GET)
 	public ModelAndView getProvider(@PathVariable("id") String id) {
 		ModelAndView modelView = new ModelAndView();
 		LocationProvider user = (LocationProvider) service.getUser(Long.valueOf(id));
@@ -126,19 +79,19 @@ public class LocationProviderController {
 	 * 
 	 * @return String
 	 */
-	@RequestMapping(value="/provider.request", method=RequestMethod.POST)
+	@RequestMapping(value="/providerNavigation.request", method=RequestMethod.POST)
 	public String authenticateUser(@RequestParam("providerUserName")String userName,
 			@RequestParam("providerPassword")String password, Model model) {
 		String view;
 		LocationProvider provider;
 		
-		provider = service.authenticateUser(userName, password);
+		provider = (LocationProvider) service.authenticateUser(userName, password);
 		
 		if(provider != null) {
 			// Found the provider so proceed onto the provider
 			// info page.
 			model.addAttribute("locationProvider", provider);
-			view = "provider";
+			view = "providerNavigation";
 		}
 		else {
 			// Not found. Need to add code to handle error message
@@ -151,9 +104,9 @@ public class LocationProviderController {
 	/**
 	 * Get all of the Location Providers in the system
 	 */
-	@RequestMapping(method=RequestMethod.GET)
+	@RequestMapping(value="getAllProviders.request", method=RequestMethod.GET)
 	public String getAllProviders(Model model) {
-		List<LocationProvider> providerList;
+		List<User> providerList;
 		
 		providerList = service.getAllUsers();
 		
@@ -180,7 +133,7 @@ public class LocationProviderController {
 	protected String setupNewProvider(Model model) {
 		LocationProvider provider = new LocationProvider();
 		
-		model.addAttribute("provider", provider);
+		model.addAttribute("locationProvider", provider);
 		
 		return "newLocationProvider";
 		
@@ -203,11 +156,11 @@ public class LocationProviderController {
 		locationProvider.setLastAccessDate(date);
 		// Set the user type
 		locationProvider.setUserType(UserType.PROVIDER);
-		// Set the new user's plan type to the free plan type
-		locationProvider.setUserPlanType(LocationPlanType.FREE);
+		// Set the new user's plan type to the Pay Per Photo plan type
+		locationProvider.setUserPlanType(LocationPlanType.PER_PHOTO);
 		
 		// Go to the provider.jsp page to add locations
-		nextPage = "provider";
+		nextPage = "providerNavigation";
 		
 		try {
 			Long id;
@@ -268,12 +221,78 @@ public class LocationProviderController {
 		
 		try {
 			locationProvider.addLocation(location);
-			service.addLocation(locationProvider, location);
+			((LocationProviderServiceImpl)service).addLocation(locationProvider, location);
 		}
 		catch(LocationProcessingException ex) {
 			
 		}
 		
-		return "provider";
+		return "providerNavigation";
 	}
+	
+	/**
+	 * Setup the edit location page by getting location requested for editing
+	 * 
+	 * @param editId
+	 * @return String
+	 */
+	@RequestMapping(value="editLocationSetup.request", method=RequestMethod.POST)
+	protected String editLocationSetup(@RequestParam("editId") int editId, @ModelAttribute("locationProvider")LocationProvider locationProvider, Model model) {
+		Set<Location> providerLocations;
+		Location editLocation = null;
+		Iterator<Location>itr;
+		
+		providerLocations = locationProvider.getProviderLocations();
+		itr = providerLocations.iterator();
+
+
+		while(itr.hasNext() == true) {
+			Long id;
+			
+			editLocation = itr.next();
+			id = editLocation.getId();
+			
+			if(id == editId) {
+				break;
+			}
+		}
+		model.addAttribute("editLocation", editLocation);
+		
+		return "editLocation";
+	}
+	
+	/**
+	 * Update the edited location to the database
+	 */
+	@RequestMapping(value="editLocation.request", method=RequestMethod.POST)
+	protected String editLocation(@ModelAttribute("locationProvider")LocationProvider locationProvider, @ModelAttribute("editLocation") Location editLocation) {
+		// Persist the modifications to the database.
+		service.modifyUser(locationProvider);
+		
+		return "editLocationListings";
+	}
+	
+	/**
+	 * Setup the ModelAttribute LocationRequest to be used to fill
+	 * in the parameters for the search.
+	 * @param Model
+	 * @return String
+	 */
+	@RequestMapping(value="setupSearchLocationRequest.request", method=RequestMethod.GET)
+	protected String setupSearchLocationRequests(Model model) {
+		LocationRequest searchLocationRequest;
+		
+		searchLocationRequest = new LocationRequest();
+		
+		model.addAttribute("searchLocationRequest", searchLocationRequest);
+		
+		return "searchLocationRequests";
+	}
+	
+	@RequestMapping(value="searchLocationRequest.request", method=RequestMethod.POST)
+	protected String searchLocationRequests(@ModelAttribute("searchLocationRequest")LocationRequest searchLocationRequest) {
+		
+		return "searchLocationRequests";
+	}
+	
 }

@@ -1,5 +1,6 @@
 package com.locationmatching.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -25,7 +26,9 @@ import com.locationmatching.component.UserType;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
-public abstract class User {
+public abstract class User implements Serializable{
+	static final long serialVersionUID = 1L;
+	
 	/**
 	 * Database identity of this user.
 	 */

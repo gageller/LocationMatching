@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
@@ -16,7 +17,6 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import com.locationmatching.component.LocationPlanType;
-//import org.hibernate.FetchMode;
 
 /**
  * Location Provider searches through list of Location Scout requests to see
@@ -37,10 +37,11 @@ public class LocationProvider extends User {
 	 * Collection of Location objects associated with this provider.
 	 */
 	@OneToMany(mappedBy="locationOwner") // mappedBy is equivalent to inverse=true in the mapping file.
-	@org.hibernate.annotations.Cascade(value={org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+	@org.hibernate.annotations.Cascade(value={org.hibernate.annotations.CascadeType.ALL, 
+			org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
 	@LazyCollection(value = LazyCollectionOption.FALSE)
-//	@Fetch(value = FetchMode.SELECT)
-//	Map<String, Location>providerLocations = new LinkedHashMap<String, Location>();
+	@Fetch(value=FetchMode.SELECT)
+	@OrderBy
 	Set<Location> providerLocations = new LinkedHashSet<Location>();
 	
 	@Enumerated(EnumType.STRING)
@@ -63,9 +64,22 @@ public class LocationProvider extends User {
 		this.userPlanType = userPlanType;
 	}
 	
+	/**
+	 * Add the location object to the collection. Also
+	 * set the parent pointer of the location.
+	 * 
+	 * @param location
+	 */
 	public void addLocation(Location location) {
 		location.setLocationOwner(this);
 		
 		providerLocations.add(location);
+	}
+	
+	/**
+	 * Remove this location from the collection.
+	 */
+	public void removeLocation(Location location) {
+		providerLocations.remove(location);
 	}
 }

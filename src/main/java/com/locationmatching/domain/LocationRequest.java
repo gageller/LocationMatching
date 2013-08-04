@@ -2,6 +2,20 @@ package com.locationmatching.domain;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.locationmatching.component.LocationType;
+
 /**
  * This is the request object that the Location Scout fills out and is posted
  * for the Location Provider to view to see if their location matches the request.
@@ -11,46 +25,104 @@ import java.util.Date;
  * @version 0.0.1
  *
  */
+@Entity
 public class LocationRequest {
 	/**
 	 * Database identity
 	 */
+	@Id
+	@GenericGenerator(strategy="increment", name="myGenerator")
+	@GeneratedValue(generator="myGenerator")
 	private Long id;
+	
+	/**
+	 * Pointer back to the parent scout
+	 */
+	@ManyToOne()
+	@JoinColumn(name="LOCATIONSCOUT_ID", nullable=false, insertable=true, updatable=false)
+	private LocationScout requestOwner;
+	
+	@Column(name="LOCATION_REQUEST_NAME")
+	private String locationRequestName;
+	
 	/**
 	 * Location Type such as house, park, store...
 	 */
-	private String locationType;
+	@Enumerated(EnumType.STRING)
+	@Column(name="LOCATION_TYPE")
+	private LocationType locationType;
+	
 	/**
 	 * Submission Date
 	 */
+	@DateTimeFormat(style="S-")
+	@Column(name="SUBMISSION_DATE")
 	private Date submissionDate;
+	
 	/**
 	 * Beginning date of the shoot
 	 */
+	@DateTimeFormat(style="S-")
+	@Column(name="SHOOT_BEGIN_DATE")
 	private Date shootBeginDate;
+	
 	/**
 	 * End date of the shoot
 	 */
+	@DateTimeFormat(style="S-")
+	@Column(name="SHOOT_END_DATE")
 	private Date shootEndDate;
+	
 	/**
 	 * Project Notes
 	 */
+	@Column(name="PROJECT_NOTES")
 	private String projectNotes;
+	
 	/**
 	 * Description of the location the scout is looking for.
 	 */
-	private String description;
+	@Column(name="LOCATION_DESCRIPTION")
+	private String locationDescription;
+	
+	/**
+	 * Location Request City
+	 */
+	@Column(name="LOCATION_REQUEST_CITY")
+	private String locationRequestCity;
+	
+	/**
+	 * Location Request State
+	 */
+	@Column(name="LOCATION_REQUEST_STATE")
+	private String locationRequestState;
+	
+	/**
+	 * Location Request Zip Code
+	 */
+	@Column(name="LOCATION_REQUEST_ZIPCODE")
+	private String locationRequestZipcode;
+	
+	/**
+	 * Location Request County
+	 */
+	@Column(name="LOCATION_REQUEST_COUNTY")
+	private String locationRequestCounty;
 	/**
 	 * Rate that the production is looking to pay for the use
 	 * of the location.
 	 */
-	private String rate;
+	@Column(name="RATE")
+	private Double rate;
 	
 	// Getter Methods
 	public Long getId() {
 		return id;
 	}
-	public String getLocationType() {
+	public String getLocationRequestName() {
+		return locationRequestName;
+	}
+	public LocationType getLocationType() {
 		return locationType;
 	}
 	public Date getSubmissionDate() {
@@ -65,18 +137,36 @@ public class LocationRequest {
 	public String getProjectNotes() {
 		return projectNotes;
 	}
-	public String getDescription() {
-		return description;
+	public String getLocationDescription() {
+		return locationDescription;
 	}
-	public String getRate() {
+	public Double getRate() {
 		return rate;
+	}
+	public LocationScout getRequestOwner() {
+		return requestOwner;
+	}
+	public String getLocationRequestCity() {
+		return locationRequestCity;
+	}
+	public String getLocationRequestState() {
+		return locationRequestState;
+	}
+	public String getLocationRequestZipcode() {
+		return locationRequestZipcode;
+	}
+	public String getLocationRequestCounty() {
+		return locationRequestCounty;
 	}
 	
 	// Setter Methods
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public void setLocationType(String locationType) {
+	public void setLocationRequestName(String locationRequestName) {
+		this.locationRequestName = locationRequestName;
+	}
+	public void setLocationType(LocationType locationType) {
 		this.locationType = locationType;
 	}
 	public void setSubmissionDate(Date submissionDate) {
@@ -91,10 +181,25 @@ public class LocationRequest {
 	public void setProjectNotes(String projectNotes) {
 		this.projectNotes = projectNotes;
 	}
-	public void setDescription(String description) {
-		this.description = description;
+	public void setLocationDescription(String locationDescription) {
+		this.locationDescription = locationDescription;
 	}
-	public void setRate(String rate) {
+	public void setRate(Double rate) {
 		this.rate = rate;
+	}
+	public void setRequestOwner(LocationScout requestOwner) {
+		this.requestOwner = requestOwner;
+	}
+	public void setLocationRequestCity(String locationRequestCity) {
+		this.locationRequestCity = locationRequestCity;
+	}
+	public void setLocationRequestState(String locationRequestState) {
+		this.locationRequestState = locationRequestState;
+	}
+	public void setLocationRequestZipcode(String locationRequestZipcode) {
+		this.locationRequestZipcode = locationRequestZipcode;
+	}
+	public void setLocationRequestCounty(String locationRequestCounty) {
+		this.locationRequestCounty = locationRequestCounty;
 	}
 }

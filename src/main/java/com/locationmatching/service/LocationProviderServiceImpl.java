@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.locationmatching.domain.Location;
 import com.locationmatching.domain.LocationProvider;
+import com.locationmatching.domain.User;
 import com.locationmatching.exception.LocationProcessingException;
 import com.locationmatching.exception.UserAlreadyExistsException;
 import com.locationmatching.util.HibernateUtil;
@@ -33,7 +34,7 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 	 * Persists the new user to the database. Throws an HibernateException
 	 * if the commit or closing the session fails.
 	 */
-	public void createUser(LocationProvider user) {
+	public void createUser(User user) {
 		Session session = null;
 		Transaction transaction = null;
 		
@@ -41,7 +42,7 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 			Criteria criteria;
 			String userName;
 			Integer rowCount;
-			
+
 			session = HibernateUtil.getSession();
 			transaction = session.beginTransaction();
 			
@@ -56,9 +57,9 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 				// User name already exists so let the user know.
 				StringBuilder message = new StringBuilder();
 				
-				message.append("The user name ");
+				message.append("The user name, ");
 				message.append(userName);
-				message.append(" is already being used. Please select another user name.");
+				message.append(", is already being used. Please select another user name.");
 				throw new UserAlreadyExistsException(message.toString());
 			}
 			else {
@@ -100,7 +101,7 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 	 * 
 	 * @return User
 	 */
-	public LocationProvider getUser(Long id) {
+	public User getUser(Long id) {
 		Session session = null;
 		Transaction transaction = null;
 		LocationProvider user = null;
@@ -189,7 +190,7 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 	/**
 	 * Persist the modified user to the database.
 	 */
-	public void modifyUser(LocationProvider user) {
+	public void modifyUser(User user) {
 		Session session = null;
 		Transaction transaction = null;
 		
@@ -233,8 +234,8 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 	 * 
 	 * @return List<User>
 	 */
-	public List<LocationProvider> getAllUsers() {
-		List<LocationProvider> providerList = null;
+	public List<User> getAllUsers() {
+		List<User> providerList = null;
 		Session session = null;
 		Transaction transaction = null;
 		Query query = null;
@@ -284,7 +285,7 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 	 * 
 	 * @return LocationProvider
 	 */
-	public LocationProvider authenticateUser(String userName, String password) {
+	public User authenticateUser(String userName, String password) {
 		Session session = null;
 		Transaction transaction = null;
 		LocationProvider provider;
@@ -334,7 +335,6 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 	
 	/**
 	 * Add a new location for this provider to the database. 
-	 * If successful also add it to the provider collection.
 	 */
 	public void addLocation(LocationProvider provider, Location location) {
 		Session session = null;
@@ -344,10 +344,8 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 			session = HibernateUtil.getSession();
 			transaction = session.beginTransaction();
 			
-			//session.l
-//			session.save(location);
 			session.update(provider);
-//			session.save(location);
+
 			transaction.commit();
 		}
 		catch(HibernateException ex) {
@@ -373,6 +371,46 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void modifyLocation(LocationProvider locationProvider,
+			Location location) {
+		Session session = null;
+		Transaction transaction = null;
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			session.update(location);
+//			session.update(locationProvider);
+
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			StringBuilder exceptionMessage;
+			
+			ex.printStackTrace();
+			
+			exceptionMessage = new StringBuilder();
+			exceptionMessage.append("There was an error adding Location ");
+			exceptionMessage.append(location.getLocationName());
+			exceptionMessage.append(". Please try to request at a later time. If the problem ");
+			exceptionMessage.append("persists, contact technical support. Sorry for the inconvience.");
+			
+			throw new LocationProcessingException(exceptionMessage.toString());
+		}
+		finally {
+			if(session != null) {
+				try {
+					session.close();
+				}
+				catch(HibernateException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+		
 	}
 }	
 

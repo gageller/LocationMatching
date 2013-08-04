@@ -4,13 +4,14 @@ import java.util.List;
 
 import com.locationmatching.domain.Location;
 import com.locationmatching.domain.LocationProvider;
+import com.locationmatching.domain.User;
 
 public interface LocationProviderService {
-	public void createUser(LocationProvider user);
-	public LocationProvider getUser(Long id);
+	public void createUser(User user);
+	public User getUser(Long id);
 	public void deleteUser(Long id);
-	public void modifyUser(LocationProvider user);
-	public List<LocationProvider> getAllUsers();
-	public LocationProvider authenticateUser(String userName, String password);
-	public void addLocation(LocationProvider provider, Location location);
+	public void modifyUser(User user);
+	public List<User> getAllUsers();
+	public User authenticateUser(String userName, String password);
+	public void modifyLocation(LocationProvider locationProvider, Location location);
 }

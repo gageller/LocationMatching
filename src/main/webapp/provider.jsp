@@ -10,8 +10,18 @@
 <title>Location Provider</title>
 <script>
 	<!--
+		// Process either the Location Provider edit bttn click or
+		// the Add Location bttn click.
 		function processButtonClick(action) {
 			document.forms("provider").action = action;
+			document.forms("provider").submit();
+		}
+	
+		// Process the edit button click for a particular
+		// location
+		function editLocationButtonClick(index) {
+			document.forms("provider").locationIndex.value = index;
+			document.forms("provider").action = "editLocation.request";
 			document.forms("provider").submit();
 		}
 	-->
@@ -19,6 +29,7 @@
 </head>
 <body>
 <form:form name="provider" method="GET" commandName="locationProvider">
+	<input type="hidden" name="locationIndex"/>
 	<h2>${locationProvider.firstName} ${locationProvider.lastName }</h2>
 	<table>
 		<tr>
@@ -37,28 +48,32 @@
 	<input type="button" name="addLocationBttn" value="Add Location..." onClick='processButtonClick("addLocation.request")'/>
 	<br/>
 	<h3>Locations</h3>
-		<c:forEach items="${locationProvider.providerLocations}" var="location">
-			
-			<b>Location Name:</b> ${location.locationName}
-			<table style="border-collapse: collapse;">
-				<tr CLASS="rowBorder">
-					<td>Address:</td>
-					<td>${location.locationAddress}</td>
-					<td>&nbsp;</td>
-					<td>Address 2:</td>
-					<td>${location.locationAddress2}</td>
-					<td>&nbsp;</td>
-					<td>City:</td>
-					<td>${location.locationCity}</td>
-					<td>&nbsp;</td>
-					<td>State:</td>
-					<td>${location.locationStateCode}</td>
-					<td>&nbsp;</td>
-					<td>Zip Code:</td>
-					<td>${location.locationZipcode}</td>
-				</tr>
-			</table>
-		</c:forEach>
+			<c:forEach items="${locationProvider.providerLocations}" var="location">
+				<table border="1">
+					<tr>
+						<td colspan="4"><b>Location Name:</b> ${location.locationName}</td>
+						<td><input type="button" value="Edit Location..." onClick='editLocationButtonClick("${location.id}")'/></td>						
+					</tr>
+					<tr>
+						<td><b>Address:</b></td>
+						<td><b>Address 2:</b></td>
+						<td><b>City:</b></td>
+						<td><b>State:</b></td>
+						<td><b>Zip Code:</b></td>
+					</tr>
+					<tr>
+						<td>${location.locationAddress}</td>				
+						<td>${location.locationAddress2}</td>
+						<td>${location.locationCity}</td>												
+						<td>${location.locationState}</td>
+						<td>${location.locationZipcode}</td>					
+					</tr>
+				</table>
+			</c:forEach>
 	</form:form>
+	<br/>
+	<a href="./providerNavigation.jsp">My Main Page</a>
+	<br/>
+	<a href="./index.jsp">Home</a>
 </body>
 </html>

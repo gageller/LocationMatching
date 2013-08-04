@@ -10,5 +10,8 @@
   <mapping class="com.locationmatching.domain.Image"/>
   <mapping class="com.locationmatching.domain.Location"/>
   <mapping class="com.locationmatching.domain.LocationProvider"/>
+  <mapping class="com.locationmatching.domain.LocationScout"/>
+  <mapping class="com.locationmatching.domain.LocationRequest"/>
+  <mapping class="com.locationmatching.domain.CreditCardImpl"/>
  </session-factory>
 </hibernate-configuration>

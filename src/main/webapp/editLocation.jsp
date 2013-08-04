@@ -5,10 +5,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Add a New Location</title>
+<title>Edit Location</title>
 </head>
 <body>
-	<form:form action="addLocation.request" method="POST" commandName="location">
+	<form:form action="editLocation.request" method="POST" modelAttribute="editLocation">
+
 		<table>
 			<tr>
 				<td>Location Name*</td>
@@ -36,8 +37,12 @@
 			</tr>
 		</table>
 		<br/>
-		<input type="button" name="addImage" value="Add Photo..."/>
-		<input type="submit"/>		
+		<input type="button" name="addImage" value="Add/Delete Photos..."/>
+		<input type="submit" value="Update"/>		
 	</form:form>
+<br/>
+<a href="./providerNavigation.jsp">My Main Page</a>
+<br/>
+<a href="./index.jsp">Home</a>
 </body>
 </html>

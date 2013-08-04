@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
@@ -44,7 +45,7 @@ public class Location {
 	 */
 	@ManyToOne()
 	@JoinColumn(name="LOCATIONPROVIDER_ID", nullable=false, insertable=true, updatable=false)
-	User locationOwner;
+	LocationProvider locationOwner;
 	
 	/**
 	 * Whether or not the location is currently available for use.
@@ -80,8 +81,8 @@ public class Location {
 	/**
 	 * State code of the location
 	 */
-	@Column(name="LOCATION_STATE_CODE")
-	private String locationStateCode;
+	@Column(name="LOCATION_STATE")
+	private String locationState;
 	
 	/**
 	 * Zipcode of the location
@@ -121,7 +122,7 @@ public class Location {
 	public Long getId() {
 		return id;
 	}
-	public Boolean isActive() {
+	public Boolean getActive() {
 		return active;
 	}
 	public String getLocationName() {
@@ -136,13 +137,13 @@ public class Location {
 	public String getLocationCity() {
 		return locationCity;
 	}
-	public String getLocationStateCode() {
-		return locationStateCode;
+	public String getLocationState() {
+		return locationState;
 	}
 	public String getLocationZipcode() {
 		return locationZipcode;
 	}
-	public User getLocationOwner() {
+	public LocationProvider getLocationOwner() {
 		return locationOwner;
 	}
 	public LocationPlanType getLocationPlanType() {
@@ -174,13 +175,13 @@ public class Location {
 	public void setLocationCity(String locationCity) {
 		this.locationCity = locationCity;
 	}
-	public void setLocationStateCode(String locationStateCode) {
-		this.locationStateCode = locationStateCode;
+	public void setLocationState(String locationState) {
+		this.locationState = locationState;
 	}
 	public void setLocationZipcode(String locationZipcode) {
 		this.locationZipcode = locationZipcode;
 	}
-	public void setLocationOwner(User locationOwner) {
+	public void setLocationOwner(LocationProvider locationOwner) {
 		this.locationOwner = locationOwner;
 	}
 	public void setLocationPlanType(LocationPlanType locationPlanType) {
@@ -191,5 +192,45 @@ public class Location {
 	}
 	public void setLocationImages(HashSet<Image> locationImages) {
 		this.locationImages = locationImages;
-	}	
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		int idInt, objIdInt;
+		
+		if(obj == null) {
+			return false;
+		}
+		if((obj instanceof Location) == false) {
+			return false;
+		}
+		if(obj == this) {
+			return true;
+		}
+		idInt = id.intValue();
+		objIdInt = ((Location)obj).getId().intValue();
+		
+		if(idInt != objIdInt) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		HashCodeBuilder builder;
+		
+		// Using two prime numbers to instantiate HashCodeBuilder
+		builder = new HashCodeBuilder(17, 31);
+		builder.append(id);
+		
+		return builder.toHashCode();
+	}
+	
+	public Boolean isActive() {
+		return active;
+	}
+
 }
