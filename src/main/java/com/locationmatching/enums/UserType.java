@@ -1,4 +1,4 @@
-package com.locationmatching.component;
+package com.locationmatching.enums;
 
 public enum UserType {
 	PROVIDER, SCOUT

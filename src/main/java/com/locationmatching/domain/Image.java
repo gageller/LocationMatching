@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.locationmatching.component.ImageType;
+import com.locationmatching.enums.ImageType;
 
 /**
  * 

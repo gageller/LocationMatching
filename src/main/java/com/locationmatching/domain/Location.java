@@ -20,7 +20,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
-import com.locationmatching.component.LocationPlanType;
+import com.locationmatching.enums.LocationPlanType;
 
 /**
  * Location details including any pictures provided by the Location Provider.

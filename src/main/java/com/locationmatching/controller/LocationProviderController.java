@@ -1,6 +1,7 @@
 package com.locationmatching.controller;
 
 import java.util.Date;
+import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -21,12 +22,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.locationmatching.component.LocationPlanType;
-import com.locationmatching.component.UserType;
 import com.locationmatching.domain.Location;
 import com.locationmatching.domain.LocationProvider;
 import com.locationmatching.domain.LocationRequest;
 import com.locationmatching.domain.User;
+import com.locationmatching.enums.LocationPlanType;
+import com.locationmatching.enums.LocationType;
+import com.locationmatching.enums.UserType;
 import com.locationmatching.exception.LocationProcessingException;
 import com.locationmatching.exception.UserAlreadyExistsException;
 import com.locationmatching.service.LocationProviderService;
@@ -59,6 +61,12 @@ public class LocationProviderController {
 		return GlobalVars.stateMap;
 	}
 	
+	// Used for the request to set the type of property
+	@ModelAttribute("locationTypeList")
+	protected EnumMap<LocationType, String> locationTypeList() {
+		return GlobalVars.locationTypes;
+	}
+
 	/**
 	 * Get the Location Provider based on the id passed in.
 	 */
@@ -289,10 +297,16 @@ public class LocationProviderController {
 		return "searchLocationRequests";
 	}
 	
-	@RequestMapping(value="searchLocationRequest.request", method=RequestMethod.POST)
-	protected String searchLocationRequests(@ModelAttribute("searchLocationRequest")LocationRequest searchLocationRequest) {
+	@RequestMapping(value="processSearchLocationRequest.request", method=RequestMethod.POST)
+	protected String searchLocationRequests(@ModelAttribute("searchLocationRequest")LocationRequest searchLocationRequest, Model model) {
+		List<LocationRequest> locationRequests;
+		
+		locationRequests = service.getLocationRequests(searchLocationRequest);
+		
+		if(locationRequests != null) {
+			model.addAttribute("requestSearchResults", locationRequests);
+		}
 		
 		return "searchLocationRequests";
 	}
-	
 }

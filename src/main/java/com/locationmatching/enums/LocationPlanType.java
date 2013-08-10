@@ -1,4 +1,4 @@
-package com.locationmatching.component;
+package com.locationmatching.enums;
 
 /**
  * Different plan types each location can belong to. If

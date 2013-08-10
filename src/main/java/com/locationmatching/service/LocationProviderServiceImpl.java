@@ -1,7 +1,7 @@
 package com.locationmatching.service;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -13,11 +13,11 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
-import com.locationmatching.component.LocationType;
 import com.locationmatching.domain.Location;
 import com.locationmatching.domain.LocationProvider;
 import com.locationmatching.domain.LocationRequest;
 import com.locationmatching.domain.User;
+import com.locationmatching.enums.LocationType;
 import com.locationmatching.exception.LocationProcessingException;
 import com.locationmatching.exception.UserAlreadyExistsException;
 import com.locationmatching.util.HibernateUtil;
@@ -305,6 +305,18 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 			criteria.add(Restrictions.eq("password", password));
 			provider = (LocationProvider) criteria.uniqueResult();
 
+			// Set the last access date and current access date values.
+			if(provider != null) {
+				Date date;
+				
+				// Get the last current date value and use it to set the
+				// last access date value.
+				date = provider.getCurrentDate();
+				provider.setLastAccessDate(date);
+				
+				// Set the new current access date
+				provider.setCurrentDate(new Date(System.currentTimeMillis()));
+			}
 			transaction.commit();
 		}
 		catch(HibernateException ex) {

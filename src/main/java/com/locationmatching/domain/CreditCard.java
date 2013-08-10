@@ -2,7 +2,7 @@ package com.locationmatching.domain;
 
 import java.util.Date;
 
-import com.locationmatching.component.CreditCardType;
+import com.locationmatching.enums.CreditCardType;
 
 /**
  * Interface for Credit Cards. Made this an interface in case we need to

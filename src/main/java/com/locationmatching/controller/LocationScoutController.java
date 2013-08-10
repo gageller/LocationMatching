@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.locationmatching.component.LocationType;
-import com.locationmatching.component.UserType;
 import com.locationmatching.domain.LocationRequest;
 import com.locationmatching.domain.LocationScout;
+import com.locationmatching.enums.LocationType;
+import com.locationmatching.enums.UserType;
 import com.locationmatching.exception.UserAlreadyExistsException;
 import com.locationmatching.service.LocationScoutService;
 import com.locationmatching.util.GlobalVars;
@@ -42,17 +42,7 @@ public class LocationScoutController {
 	// Used for the request to set the type of property
 	@ModelAttribute("locationTypeList")
 	protected EnumMap<LocationType, String> locationTypeList() {
-		EnumMap<LocationType, String> locationTypes = new EnumMap<LocationType, String>(LocationType.class);
-		
-		locationTypes.put(LocationType.APARTMENT, "Apartment");
-		locationTypes.put(LocationType.CONDOMINIUM, "Condominium");
-		locationTypes.put(LocationType.HOUSE, "House");
-		locationTypes.put(LocationType.OFFICE, "Office Building");
-		locationTypes.put(LocationType.PARK, "Park");
-		locationTypes.put(LocationType.TOWNHOUSE, "Townhouse");
-		
-		return locationTypes;
-		
+		return GlobalVars.locationTypes;
 	}
 	
 	/**

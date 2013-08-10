@@ -16,7 +16,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
-import com.locationmatching.component.LocationPlanType;
+import com.locationmatching.enums.LocationPlanType;
 
 /**
  * Location Provider searches through list of Location Scout requests to see

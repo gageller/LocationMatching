@@ -1,5 +1,6 @@
 package com.locationmatching.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -122,6 +123,19 @@ public class LocationScoutServiceImpl implements LocationScoutService {
 			criteria.add(Restrictions.eq("password", password));
 			scout = (LocationScout) criteria.uniqueResult();
 
+			// Set the last access date and current access date values.
+			if(scout != null) {
+				Date date;
+				
+				// Get the last current date value and use it to set the
+				// last access date value.
+				date = scout.getCurrentDate();
+				scout.setLastAccessDate(date);
+				
+				// Set the new current access date
+				scout.setCurrentDate(new Date(System.currentTimeMillis()));
+			}
+			
 			transaction.commit();
 		}
 		catch(HibernateException ex) {

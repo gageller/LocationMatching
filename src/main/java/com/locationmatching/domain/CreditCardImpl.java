@@ -2,7 +2,7 @@ package com.locationmatching.domain;
 
 import java.util.Date;
 
-import com.locationmatching.component.CreditCardType;
+import com.locationmatching.enums.CreditCardType;
 
 /**
  * Class for gathering and storing the credit card information.

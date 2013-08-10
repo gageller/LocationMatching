@@ -14,7 +14,7 @@ import javax.persistence.InheritanceType;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.locationmatching.component.UserType;
+import com.locationmatching.enums.UserType;
 
 /**
  * Base class from which Location scouts and providers will inherit from.

@@ -4,7 +4,7 @@ import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.locationmatching.component.LocationType;
+import com.locationmatching.enums.LocationType;
 
 public class GlobalVars {
 	public static Map<String, String> stateMap = new LinkedHashMap<String, String>();
