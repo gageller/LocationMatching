@@ -14,7 +14,7 @@ import javax.persistence.ManyToOne;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.locationmatching.component.LocationType;
+import com.locationmatching.enums.LocationType;
 
 /**
  * This is the request object that the Location Scout fills out and is posted
@@ -57,21 +57,21 @@ public class LocationRequest {
 	 */
 	@DateTimeFormat(style="S-")
 	@Column(name="SUBMISSION_DATE")
-	private Date submissionDate;
+	private Date submissionDate = new Date(System.currentTimeMillis());
 	
 	/**
 	 * Beginning date of the shoot
 	 */
 	@DateTimeFormat(style="S-")
 	@Column(name="SHOOT_BEGIN_DATE")
-	private Date shootBeginDate;
+	private Date shootBeginDate = new Date(System.currentTimeMillis());
 	
 	/**
 	 * End date of the shoot
 	 */
 	@DateTimeFormat(style="S-")
 	@Column(name="SHOOT_END_DATE")
-	private Date shootEndDate;
+	private Date shootEndDate = new Date(System.currentTimeMillis());
 	
 	/**
 	 * Project Notes

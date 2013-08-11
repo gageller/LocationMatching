@@ -15,11 +15,11 @@
 <br/>
 <form name="homeForm" action="" method="POST">
 <!-- 	<input type="hidden" name="_method"/> -->
-	<table border=0>
+	<table border=0 width="1000">
 		<tr>
-			<th>Location Provider</th>
-			<th rowspan="9" width="200"><div align="center" style="width:3px; height:250px; background-color: #000000"></div></th>
-			<th>Location Scout</th>
+			<th align="left" width="498">Location Provider</th>
+			<th rowspan="9" width="333"><div align="center" style="width:3px; height:250px; background-color: #000000"></div></th>
+			<th align="left" width="498">Location Scout</th>
 		</tr>
 		<tr>
 			<td>Login</td>

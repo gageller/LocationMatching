@@ -49,17 +49,17 @@
 	<h3>Locations</h3>
 		
 			<c:forEach items="${locationScout.locationRequests}" var="locationRequest">
-			<table width="80%">
+			<table width="1000">
 				<tbody>
 					<tr>
 						<td colspan="3"]><b>Location Name:</b> ${locationRequest.locationRequestName}</td>
 						<td><input type="button" value="Edit Location..." onClick='editLocationRequestButtonClick("${locationRequest.id}")'/></td>
 					</tr>
 					<tr>
-						<th align="left">Type of Location:</th>
-						<th align="left">Location City:</th>
-						<th align="left">Location State:</th>
-						<th align="left">Location Zipcode:</th>
+						<th width="250" align="left">Type of Location:</th>
+						<th width="250" align="left">Location City:</th>
+						<th width="250" align="left">Location State:</th>
+						<th width="250" align="left">Location Zipcode:</th>
 					</tr>
 					<tr>	
 						<td>${locationRequest.locationType}</td>
@@ -69,10 +69,10 @@
 					</tr>
 					
 					<tr>
-						<th align="left">Submission Date:</th>
-						<th align="left">Beginning Date of Shooting:</th>
-						<th align="left">End Date of Shooting:</th>
-						<th align="left">Rate:</th>
+						<th width="250" align="left">Submission Date:</th>
+						<th width="250" align="left">Beginning Date of Shooting:</th>
+						<th width="250" align="left">End Date of Shooting:</th>
+						<th width="250" align="left">Rate:</th>
 					</tr>
 					<tr>
 						<td>${locationRequest.submissionDate}</td>
@@ -81,16 +81,17 @@
 						<td>${locationRequest.rate}</td>
 					</tr>
 					<tr>
-						<td colspan="2"><b>Location Description:</b></td>
-						<td colspan="2"><b>Project Notes:</b></td>
+						<td width="500" colspan="2"><b>Location Description:</b></td>
+						<td width="500" colspan="2"><b>Project Notes:</b></td>
 					</tr>
 					<tr>
-						<td colspan="2">${locationRequest.locationDescription}</td>
-						<td colspan="2">${locationRequest.projectNotes}</td>
+						<td width="500" colspan="2">${locationRequest.locationDescription}</td>
+						<td width="500" colspan="2">${locationRequest.projectNotes}</td>
 					</tr>
 				</tbody>
 				
 				</table>
+				<br/>
 			</c:forEach>
 
 	</form:form>
