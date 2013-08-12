@@ -1,6 +1,7 @@
 package com.locationmatching.domain;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -233,4 +234,42 @@ public class Location {
 		return active;
 	}
 
+	/**
+	 * Add image to image collection and setup
+	 * the bidirectional association
+	 */
+	public void addImage(Image image) {
+		locationImages.add(image);
+		image.setParentLocation(this);
+	}
+	
+	/**
+	 * Remove image from the collection using the
+	 * image object.
+	 */
+	public void removeImage(Image image) {
+		locationImages.remove(image);
+	}
+	
+	/**
+	 * Remove the image using the id
+	 */
+	public void removeImage(Long id) {
+		Iterator<Image> itr;
+		Image image = null;
+		
+		itr = locationImages.iterator();
+		
+		while(itr.hasNext() == true) {
+			image = itr.next();
+			if(image.getId().equals(id)) {
+				// Found the image so break out.
+				break;
+			}
+		}
+		
+		if(image != null) {
+			locationImages.remove(image);
+		}
+	}
 }
