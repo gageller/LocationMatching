@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.locationmatching.component.UploadForm;
 import com.locationmatching.domain.Location;
 import com.locationmatching.domain.LocationProvider;
 import com.locationmatching.domain.LocationRequest;
@@ -44,7 +45,7 @@ import com.locationmatching.util.GlobalVars;
  *
  */
 @Controller
-@SessionAttributes({"locationProvider", "location", "editLocation", "searchLocationRequest"})
+@SessionAttributes({"locationProvider", "location", "editLocation", "searchLocationRequest", "uploadForm"})
 public class LocationProviderController {
 	@Autowired
 	LocationProviderService service;
@@ -199,10 +200,26 @@ public class LocationProviderController {
 	@RequestMapping(value="addLocation.request", method=RequestMethod.GET)
 	protected String setupNewLocation(@ModelAttribute("locationProvider")LocationProvider locationProvider, Model model) {
 		Location location = new Location();
+		LocationPlanType providerPlanType;
 		
+		// Set the number of images to 0 for new location
+		location.setNumberOfImages(0);
+		// Set this as active. May not need active flag anymore.
+		location.setActive(true);
+		// Get the user plan type from the parent LocationProvider.
+		// If plan is Premium set the plan type for this location to
+		// premium, otherwise set it to free.
+		providerPlanType = locationProvider.getUserPlanType();
+		if(providerPlanType == LocationPlanType.PREMIUM) {
+			location.setLocationPlanType(LocationPlanType.PREMIUM);
+		}
+		else {
+			location.setLocationPlanType(LocationPlanType.PER_PHOTO);
+		}
 		model.addAttribute("location", location);
 		
 		return "addLocation";
+//		return "forward:/setupFileUpload";
 	}
 	
 	/**
@@ -210,7 +227,7 @@ public class LocationProviderController {
 	 */
 	@RequestMapping(value="addLocation.request", method=RequestMethod.POST)
 	protected String addNewLocation(@ModelAttribute("locationProvider")LocationProvider locationProvider, Location location) {
-		LocationPlanType providerPlanType;
+/*		LocationPlanType providerPlanType;
 		
 		// Set the number of images to 0 for new location
 		location.setNumberOfImages(0);
@@ -226,7 +243,7 @@ public class LocationProviderController {
 		else {
 			location.setLocationPlanType(LocationPlanType.FREE);
 		}
-		
+*/		
 		try {
 			locationProvider.addLocation(location);
 			((LocationProviderServiceImpl)service).addLocation(locationProvider, location);
@@ -238,6 +255,14 @@ public class LocationProviderController {
 		return "providerNavigation";
 	}
 	
+	@RequestMapping(value="returnFromFileUpload.request", method=RequestMethod.GET)
+	protected String returnFromFileUpload(@ModelAttribute("locationProvier")LocationProvider locationProvider,
+			@ModelAttribute("location")Location location,
+			Model model) {
+//		model.addAttribute("uploadForm", new UploadForm());
+		
+		return "addLocation";
+	}
 	/**
 	 * Setup the edit location page by getting location requested for editing
 	 * 
@@ -308,5 +333,12 @@ public class LocationProviderController {
 		}
 		
 		return "searchLocationRequests";
+	}
+	@RequestMapping(value="gotoPhoto.request", method=RequestMethod.POST)
+	protected String gotoPhoto(@ModelAttribute("location")Location location, Model model) {
+		UploadForm uploadForm = new UploadForm();
+		
+		model.addAttribute("uploadForm", uploadForm);
+		return "addPhoto";
 	}
 }
