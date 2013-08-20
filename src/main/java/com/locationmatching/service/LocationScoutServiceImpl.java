@@ -11,7 +11,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
-import com.locationmatching.domain.LocationRequest;
+import com.locationmatching.component.LocationRequest;
 import com.locationmatching.domain.LocationScout;
 import com.locationmatching.domain.User;
 import com.locationmatching.exception.LocationProcessingException;
@@ -125,15 +125,7 @@ public class LocationScoutServiceImpl implements LocationScoutService {
 
 			// Set the last access date and current access date values.
 			if(scout != null) {
-				Date date;
-				
-				// Get the last current date value and use it to set the
-				// last access date value.
-				date = scout.getCurrentDate();
-				scout.setLastAccessDate(date);
-				
-				// Set the new current access date
-				scout.setCurrentDate(new Date(System.currentTimeMillis()));
+				scout.setLastAccessDate(new Date(System.currentTimeMillis()));
 			}
 			
 			transaction.commit();

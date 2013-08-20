@@ -1,4 +1,4 @@
-package com.locationmatching.domain;
+package com.locationmatching.component;
 
 import java.util.Date;
 
@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.locationmatching.domain.LocationScout;
 import com.locationmatching.enums.LocationType;
 
 /**

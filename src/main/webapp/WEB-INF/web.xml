@@ -25,7 +25,11 @@
   </context-param>
   <context-param>
       <param-name>UploadDirectoryPath</param-name>
-      <param-value>C:\Java\appServer\glassfish\domains\domain1\eclipseApps\LocationMatching\upload</param-value>
+      <param-value>C:\Java\appServer\glassfish\domains\domain1\eclipseApps\upload\</param-value>
+  </context-param>
+  <context-param>
+      <param-name>UploadImageUrlDirectory</param-name>
+      <param-value>./upload/images/</param-value>
   </context-param>
   <filter>
   	<filter-name>httpMethodFilter</filter-name>

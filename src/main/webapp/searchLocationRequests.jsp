@@ -37,7 +37,8 @@
 			<table width="1000">
 				<tbody>
 					<tr>
-						<td colspan="4"]><b>Location Name:</b> ${locationRequest.locationRequestName}</td>
+						<td colspan="3"]><b>Location Name:</b> ${locationRequest.locationRequestName}</td>
+						<td><input type="button" value="Contact Requestor" onClick='submissionBttnClick("${locationRequest.id}")'/>
 					</tr>
 					<tr>
 						<th width="250" align="left">Type of Location:</th>

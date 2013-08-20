@@ -9,10 +9,7 @@
 <script type="text/javascript">
 	<!--
 		function addPhoto() {
-			// We need to set the encoding to "multipart/form-data"
-			//document.forms("addLocation").enctype="multipart/form-data";
-			document.forms("addLocation").action="uploadFile.request";
-			
+			document.forms("addLocation").action="gotoPhoto.request";
 			document.forms("addLocation").submit();
 		}
 	-->
@@ -22,40 +19,39 @@
 <title>Add a New Location</title>
 </head>
 <body> 
-	<form:form name="addLocation" action="addLocation.request" method="POST" modelAttribute="uploadForm" enctype="multipart/form-data">
+	<form:form name="addLocation" action="addLocation.request" method="POST"  modelAttribute="location">
 		<input type="hidden" name="source" value="${locationProvider.id}" />
 		<table>
 			<tr>
 				<td>Location Name*</td>
-				<td><form:input path="${location.locationName}"/></td>
+				<td><form:input path="locationName"/></td>
 			</tr>
 			<tr>
 				<td>Address*</td>
-				<td><form:input path="${locationAddress}"/></td>
+				<td><form:input path="locationAddress"/></td>
 			</tr>
 			<tr>
 				<td>Address 2</td>
-				<td><form:input path="${locationAddress2}"/></td>
+				<td><form:input path="locationAddress2"/></td>
 			</tr>
 			<tr>
 				<td>City*</td>
-				<td><form:input path="${locationCity}"/></td>
+				<td><form:input path="locationCity"/></td>
 			</tr>
 			<tr>
 				<td>State*</td>
-				<td><form:select path="${locationState}" items="${stateSelectList}"/></td>
+				<td><form:select path="locationState" items="${stateSelectList}"/></td>
 			</tr>
 			<tr>
 				<td>Zip Code*</td>
-				<td><form:input path="${locationZipcode}"/></td>
+				<td><form:input path="locationZipcode"/></td>
 			</tr>
 		</table>
 		<br/>
 		<br/>
-		<form:input path="multipartFile" type="file" size="100"/>
 		<br/>
-			<input type="button" value="Add Photo"  onclick="addPhoto()"/>
-<a href="setupFileUploadPhoto.request">Add Photos</a>
+			<input type="button" value="Add Photos"  onclick="addPhoto()"/>
+
 		<br/>
 		<br/>
 

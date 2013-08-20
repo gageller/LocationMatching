@@ -1,5 +1,6 @@
-package com.locationmatching.domain;
+package com.locationmatching.component;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -21,6 +22,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
+import com.locationmatching.domain.LocationProvider;
 import com.locationmatching.enums.LocationPlanType;
 
 /**
@@ -119,6 +121,18 @@ public class Location {
 			org.hibernate.annotations.CascadeType.ALL})
 	Set<Image>locationImages = new LinkedHashSet();
 	
+	/**
+	 * Date Created
+	 */
+	@Column(name="CREATION_DATE")
+	private Date creationDate;
+	
+	/**
+	 * Date Modified
+	 */
+	@Column(name="MODIFIED_DATE")
+	private Date modifiedDate;
+	
 	// Getter Methods
 	public Long getId() {
 		return id;
@@ -155,6 +169,12 @@ public class Location {
 	}
 	public Set<Image> getLocationImages() {
 		return locationImages;
+	}
+	public Date getCreationDate() {
+		return creationDate;
+	}
+	public Date getModifiedDate() {
+		return modifiedDate;
 	}
 	
 	// Setter Methods
@@ -193,6 +213,12 @@ public class Location {
 	}
 	public void setLocationImages(HashSet<Image> locationImages) {
 		this.locationImages = locationImages;
+	}
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+	public void setModifiedDate(Date modifiedDate) {
+		this.modifiedDate = modifiedDate;
 	}
 	
 	@Override

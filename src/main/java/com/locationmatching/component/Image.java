@@ -1,4 +1,4 @@
-package com.locationmatching.domain;
+package com.locationmatching.component;
 
 import java.util.Date;
 
@@ -68,8 +68,8 @@ public class Image {
 	 * Relative path to the file. Used for displaying
 	 * on the page.
 	 */
-	@Column(name="RELATIVE_FILE_PATH")
-	private String relativeFilePath;
+	@Column(name="RELATIVE_URL_PATH")
+	private String relativeUrlPath;
 	
 	/**
 	 * Type of the image. 
@@ -105,8 +105,8 @@ public class Image {
 	public String getAbsoluteFilePath() {
 		return absoluteFilePath;
 	}
-	public String getRelativeFilePath() {
-		return relativeFilePath;
+	public String getRelativeUrlPath() {
+		return relativeUrlPath;
 	}
 	public ImageType getImageType() {
 		return imageType;
@@ -134,8 +134,8 @@ public class Image {
 	public void setAbsoluteFilePath(String absoluteFilePath) {
 		this.absoluteFilePath = absoluteFilePath;
 	}
-	public void setRelativeFilePath(String relativeFilePath) {
-		this.relativeFilePath = relativeFilePath;
+	public void setRelativeUrlPath(String relativeUrlPath) {
+		this.relativeUrlPath = relativeUrlPath;
 	}
 	public void setImageType(ImageType imageType) {
 		this.imageType = imageType;

@@ -69,8 +69,8 @@ public abstract class User implements Serializable{
 	/**
 	 * Current date
 	 */
-	@Column(name="CURRENT_ACCESS_DATE") 
-	private Date currentDate;
+	@Column(name="CREATION_DATE") 
+	private Date creationDate;
 	/**
 	 * Date of last access.
 	 */
@@ -100,8 +100,8 @@ public abstract class User implements Serializable{
 	public String getPhoneNumber() {
 		return phoneNumber;
 	}
-	public Date getCurrentDate() {
-		return currentDate;
+	public Date getCreationDate() {
+		return creationDate;
 	}
 	public Date getLastAccessDate() {
 		return lastAccessDate;
@@ -132,8 +132,8 @@ public abstract class User implements Serializable{
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-	public void setCurrentDate(Date currentDate) {
-		this.currentDate = currentDate;
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
 	}
 	public void setLastAccessDate(Date lastAccessDate) {
 		this.lastAccessDate = lastAccessDate;

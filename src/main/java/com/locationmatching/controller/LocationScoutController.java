@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.locationmatching.domain.LocationRequest;
+import com.locationmatching.component.LocationRequest;
 import com.locationmatching.domain.LocationScout;
 import com.locationmatching.enums.LocationType;
 import com.locationmatching.enums.UserType;
@@ -72,7 +72,7 @@ public class LocationScoutController {
 		String nextPage;
 		
 		// Set the current time and last accessed time for this new provider.
-		locationScout.setCurrentDate(date);
+		locationScout.setCreationDate(date);
 		locationScout.setLastAccessDate(date);
 		// Set the user type
 		locationScout.setUserType(UserType.SCOUT);

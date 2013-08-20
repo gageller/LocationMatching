@@ -22,10 +22,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.locationmatching.component.UploadForm;
-import com.locationmatching.domain.Location;
+import com.locationmatching.helper.UploadForm;
+import com.locationmatching.component.Location;
+import com.locationmatching.component.LocationRequest;
 import com.locationmatching.domain.LocationProvider;
-import com.locationmatching.domain.LocationRequest;
 import com.locationmatching.domain.User;
 import com.locationmatching.enums.LocationPlanType;
 import com.locationmatching.enums.LocationType;
@@ -161,7 +161,7 @@ public class LocationProviderController {
 		String nextPage;
 		
 		// Set the current time and last accessed time for this new provider.
-		locationProvider.setCurrentDate(date);
+		locationProvider.setCreationDate(date);
 		locationProvider.setLastAccessDate(date);
 		// Set the user type
 		locationProvider.setUserType(UserType.PROVIDER);
@@ -201,7 +201,7 @@ public class LocationProviderController {
 	protected String setupNewLocation(@ModelAttribute("locationProvider")LocationProvider locationProvider, Model model) {
 		Location location = new Location();
 		LocationPlanType providerPlanType;
-		
+		Date currentDate = new Date(System.currentTimeMillis());
 		// Set the number of images to 0 for new location
 		location.setNumberOfImages(0);
 		// Set this as active. May not need active flag anymore.
@@ -216,7 +216,12 @@ public class LocationProviderController {
 		else {
 			location.setLocationPlanType(LocationPlanType.PER_PHOTO);
 		}
+
 		model.addAttribute("location", location);
+		
+		// Set the creation and modified date.
+		location.setCreationDate(currentDate);
+		location.setModifiedDate(currentDate);
 		
 		return "addLocation";
 //		return "forward:/setupFileUpload";
@@ -227,23 +232,8 @@ public class LocationProviderController {
 	 */
 	@RequestMapping(value="addLocation.request", method=RequestMethod.POST)
 	protected String addNewLocation(@ModelAttribute("locationProvider")LocationProvider locationProvider, Location location) {
-/*		LocationPlanType providerPlanType;
-		
-		// Set the number of images to 0 for new location
-		location.setNumberOfImages(0);
-		// Set this as active. May not need active flag anymore.
-		location.setActive(true);
-		// Get the user plan type from the parent LocationProvider.
-		// If plan is Premium set the plan type for this location to
-		// premium, otherwise set it to free.
-		providerPlanType = locationProvider.getUserPlanType();
-		if(providerPlanType == LocationPlanType.PREMIUM) {
-			location.setLocationPlanType(LocationPlanType.PREMIUM);
-		}
-		else {
-			location.setLocationPlanType(LocationPlanType.FREE);
-		}
-*/		
+		// Set the number of images added when creating this file.
+		location.setNumberOfImages(location.getLocationImages().size());
 		try {
 			locationProvider.addLocation(location);
 			((LocationProviderServiceImpl)service).addLocation(locationProvider, location);

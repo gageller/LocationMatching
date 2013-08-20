@@ -12,6 +12,8 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
+import com.locationmatching.component.LocationRequest;
+
 /**
  * Location scout submits request for the location that is being sought.
  * The location scout can have multiple requests. The location scout will

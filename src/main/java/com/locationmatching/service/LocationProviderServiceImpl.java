@@ -13,9 +13,9 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
-import com.locationmatching.domain.Location;
+import com.locationmatching.component.Location;
+import com.locationmatching.component.LocationRequest;
 import com.locationmatching.domain.LocationProvider;
-import com.locationmatching.domain.LocationRequest;
 import com.locationmatching.domain.User;
 import com.locationmatching.enums.LocationType;
 import com.locationmatching.exception.LocationProcessingException;
@@ -307,15 +307,8 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 
 			// Set the last access date and current access date values.
 			if(provider != null) {
-				Date date;
-				
-				// Get the last current date value and use it to set the
-				// last access date value.
-				date = provider.getCurrentDate();
-				provider.setLastAccessDate(date);
-				
-				// Set the new current access date
-				provider.setCurrentDate(new Date(System.currentTimeMillis()));
+				// Set the last accessed date
+				provider.setLastAccessDate(new Date(System.currentTimeMillis()));
 			}
 			transaction.commit();
 		}

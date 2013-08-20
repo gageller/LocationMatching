@@ -1,4 +1,4 @@
-package com.locationmatching.domain;
+package com.locationmatching.component;
 
 import java.util.Date;
 

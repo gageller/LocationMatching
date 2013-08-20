@@ -60,7 +60,7 @@
 			</tr>
 		</table>
 		<br/>
-		<input type="submit" value="Add Location"/>	
+		<input type="submit" value="Add Location Request"/>	
 		<br/>
 		<a href="./index.jsp">Home</a>	
 	</form:form>

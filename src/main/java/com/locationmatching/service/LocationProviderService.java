@@ -2,7 +2,7 @@ package com.locationmatching.service;
 
 import java.util.List;
 
-import com.locationmatching.domain.LocationRequest;
+import com.locationmatching.component.LocationRequest;
 import com.locationmatching.domain.User;
 
 public interface LocationProviderService {
