@@ -1,0 +1,12 @@
+.errorMessage
+{
+	font-weight:bold;
+	font-size:20px;
+	color:red;
+}
+.successMessage
+{
+	font-weight:bold;
+	font-size:20px;
+	color:black;
+}
