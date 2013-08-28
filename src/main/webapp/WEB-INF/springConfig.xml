@@ -12,10 +12,12 @@
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
 		http://www.springframework.org/schema/webflow-config http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.3.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+
 	<context:annotation-config/>
 	<context:component-scan base-package="com.locationmatching"/>
 	<mvc:annotation-driven/>
 	<mvc:resources mapping="upload/**" location="file:/C:/Java/appServer/glassfish/domains/domain1/eclipseApps/upload/*"/>
+ 	<mvc:resources mapping="images/**" location="images/*"/>
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="suffix" value=".jsp"/>
 	</bean>	

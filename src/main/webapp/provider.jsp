@@ -69,6 +69,7 @@
 						<td>${location.locationZipcode}</td>					
 					</tr>
 				</table>
+				<br/>
 			</c:forEach>
 	</form:form>
 	<br/>

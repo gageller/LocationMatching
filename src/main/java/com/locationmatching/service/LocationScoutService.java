@@ -1,6 +1,7 @@
 package com.locationmatching.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.locationmatching.component.LocationRequest;
 import com.locationmatching.domain.LocationScout;
@@ -15,4 +16,5 @@ public interface LocationScoutService {
 	User authenticateUser(String userName, String password);
 	public void addLocationRequest(LocationScout locationScout,
 			LocationRequest locationRequest);
+	public Map<Long, LocationRequest> getLocationRequests(LocationRequest searchRequest);
 }

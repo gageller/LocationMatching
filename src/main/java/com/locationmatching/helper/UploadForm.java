@@ -1,4 +1,4 @@
-package com.locationmatching.component;
+package com.locationmatching.helper;
 
 import org.apache.commons.fileupload.FileItem;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;

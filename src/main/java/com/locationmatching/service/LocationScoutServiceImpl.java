@@ -1,10 +1,15 @@
 package com.locationmatching.service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Projections;
@@ -14,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.locationmatching.component.LocationRequest;
 import com.locationmatching.domain.LocationScout;
 import com.locationmatching.domain.User;
+import com.locationmatching.enums.LocationType;
 import com.locationmatching.exception.LocationProcessingException;
 import com.locationmatching.exception.UserAlreadyExistsException;
 import com.locationmatching.util.HibernateUtil;
@@ -84,8 +90,45 @@ public class LocationScoutServiceImpl implements LocationScoutService {
 
 	@Override
 	public User getUser(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		Session session = null;
+		Transaction transaction = null;
+		LocationScout scout;
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			scout = (LocationScout) session.get(LocationScout.class, id);
+			
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			throw ex;
+		}
+		finally {
+			try {
+				if(session != null) {
+					session.close();
+				}
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
+		}
+		return scout;
 	}
 
 	@Override
@@ -204,5 +247,209 @@ public class LocationScoutServiceImpl implements LocationScoutService {
 			}
 		}
 	}
+	
+	/*
+	public Map<Long, LocationRequest>getLocationRequests(LocationRequest searchRequest) {
+		ArrayList<LocationRequest>locationRequestsList = null;
+		Map<Long, LocationRequest>locationRequests = new TreeMap<Long, LocationRequest>();
+		Iterator<LocationRequest> iterator;
+		Session session = null;
+		Transaction transaction = null;
+		
+		try {
+			Criteria criteria;
+			String value;
+			LocationType locationType;
+			
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			criteria = session.createCriteria(LocationRequest.class);
+			
+			// Location Request Name
+			value = searchRequest.getLocationRequestName();
+			if(value != null && value.isEmpty() == false) {
+				criteria.add(Restrictions.eq("locationRequestName", value));				
+			}
 
+			// Location Request City
+			value = searchRequest.getLocationRequestCity();
+			if(value != null && value.isEmpty() == false) {
+				criteria.add(Restrictions.eq("locationRequestCity", value));				
+			}
+
+			// Location Request State
+			value = searchRequest.getLocationRequestState();
+			if(value != null && value.isEmpty() == false) {
+				criteria.add(Restrictions.eq("locationRequestState", value));				
+			}
+
+			// Location Request Zip Code
+			value = searchRequest.getLocationRequestZipcode();
+			if(value != null && value.isEmpty() == false) {
+				criteria.add(Restrictions.eq("locationRequestZipcode", value));				
+			}
+
+			// Location Request County
+			value = searchRequest.getLocationRequestCounty();
+			if(value != null && value.isEmpty() == false) {
+				criteria.add(Restrictions.eq("locationRequestCounty", value));				
+			}
+
+			// Location Type
+			locationType = searchRequest.getLocationType();
+			if(locationType != null && locationType != LocationType.BLANK) {
+				criteria.add(Restrictions.eq("locationType", locationType));				
+			}
+
+			locationRequestsList = (ArrayList<LocationRequest>) criteria.list();
+			iterator = locationRequestsList.iterator();
+			
+			// Iterate through the collection and add each LocationRequest to the 
+			// map keyed by its id.
+			while(iterator.hasNext() == true) {
+				Long id;
+				LocationRequest locationRequest;
+				
+				locationRequest = iterator.next();
+				locationRequests.put(locationRequest.getId(), locationRequest);
+			}
+
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			throw ex;
+		}
+		finally {
+			try {
+				if(session != null) {
+					session.close();
+				}
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
+		}
+	
+		return locationRequests;
+	}
+*/
+	@Override
+	public Map<Long, LocationRequest> getLocationRequests(LocationRequest searchRequest) {
+		ArrayList<LocationRequest>locationRequestsList = null;
+		Map<Long, LocationRequest>locationRequests = new TreeMap<Long, LocationRequest>();
+		Iterator<LocationRequest> iterator;
+		Session session = null;
+		Transaction transaction = null;
+		
+		try {
+			Criteria criteria;
+			String value;
+			LocationType locationType;
+			
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			criteria = session.createCriteria(LocationRequest.class);
+			
+			// Location Request Name
+			value = searchRequest.getLocationRequestName();
+			if(value != null && value.isEmpty() == false) {
+				criteria.add(Restrictions.eq("locationRequestName", value));				
+			}
+
+			// Location Request City
+			value = searchRequest.getLocationRequestCity();
+			if(value != null && value.isEmpty() == false) {
+				criteria.add(Restrictions.eq("locationRequestCity", value));				
+			}
+
+			// Location Request State
+			value = searchRequest.getLocationRequestState();
+			if(value != null && value.isEmpty() == false) {
+				criteria.add(Restrictions.eq("locationRequestState", value));				
+			}
+
+			// Location Request Zip Code
+			value = searchRequest.getLocationRequestZipcode();
+			if(value != null && value.isEmpty() == false) {
+				criteria.add(Restrictions.eq("locationRequestZipcode", value));				
+			}
+
+			// Location Request County
+			value = searchRequest.getLocationRequestCounty();
+			if(value != null && value.isEmpty() == false) {
+				criteria.add(Restrictions.eq("locationRequestCounty", value));				
+			}
+
+			// Location Type
+			locationType = searchRequest.getLocationType();
+			if(locationType != null && locationType != LocationType.BLANK) {
+				criteria.add(Restrictions.eq("locationType", locationType));				
+			}
+
+			locationRequestsList = (ArrayList<LocationRequest>) criteria.list();
+			iterator = locationRequestsList.iterator();
+			
+			// Iterate through the collection and add each LocationRequest to the 
+			// map keyed by its id.
+			while(iterator.hasNext() == true) {
+				Long id;
+				LocationRequest locationRequest;
+				
+				locationRequest = iterator.next();
+				locationRequests.put(locationRequest.getId(), locationRequest);
+			}
+
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			throw ex;
+		}
+		finally {
+			try {
+				if(session != null) {
+					session.close();
+				}
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
+		}
+	
+		return locationRequests;
+	}
+/*
+	@Override
+	public Map<Long, LocationRequest> getLocationRequests(
+			LocationRequest searchRequest) {
+		// TODO Auto-generated method stub
+		return null;
+	}*/
 }

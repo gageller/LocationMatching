@@ -1,15 +1,30 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
     <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link rel="stylesheet" type="text/css" href="./images/lmStyle.css">
 <title>Location Request</title>
 </head>
+
 <body>
+<script>
+	<!--
+		function submissionBttnClick(locationRequestId, locationId){
+			document.forms("searchLocationRequest").locationRequestId.value = locationRequestId;
+			document.forms("searchLocationRequest").action = "processLocationRequestSubmission.request";
+			document.forms("searchLocationRequest").locationId.value = locationId;
+			document.forms("searchLocationRequest").submit();
+		}
+	-->
+</script>
+
 	<form:form modelAttribute="searchLocationRequest" action="processSearchLocationRequest.request" method="POST">
+		<input type="hidden" name="locationRequestId" value=""/>
+		<input type="hidden" name="locationId" value=""/>
 		<h2><u>Search For Location Requests</u></h2>
 		<table>
 			<tr>
@@ -32,13 +47,24 @@
 		<br/>
 		<input type="submit" value="Search..."/>
 	</form:form>
-	<br/>
+	<c:if test="${errorSubmissionMessage.length() > 0}">
+		<p class="errorMessage">${errorSubmissionMessage}</p>
+	</c:if>
+	<c:if test="${successfulSubmissionMessage.length() > 0}">
+		<p class="successMessage">${successfulSubmissionMessage}</p>
+	</c:if>
 	<c:forEach items="${requestSearchResults}" var="locationRequest">
 			<table width="1000">
 				<tbody>
 					<tr>
-						<td colspan="3"]><b>Location Name:</b> ${locationRequest.locationRequestName}</td>
-						<td><input type="button" value="Contact Requestor" onClick='submissionBttnClick("${locationRequest.id}")'/>
+						<td colspan="2"><b>Location Name:</b> ${locationRequest.value.locationRequestName}</td>
+						<td>My Locations: <select name="locationSelect${locationRequest.value.id}">
+							<option value=""></option>
+							<c:forEach items="${locationProvider.providerLocations}" var="location">
+								<option value="${location.id}">${location.locationName}</option>
+							</c:forEach>
+						</select>
+						<td><input type="button" value="Contact Requestor" onClick='submissionBttnClick(${locationRequest.value.id}, locationSelect${locationRequest.value.id}.value)'/>
 					</tr>
 					<tr>
 						<th width="250" align="left">Type of Location:</th>
@@ -47,10 +73,10 @@
 						<th width="250" align="left">Location Zipcode:</th>
 					</tr>
 					<tr>	
-						<td>${locationRequest.locationType}</td>
-						<td>${locationRequest.locationRequestCity}</td>
-						<td>${locationRequest.locationRequestState}</td>
-						<td>${locationRequest.locationRequestZipcode}</td>
+						<td>${locationRequest.value.locationType}</td>
+						<td>${locationRequest.value.locationRequestCity}</td>
+						<td>${locationRequest.value.locationRequestState}</td>
+						<td>${locationRequest.value.locationRequestZipcode}</td>
 					</tr>
 					
 					<tr>
@@ -60,18 +86,18 @@
 						<th width="250" align="left">Rate:</th>
 					</tr>
 					<tr>
-						<td>${locationRequest.submissionDate}</td>
-						<td>${locationRequest.shootBeginDate}</td>
-						<td>${locationRequest.shootEndDate}</td>
-						<td>${locationRequest.rate}</td>
+						<td>${locationRequest.value.submissionDate}</td>
+						<td>${locationRequest.value.shootBeginDate}</td>
+						<td>${locationRequest.value.shootEndDate}</td>
+						<td>${locationRequest.value.rate}</td>
 					</tr>
 					<tr>
 						<td width="500" colspan="2"><b>Location Description:</b></td>
 						<td width="500" colspan="2"><b>Project Notes:</b></td>
 					</tr>
 					<tr>
-						<td width="500" colspan="2">${locationRequest.locationDescription}</td>
-						<td width="500" colspan="2">${locationRequest.projectNotes}</td>
+						<td width="500" colspan="2">${locationRequest.value.locationDescription}</td>
+						<td width="500" colspan="2">${locationRequest.value.projectNotes}</td>
 					</tr>
 					</tbody>
 				</table>

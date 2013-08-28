@@ -13,35 +13,35 @@
 			<table>
 				<tr>
 					<td>User Name*</td>
-					<td><form:input path="userName" value="jbgeller"/>
+					<td><form:input path="userName"/>
 				</tr>
 				<tr>
 					<td>First Name*</td>
-					<td><form:input path="firstName" value="Jeff"/></td>
+					<td><form:input path="firstName"/></td>
 				</tr>
 				<tr>
 					<td>Last Name*</td>
-					<td><form:input path="lastName" value="Scout"/>
+					<td><form:input path="lastName"/>
 				</tr>
 				<tr>
 					<td>Phone Number</td>
-					<td><form:input path="phoneNumber" value="8185127426"/></td>
+					<td><form:input path="phoneNumber"/></td>
 				<tr>
 					<td>Email Address*</td>
-					<td><form:input path="emailAddress" value="jgeller@jgeller.com"/></td>
+					<td><form:input path="emailAddress"/></td>
 				</tr>
 				<tr>
 					<td>Confirm Email Address*</td>
-					<td><input type="text" name="confirmEmailAddress" /></td>
+					<td><input type="text" name="confirmEmailAddress"/></td>
 				</tr>
 
 				<tr>
 					<td>Password*</td>
-					<td><form:password path="password" value="new"/></td>
+					<td><form:password path="password"/></td>
 				</tr>
 				<tr>
 					<td>Confirm Password*</td>
-					<td><input type="password" name="confirmPassword" /></td>
+					<td><input type="password" name="confirmPassword"/></td>
 				</tr>
 			
 				<tr>

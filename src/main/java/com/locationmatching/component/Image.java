@@ -80,6 +80,14 @@ public class Image {
 	private ImageType imageType;
 	
 	/**
+	 * Flag to determine which photo will be used as the cover or
+	 * main picture of the location. This picture will be included
+	 * in the email to the location scout who owns the location request.
+	 */
+	@Column(name="COVER_PHOTO")
+	private Boolean coverPhoto;
+	
+	/**
 	 * Parent location for this image.
 	 */
 	@ManyToOne()
@@ -114,6 +122,9 @@ public class Image {
 	public Location getParentLocation() {
 		return parentLocation;
 	}
+	public Boolean getCoverPhoto() {
+		return coverPhoto;
+	}
 	
 	// Setter Methods
 	public void setId(Long id) {
@@ -142,5 +153,28 @@ public class Image {
 	}
 	public void setParentLocation(Location parentLocation) {
 		this.parentLocation = parentLocation;
+	}
+	public void setCoverPhoto(Boolean isCoverPhoto) {
+		this.coverPhoto = isCoverPhoto;
+	}
+	
+	/**
+	 * Flag to tell whether or not this picture has been reviewed
+	 * and approved.
+	 * 
+	 * @return Boolean
+	 */
+	public Boolean isApproved() {
+		return approved;
+	}
+	
+	/**
+	 * Flag to tell whether this image will be used as the main or cover image
+	 * that will be emailed to prospective clients.
+	 * 
+	 * @return Boolean
+	 */
+	public Boolean isCoverPhoto() {
+		return coverPhoto;
 	}
 }

@@ -3,6 +3,8 @@ package com.locationmatching.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -382,8 +384,9 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 		}
 	}
 
-	public List<LocationRequest>getLocationRequests(LocationRequest searchRequest) {
-		ArrayList<LocationRequest>locationRequests = null;
+	public Map<Long, LocationRequest>getLocationRequests(LocationRequest searchRequest) {
+		ArrayList<LocationRequest>locationRequestsList = null;
+		Map<Long, LocationRequest>locationRequests = new TreeMap<Long, LocationRequest>();
 		Session session = null;
 		Transaction transaction = null;
 		
@@ -433,7 +436,7 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 				criteria.add(Restrictions.eq("locationType", locationType));				
 			}
 
-			locationRequests = (ArrayList<LocationRequest>) criteria.list();
+			locationRequestsList = (ArrayList<LocationRequest>) criteria.list();
 
 			transaction.commit();
 		}

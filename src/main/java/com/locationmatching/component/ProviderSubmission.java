@@ -63,6 +63,12 @@ public class ProviderSubmission {
 	private Long locationRequestId;
 	
 	/**
+	 * Id of the location this submission is for.
+	 */
+	@Column(name="LOCATION_ID")
+	private Long locationId;
+	
+	/**
 	 * Pointer back to the Location Provider parent
 	 */
 	@ManyToOne()
@@ -85,6 +91,9 @@ public class ProviderSubmission {
 	public Long getLocationRequestId() {
 		return locationRequestId;
 	}
+	public Long getLocationId() {
+		return locationId;
+	}
 	public LocationProvider getSubmissionOwner() {
 		return submissionOwner;
 	}
@@ -104,6 +113,9 @@ public class ProviderSubmission {
 	}
 	public void setLocationRequestId(Long locationRequestId) {
 		this.locationRequestId = locationRequestId;
+	}
+	public void setLocationId(Long locationId) {
+		this.locationId = locationId;
 	}
 	public void setSubmissionOwner(LocationProvider submissionOwner) {
 		this.submissionOwner = submissionOwner;

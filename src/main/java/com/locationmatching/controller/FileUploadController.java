@@ -53,20 +53,26 @@ public class FileUploadController implements ServletContextAware{
 	protected String uploadImage(@ModelAttribute("locationProvider")LocationProvider locationProvider,
 			@ModelAttribute("location")Location location, 
 			@RequestParam("multipartFile")MultipartFile multipartFile, 
-			@RequestParam("source")long id, 
 			HttpServletRequest request,
+			Model model,
 			BindingResult result) {
+		String message;
+
 		if(result.hasErrors() == false) {
 			// Only proceed if the user has included a file for uploading.
 			if(ServletFileUpload.isMultipartContent(request) == true 
 					&& multipartFile != null && multipartFile.getSize() > 0) {
 				FileOutputStream fileOutput = null;
 				String absoluteFilePath, relativeUrlPath, filePath, fileName;
+				Long providerId, locationId;
 				
-				filePath = context.getInitParameter("UploadDirectoryPath") + "images" + File.separator + id;
+				providerId = locationProvider.getId();
+				locationId = location.getId();
+				filePath = context.getInitParameter("UploadDirectoryPath") + "images" + File.separator + providerId + File.separator + locationId;
 				fileName = multipartFile.getOriginalFilename();
 				absoluteFilePath = filePath + File.separator + fileName;
-				relativeUrlPath = context.getInitParameter("UploadImageUrlDirectory") + id + "/" + fileName;
+				relativeUrlPath = context.getInitParameter("UploadImageUrlDirectory") + providerId + "/" + locationId + "/" + fileName;
+				
 				try {
 					// Create the directory if it does not exist.
 					File directory = new File(filePath);
@@ -110,6 +116,16 @@ public class FileUploadController implements ServletContextAware{
 					}
 					image.setImageType(imageType);
 					location.addImage(image);
+					
+					// We need to set the coverPhoto flag. If it is 
+					// the first image being added to the collection then
+					// set the coverPhoto flag to true. If not, set to false.
+					if(location.getNumberOfImages() == 1) {
+						image.setCoverPhoto(true);
+					}
+					else {
+						image.setCoverPhoto(false);
+					}
 				} 
 				catch (FileNotFoundException e) {
 					e.printStackTrace();
@@ -128,6 +144,14 @@ public class FileUploadController implements ServletContextAware{
 					}
 				}
 			}
+			message = "File was uploaded successfully.";
+			model.addAttribute("fileuploadSuccessMessage", message);
+		}
+		else {
+			// There was an error so let the user know.
+			
+			message = "There was an error uploading this image. Please try again at a later time.";
+			model.addAttribute("errorMessage", message);
 		}
 		
 		return "addPhoto";

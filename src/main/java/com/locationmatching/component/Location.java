@@ -111,7 +111,7 @@ public class Location {
 	 * images.
 	 */
 	@Column(name="NUMBER_OF_IMAGES")
-	private Integer numberOfImages;
+	private Integer numberOfImages = 0;
 	/**
 	 * Collection of images associated with this location.
 	 */
@@ -234,6 +234,12 @@ public class Location {
 		if(obj == this) {
 			return true;
 		}
+		if(id == null){
+			// This instance of the location has not been
+			// persisted yet so the id has not been set so
+			// return false;
+			return false;
+		}
 		idInt = id.intValue();
 		objIdInt = ((Location)obj).getId().intValue();
 		
@@ -267,6 +273,8 @@ public class Location {
 	public void addImage(Image image) {
 		locationImages.add(image);
 		image.setParentLocation(this);
+		// Increment the number of images
+		numberOfImages++;
 	}
 	
 	/**
@@ -274,7 +282,12 @@ public class Location {
 	 * image object.
 	 */
 	public void removeImage(Image image) {
-		locationImages.remove(image);
+		if (locationImages.remove(image) == true) {
+			// The collection contained the image
+			// So decrement the numberOfImages variable
+			// because the image has been removed.
+			numberOfImages--;
+		}
 	}
 	
 	/**
@@ -296,6 +309,63 @@ public class Location {
 		
 		if(image != null) {
 			locationImages.remove(image);
+			// Decrement the numberOfImages
+			numberOfImages--;
 		}
+	}
+	
+	/**
+	 * Iterate through the collection of images until we
+	 * find the one that is marked as the cover image.
+	 * 
+	 * @return The cover image also called main image.
+	 */
+	public Image getCoverImage() {
+		Image coverImage = null;
+		Iterator<Image> iterator;
+		
+		// Iterate through images until we find the main
+		// image. If not found, return null.
+		iterator = locationImages.iterator();
+		while(iterator.hasNext() == true) {
+			Image image;
+			
+			image = iterator.next();
+			
+			if(image.isCoverPhoto() == true) {
+				coverImage = image;
+				break;
+			}
+		}
+		
+		return coverImage;
+	}
+	
+	/**
+	 * 
+	 * @param requestedImageId - Id of the image to retrieve.
+	 * @return The image is found, otherwise null.
+	 */
+	public Image getImage(Long requestedImageId) {
+		Image requestedImage = null;
+		Iterator<Image> iterator;
+		
+		// Iterate through the collection of images until we
+		// find the image associated with the passed in id.
+		// If not found, return null.
+		iterator = locationImages.iterator();
+		while(iterator.hasNext() == true) {
+			Image image;
+			Long id;
+			
+			image = iterator.next();
+			id = image.getId();
+			
+			if(requestedImageId.equals(id) == true) {
+				requestedImage = image;
+				break;
+			}
+		}
+		return requestedImage;
 	}
 }

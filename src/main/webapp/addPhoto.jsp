@@ -6,7 +6,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<link rel="stylesheet" type="text/css" href="style.css">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<script type="text/javascript">
+	<!--
+		function saveImages() {
+			document.forms("addPhoto").action="returnFromFileUpload.request";
+			document.forms("addPhoto").submit();
+		}
+	-->
+</script>
 <title>Add Photo</title>
 </head>
 <body>
@@ -14,8 +23,9 @@
 	<form:form name="addPhoto" method="POST" action="uploadFile.request" enctype="multipart/form-data">
 			<input name="multipartFile" type="file" size="75"/>
 			<input type="submit" value="Add Photo"/>
-			<input type="hidden" value="${locationProvider.id}" name="source"/>
 			
+			<p class="errorMessage">${errorMessage}</p>
+			<p class="successMessage">${fileuploadSuccessMessage}</p>
 			<table cellspacing="10px" width="1000">
 			<c:set var="itemCount" value="0"/>
 				<tr>
@@ -31,9 +41,8 @@
 			</c:forEach>
 			</tr>
 		</table>
-		<a href="returnFromFileUpload.request">Finish Adding Location</a>
 		<br/>
-		<a href="./providerNavigation.jsp">My Main Page</a>
+		<input type="button" onClick="saveImages()" value="My Main Page"/>
 		<br/>
 		<a href="./index.jsp">Home</a>
 		

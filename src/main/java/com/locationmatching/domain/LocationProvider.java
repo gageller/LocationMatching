@@ -1,7 +1,9 @@
 package com.locationmatching.domain;
 
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -58,8 +60,8 @@ public class LocationProvider extends User {
 	@LazyCollection(value=LazyCollectionOption.FALSE)
 	@Fetch(value=FetchMode.SELECT)
 	@OrderBy(value="submissionDate")
-	@MapKey(name="locationRequestId")
-	Map<Long, ProviderSubmission> requestSubmissions = new TreeMap<Long, ProviderSubmission>();
+//	@MapKey(name="locationRequestId")
+	Set<ProviderSubmission> requestSubmissions = new LinkedHashSet<ProviderSubmission>();
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name="USER_PLAN_TYPE")
@@ -72,6 +74,9 @@ public class LocationProvider extends User {
 	public LocationPlanType getUserPlanType() {
 		return userPlanType;
 	}
+	public Set<ProviderSubmission>getRequestSubmissions() {
+		return requestSubmissions;
+	}
 	
 	// Setter Methods
 	public void setProviderLocations(Set<Location> providerLocations) {
@@ -79,6 +84,9 @@ public class LocationProvider extends User {
 	}
 	public void setUserPlanType(LocationPlanType userPlanType) {
 		this.userPlanType = userPlanType;
+	}
+	public void setRequestSubmissions(Set<ProviderSubmission> requestSubmissions) {
+		this.requestSubmissions = requestSubmissions;
 	}
 	
 	/**
@@ -94,9 +102,95 @@ public class LocationProvider extends User {
 	}
 	
 	/**
+	 * Add the ProviderSubmission object to the requestSubmission
+	 * collection. Also set the parent pointer of the 
+	 * ProviderSubmission object.
+	 */
+	public void addRequestSubmission(ProviderSubmission providerSubmission) {
+		requestSubmissions.add(providerSubmission);
+		providerSubmission.setSubmissionOwner(this);
+	}
+	
+	/**
 	 * Remove this location from the collection.
 	 */
 	public void removeLocation(Location location) {
 		providerLocations.remove(location);
+	}
+	
+	/**
+	 * Remove the passed in instance of the ProviderSubmission
+	 * from the collection
+	 */
+	public void removeRequestSubmission(Long id) {
+		requestSubmissions.remove(id);
+	}
+	
+	/**
+	 * 
+	 * @param id - Id of the location object to get.
+	 * @return Location object. If not found, return null.
+	 */
+	public Location getLocation(Long locationId) {
+		Location requestedLocation =  null;
+		Iterator<Location> iterator;
+		
+		// Iterate through the Location collection to 
+		// find the location that has the same id as
+		// the one we are looking for.
+		iterator = providerLocations.iterator();
+		
+		while(iterator.hasNext() == true) {
+			Location location;
+			Long id;
+			
+			location = iterator.next();
+			if(location != null) {
+				id = location.getId();
+				if(locationId.equals(id) == true) {
+					// Found our location
+					requestedLocation = location;
+					break;
+				}
+			}
+		}
+		
+		return requestedLocation;
+	}
+	
+	/**
+	 * Check to see if they prospective submission for this request has already been 
+	 * submitted with this location.
+	 * 
+	 * @param locationId
+	 * @param locationRequestId
+	 * @return whether or not has already been submitted
+	 */
+	public boolean hasLocationBeenSubmittedWithThisRequest(Long locationId, Long locationRequestId) {
+		boolean hasBeenSubmitted = false;
+		Iterator<ProviderSubmission> iterator;
+		
+		iterator = requestSubmissions.iterator();
+		while(iterator.hasNext() == true) {
+			ProviderSubmission submission;
+			Long submissionLocationRequestId;
+			
+			submission = iterator.next();
+			// Check to see if the location request is the same.
+			submissionLocationRequestId = submission.getLocationRequestId();
+			if(submissionLocationRequestId.equals(locationRequestId) == true) {
+				// Found the request id. Now look to see if the location ids match
+				Long submissionLocationId;
+				
+				submissionLocationId = submission.getLocationId();
+				if(submissionLocationId.equals(locationId) == true) {
+					// Found it. This has already been submitted.
+					hasBeenSubmitted = true;
+					break;
+				}
+			}
+		}
+		
+		return hasBeenSubmitted;
 	}
 }
