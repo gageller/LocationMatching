@@ -122,6 +122,12 @@ public class Location {
 	Set<Image>locationImages = new LinkedHashSet();
 	
 	/**
+	 * Url to the main/cover photo
+	 */
+	@Column(name="COVER_PHOTO_URL")
+	private String coverPhotoUrl;
+	
+	/**
 	 * Date Created
 	 */
 	@Column(name="CREATION_DATE")
@@ -176,6 +182,9 @@ public class Location {
 	public Date getModifiedDate() {
 		return modifiedDate;
 	}
+	public String getCoverPhotoUrl() {
+		return coverPhotoUrl;
+	}
 	
 	// Setter Methods
 	public void setId(Long id) {
@@ -219,6 +228,9 @@ public class Location {
 	}
 	public void setModifiedDate(Date modifiedDate) {
 		this.modifiedDate = modifiedDate;
+	}
+	public void setCoverPhotoUrl(String coverPhotoUrl) {
+		this.coverPhotoUrl = coverPhotoUrl;
 	}
 	
 	@Override

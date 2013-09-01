@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -69,6 +70,12 @@ public class ProviderSubmission {
 	private Long locationId;
 	
 	/**
+	 * Instance of the LocationRequest associated with the locationRequestId
+	 */
+	@Transient
+	private LocationRequest locationRequest;
+	
+	/**
 	 * Pointer back to the Location Provider parent
 	 */
 	@ManyToOne()
@@ -97,6 +104,9 @@ public class ProviderSubmission {
 	public LocationProvider getSubmissionOwner() {
 		return submissionOwner;
 	}
+	public LocationRequest getLocationRequest() {
+		return locationRequest;
+	}
 	
 	// Setter Methods
 	public void setId(Long id) {
@@ -119,6 +129,9 @@ public class ProviderSubmission {
 	}
 	public void setSubmissionOwner(LocationProvider submissionOwner) {
 		this.submissionOwner = submissionOwner;
+	}
+	public void setLocationRequest(LocationRequest locationRequest) {
+		this.locationRequest = locationRequest;
 	}
 }
 

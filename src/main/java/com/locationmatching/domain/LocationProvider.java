@@ -119,11 +119,78 @@ public class LocationProvider extends User {
 	}
 	
 	/**
-	 * Remove the passed in instance of the ProviderSubmission
-	 * from the collection
+	 * Remove the instance of the Location
+	 * from the collection based on the id passed in.
+	 * 
+	 * @param id - Id of the ProviderSubmission instance to remove
+	 * @return Location - Instance that is being removed from the collection.
+	 * If not in the collection, return null.
 	 */
-	public void removeRequestSubmission(Long id) {
-		requestSubmissions.remove(id);
+	public Location removeLocation(Long id) {
+		Location deleteLocation = null;
+		Iterator<Location> iterator;
+		
+		iterator = providerLocations.iterator();
+		while(iterator.hasNext() == true) {
+			Long deleteId;
+			
+			deleteLocation = iterator.next();
+			deleteId = deleteLocation.getId();
+			
+			if(deleteId.equals(id) == true) {
+				// We found it so break out of loop
+				// and remove ProviderSubmission from
+				// the collection.
+				break;
+			}
+		}
+		if(deleteLocation != null) {
+			providerLocations.remove(deleteLocation);
+		}
+		
+		return deleteLocation;
+	}
+	
+	/**
+	 * Remove the passed in instance of ProviderSubmission from the collection.
+	 * 
+	 * @param providerSubmission - The ProviderSubmission instance to remove from the collection.
+	 */
+	public void removeRequestSubmission(ProviderSubmission providerSubmission) {
+		requestSubmissions.remove(providerSubmission);
+	}
+	
+	/**
+	 * Remove the instance of the ProviderSubmission
+	 * from the collection based on the id passed in.
+	 * 
+	 * @param id - Id of the ProviderSubmission instance to remove
+	 * @return ProviderSubmission - Instance that is being removed from the collection.
+	 * If not in the collection, return null.
+	 */
+	public ProviderSubmission removeRequestSubmissionById(Long id) {
+		ProviderSubmission deleteSubmission = null;
+		Iterator<ProviderSubmission> iterator;
+		
+		iterator = requestSubmissions.iterator();
+		while(iterator.hasNext() == true) {
+			Long deleteId;
+			
+			deleteSubmission = iterator.next();
+			deleteId = deleteSubmission.getId();
+			
+			if(deleteId.equals(id) == true) {
+				// We found it so break out of loop
+				// and remove ProviderSubmission from
+				// the collection.
+				break;
+			}
+		}
+		if(deleteSubmission != null) {
+			requestSubmissions.remove(deleteSubmission);
+		}
+		
+		return deleteSubmission;
 	}
 	
 	/**

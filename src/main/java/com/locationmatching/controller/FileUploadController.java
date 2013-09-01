@@ -122,6 +122,8 @@ public class FileUploadController implements ServletContextAware{
 					// set the coverPhoto flag to true. If not, set to false.
 					if(location.getNumberOfImages() == 1) {
 						image.setCoverPhoto(true);
+						// Set the url for the cover photo in the Location object.
+						location.setCoverPhotoUrl(image.getRelativeUrlPath());
 					}
 					else {
 						image.setCoverPhoto(false);

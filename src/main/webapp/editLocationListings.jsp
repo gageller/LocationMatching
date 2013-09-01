@@ -20,28 +20,28 @@
 	<h2>Select a Location to Edit</h2>
 	<form name="editList" action="editLocationSetup.request" method="POST" commandName="locationProvider">
 		<input type="hidden" name="editId"/>
-			<c:forEach items="${locationProvider.providerLocations}" var="location">
-				<table border="1">
-					<tr>
-						<td colspan="4"><b>Location Name:</b> ${location.locationName}</td>
-						<td><input type="button" value="Edit Location..." onClick='editLocationBttnClick("${location.id}")'/></td>						
-					</tr>
-					<tr>
-						<td><b>Address:</b></td>
-						<td><b>Address 2:</b></td>
-						<td><b>City:</b></td>
-						<td><b>State:</b></td>
-						<td><b>Zip Code:</b></td>
-					</tr>
-					<tr>
-						<td>${location.locationAddress}</td>				
-						<td>${location.locationAddress2}</td>
-						<td>${location.locationCity}</td>												
-						<td>${location.locationState}</td>
-						<td>${location.locationZipcode}</td>					
-					</tr>
-				</table>
-			</c:forEach>
+		<c:forEach items="${locationProvider.providerLocations}" var="location">
+			<table border="1">
+				<tr>
+					<td colspan="4"><b>Location Name:</b> ${location.locationName}</td>
+					<td><input type="button" value="Edit Location..." onClick='editLocationBttnClick("${location.id}")'/></td>						
+				</tr>
+				<tr>
+					<td><b>Address:</b></td>
+					<td><b>Address 2:</b></td>
+					<td><b>City:</b></td>
+					<td><b>State:</b></td>
+					<td><b>Zip Code:</b></td>
+				</tr>
+				<tr>
+					<td>${location.locationAddress}</td>				
+					<td>${location.locationAddress2}</td>
+					<td>${location.locationCity}</td>												
+					<td>${location.locationState}</td>
+					<td>${location.locationZipcode}</td>					
+				</tr>
+			</table>
+		</c:forEach>
 	</form>
 	<br/>
 	<a href="./providerNavigation.jsp">My Main Page</a>

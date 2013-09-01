@@ -17,4 +17,5 @@ public interface LocationScoutService {
 	public void addLocationRequest(LocationScout locationScout,
 			LocationRequest locationRequest);
 	public Map<Long, LocationRequest> getLocationRequests(LocationRequest searchRequest);
+	public LocationRequest getLocationRequest(Long locationRequestId);
 }

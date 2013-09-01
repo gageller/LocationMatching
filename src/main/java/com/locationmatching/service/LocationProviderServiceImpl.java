@@ -1,10 +1,9 @@
 package com.locationmatching.service;
 
-import java.util.ArrayList;
+import java.io.File;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -15,11 +14,10 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
+import com.locationmatching.component.Image;
 import com.locationmatching.component.Location;
-import com.locationmatching.component.LocationRequest;
 import com.locationmatching.domain.LocationProvider;
 import com.locationmatching.domain.User;
-import com.locationmatching.enums.LocationType;
 import com.locationmatching.exception.LocationProcessingException;
 import com.locationmatching.exception.UserAlreadyExistsException;
 import com.locationmatching.util.HibernateUtil;
@@ -384,60 +382,23 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 		}
 	}
 
-	public Map<Long, LocationRequest>getLocationRequests(LocationRequest searchRequest) {
-		ArrayList<LocationRequest>locationRequestsList = null;
-		Map<Long, LocationRequest>locationRequests = new TreeMap<Long, LocationRequest>();
+	@Override
+	/**
+	 * Get the Location associated with the id.
+	 * 
+	 * @param id - id of the Location
+	 * @return - Location object associated with the passed in id
+	 */
+	public Location getLocation(Long id) {
 		Session session = null;
 		Transaction transaction = null;
+		Location location = null;
 		
 		try {
-			Criteria criteria;
-			String value;
-			LocationType locationType;
-			
 			session = HibernateUtil.getSession();
 			transaction = session.beginTransaction();
 			
-			criteria = session.createCriteria(LocationRequest.class);
-			
-			// Location Request Name
-			value = searchRequest.getLocationRequestName();
-			if(value != null && value.isEmpty() == false) {
-				criteria.add(Restrictions.eq("locationRequestName", value));				
-			}
-
-			// Location Request City
-			value = searchRequest.getLocationRequestCity();
-			if(value != null && value.isEmpty() == false) {
-				criteria.add(Restrictions.eq("locationRequestCity", value));				
-			}
-
-			// Location Request State
-			value = searchRequest.getLocationRequestState();
-			if(value != null && value.isEmpty() == false) {
-				criteria.add(Restrictions.eq("locationRequestState", value));				
-			}
-
-			// Location Request Zip Code
-			value = searchRequest.getLocationRequestZipcode();
-			if(value != null && value.isEmpty() == false) {
-				criteria.add(Restrictions.eq("locationRequestZipcode", value));				
-			}
-
-			// Location Request County
-			value = searchRequest.getLocationRequestCounty();
-			if(value != null && value.isEmpty() == false) {
-				criteria.add(Restrictions.eq("locationRequestCounty", value));				
-			}
-
-			// Location Type
-			locationType = searchRequest.getLocationType();
-			if(locationType != null && locationType != LocationType.BLANK) {
-				criteria.add(Restrictions.eq("locationType", locationType));				
-			}
-
-			locationRequestsList = (ArrayList<LocationRequest>) criteria.list();
-
+			location = (Location) session.get(Location.class, id);
 			transaction.commit();
 		}
 		catch(HibernateException ex) {
@@ -458,16 +419,81 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 		}
 		finally {
 			try {
-				if(session != null) {
-					session.close();
-				}
+				session.close();
 			}
 			catch(HibernateException ex) {
 				ex.printStackTrace();
 			}
 		}
+		
+		return location;
+	}
+
+	@Override
+	/**
+	 * Delete the Location instance that are associated with
+	 * the ids selected by the user to delete.
+	 * 
+	 * @param  locationsToDelete - Ids of the locations selected by the user to delete.
+	 */
+	public void deleteLocations(LocationProvider locationProvider, String[] locationsToDelete) {
+		Session session = null;
+		Transaction transaction = null;
+		
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			for(int index = 0; index < locationsToDelete.length; index++) {
+				Location location;
+				String id;
+				
+				id = locationsToDelete[index];
+				location = locationProvider.removeLocation(Long.valueOf(id));
+				
+				deleteImageFiles(location.getLocationImages());
+				session.delete(location);
+			}
+			
+//			session.update(locationProvider);
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			throw ex;
+		}
+		finally {
+			try {
+				session.close();
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
 	
-		return locationRequests;
+	private void deleteImageFiles(Set<Image>deleteImages) {
+		for(Image image: deleteImages) {
+			String absoluteFilePath;
+			File deleteFile;
+			
+			absoluteFilePath = image.getAbsoluteFilePath();
+			deleteFile = new File(absoluteFilePath);
+			deleteFile.delete();
+		}
 	}
 }	
 

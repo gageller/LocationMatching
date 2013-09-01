@@ -10,3 +10,16 @@
 	font-size:20px;
 	color:black;
 }
+.unreadScoutAlert
+{
+	color:red;
+}
+.tableCellNoBorder
+{
+	border:none;
+}
+.tableBorderOnly
+{
+	border:1px;
+	border-collapse:collapse;
+}

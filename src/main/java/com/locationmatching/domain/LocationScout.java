@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
@@ -46,6 +47,7 @@ public class LocationScout extends User {
 			org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
 	@LazyCollection(value = LazyCollectionOption.FALSE)
 	@Fetch(value=FetchMode.SELECT)
+	@OrderBy("creationDate")
 	private Set<ScoutAlert> requestAlerts = new LinkedHashSet<ScoutAlert>();
 
 	// Getter methods

@@ -14,5 +14,6 @@
   <mapping class="com.locationmatching.component.LocationRequest"/>
   <mapping class="com.locationmatching.component.CreditCardImpl"/>
   <mapping class="com.locationmatching.component.ProviderSubmission"/>
+  <mapping class="com.locationmatching.component.ScoutAlert"/>
  </session-factory>
 </hibernate-configuration>

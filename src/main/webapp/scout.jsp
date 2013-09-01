@@ -96,6 +96,8 @@
 
 	</form:form>
 	<br/>
+		<a href="./scoutNavigation.jsp">My Main Page</a>
+	<br/>
 	<a href="./index.jsp">Home</a>
 
 </body>

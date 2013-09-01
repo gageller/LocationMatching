@@ -1,9 +1,9 @@
 package com.locationmatching.service;
 
 import java.util.List;
-import java.util.Map;
 
-import com.locationmatching.component.LocationRequest;
+import com.locationmatching.component.Location;
+import com.locationmatching.domain.LocationProvider;
 import com.locationmatching.domain.User;
 
 public interface LocationProviderService {
@@ -13,5 +13,6 @@ public interface LocationProviderService {
 	public void modifyUser(User user);
 	public List<User> getAllUsers();
 	public User authenticateUser(String userName, String password);
-	public Map<Long, LocationRequest>getLocationRequests(LocationRequest searchRequest);
+	public Location getLocation(Long id);
+	public void deleteLocations(LocationProvider locationProvider, String[] locationsToDelete);
 }

@@ -31,6 +31,7 @@ import com.locationmatching.component.Image;
 import com.locationmatching.component.Location;
 import com.locationmatching.component.LocationRequest;
 import com.locationmatching.component.ProviderSubmission;
+import com.locationmatching.component.ScoutAlert;
 import com.locationmatching.domain.LocationProvider;
 import com.locationmatching.domain.LocationScout;
 import com.locationmatching.domain.User;
@@ -437,7 +438,21 @@ public class LocationProviderController implements ServletContextAware{
 			// set the parent pointer of the ProviderSubmission object.
 			locationProvider.addRequestSubmission(newSubmission);
 			
+			// Persist the new submission
 			providerService.modifyUser(locationProvider);
+			
+			// Add an alert to the Location Scout
+			ScoutAlert scoutAlert = new ScoutAlert();
+			scoutAlert.setCreationDate(new Date(System.currentTimeMillis()));
+			scoutAlert.setLocationId(locationId);
+			scoutAlert.setLocationRequestId(locationRequestId);
+			scoutAlert.setLocationProviderId(locationProvider.getId());
+			scoutAlert.setViewed(false);
+			scoutAlert.setShowAlert(true);
+			
+			scout.addRequestAlert(scoutAlert);
+			// Persist the new alert
+			scoutService.modifyUser(scout);
 			
 			StringBuilder emailBodyText = new StringBuilder();
 			
@@ -465,4 +480,29 @@ public class LocationProviderController implements ServletContextAware{
 		return "searchLocationRequests";
 	}
 
+	/**
+	 * Delete seleted Location objects
+	 * 
+	 * @param checkValues - String Array of check box values.
+	 * @return
+	 */
+	@RequestMapping(value="deleteLocations.request", method=RequestMethod.POST)
+	protected String deleteLocations(@ModelAttribute("locationProvider") LocationProvider locationProvider, @RequestParam("deleteCheck") String[] locationsToDelete) {
+		providerService.deleteLocations(locationProvider, locationsToDelete);
+		
+		return "deleteLocations";
+	}
+	
+	/**
+	 * Setup the ProviderSubmissions in the collection by setting the LocationRequest object
+	 * associated with the locationRequestId variable of the ProviderSubmission instance.
+	 * 
+	 * @param locationProvider - Object containing the collection of ProviderSubmissions
+	 * @return - Logical name of the next view
+	 */
+	@RequestMapping(value="setupSubmissions.request", method=RequestMethod.GET)
+	protected String setupSubmissions(@ModelAttribute("locationProvider") LocationProvider locationProvider) {
+		
+		return "viewSubmissions";
+	}
 }

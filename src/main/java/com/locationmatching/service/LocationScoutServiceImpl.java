@@ -139,8 +139,42 @@ public class LocationScoutServiceImpl implements LocationScoutService {
 
 	@Override
 	public void modifyUser(User user) {
-		// TODO Auto-generated method stub
-
+		Session session = null;
+		Transaction transaction = null;
+		LocationScout scout;
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			session.update(user);
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			throw ex;
+		}
+		finally {
+			try {
+				if(session != null) {
+					session.close();
+				}
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
+		}
 	}
 
 	@Override
@@ -452,4 +486,47 @@ public class LocationScoutServiceImpl implements LocationScoutService {
 		// TODO Auto-generated method stub
 		return null;
 	}*/
+
+	@Override
+	public LocationRequest getLocationRequest(Long id) {
+		Session session = null;
+		Transaction transaction = null;
+		LocationRequest locationRequest = null;
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			locationRequest = (LocationRequest) session.get(LocationRequest.class, id);
+			
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			throw ex;
+		}
+		finally {
+			try {
+				if(session != null) {
+					session.close();
+				}
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
+		}
+		return locationRequest;
+	}
 }
