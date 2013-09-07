@@ -79,7 +79,7 @@ public class LocationScoutController {
 	 * @return String
 	 */
 	@RequestMapping(value="createNewScout.request", method=RequestMethod.POST)
-	public String createNewScout(LocationScout locationScout) {
+	public String createNewScout(LocationScout locationScout, Model model) {
 		Date date = new Date(System.currentTimeMillis());
 		String nextPage;
 		
@@ -90,7 +90,7 @@ public class LocationScoutController {
 		locationScout.setUserType(UserType.SCOUT);
 		
 		// Go to the provider.jsp page to add locations
-		nextPage = "scout";
+		nextPage = "scoutNavigation";
 		
 		try {
 			Long id;
@@ -106,6 +106,7 @@ public class LocationScoutController {
 			// user back to register page
 			locationScout.setUserName("");
 			locationScout.setPassword("");
+			model.addAttribute("userScoutAlreadyExistsMessage", "This User Name already exists. Please select another User Name.");
 		}
 		
 		return nextPage;

@@ -13,6 +13,8 @@ public interface LocationProviderService {
 	public void modifyUser(User user);
 	public List<User> getAllUsers();
 	public User authenticateUser(String userName, String password);
+	public void addLocation(Location location);
+	public void modifyLocation(Location location);
 	public Location getLocation(Long id);
 	public void deleteLocations(LocationProvider locationProvider, String[] locationsToDelete);
 }

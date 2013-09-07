@@ -456,7 +456,6 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 				session.delete(location);
 			}
 			
-//			session.update(locationProvider);
 			transaction.commit();
 		}
 		catch(HibernateException ex) {
@@ -493,6 +492,94 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 			absoluteFilePath = image.getAbsoluteFilePath();
 			deleteFile = new File(absoluteFilePath);
 			deleteFile.delete();
+		}
+	}
+
+	@Override
+	public void addLocation(Location location) {
+		Session session = null;
+		Transaction transaction = null;
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			session.save(location);
+			
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			StringBuilder exceptionMessage;
+			
+			ex.printStackTrace();
+			
+			exceptionMessage = new StringBuilder();
+			exceptionMessage.append("There was an error adding Location ");
+			exceptionMessage.append(location.getLocationName());
+			exceptionMessage.append(". Please try to request at a later time. If the problem ");
+			exceptionMessage.append("persists, contact technical support. Sorry for the inconvience.");
+			
+			throw new LocationProcessingException(exceptionMessage.toString());
+		}
+		finally {
+			try {
+				session.close();
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public void modifyLocation(Location location) {
+		Session session = null;
+		Transaction transaction = null;
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			session.update(location);
+			
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			throw ex;
+		}
+		finally {
+			try {
+				session.close();
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
 }	

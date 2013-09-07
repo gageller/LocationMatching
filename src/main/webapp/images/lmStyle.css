@@ -4,6 +4,11 @@
 	font-size:20px;
 	color:red;
 }
+.errorMessageSmaller
+{
+	font-weight:bold;
+	color:red;
+}
 .successMessage
 {
 	font-weight:bold;

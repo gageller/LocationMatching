@@ -221,7 +221,7 @@ public class LocationProviderController implements ServletContextAware{
 	 */
 	@RequestMapping(value="createNewProvider.request", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
-	public String createLocationProvider(LocationProvider locationProvider, HttpServletResponse response) {
+	public String createLocationProvider(LocationProvider locationProvider, HttpServletResponse response, Model model) {
 		Date date = new Date(System.currentTimeMillis());
 		String nextPage;
 		
@@ -253,6 +253,7 @@ public class LocationProviderController implements ServletContextAware{
 			// user back to register page
 			locationProvider.setUserName("");
 			locationProvider.setPassword("");
+			model.addAttribute("userProviderAlreadyExistsMessage", "This User Name already exists. Please select another User Name.");
 		}
 		
 		return nextPage;
@@ -289,7 +290,6 @@ public class LocationProviderController implements ServletContextAware{
 		location.setModifiedDate(currentDate);
 		
 		return "addLocation";
-//		return "forward:/setupFileUpload";
 	}
 	
 	/**
@@ -301,7 +301,7 @@ public class LocationProviderController implements ServletContextAware{
 		location.setNumberOfImages(location.getLocationImages().size());
 		try {
 			locationProvider.addLocation(location);
-			((LocationProviderServiceImpl)providerService).addLocation(locationProvider, location);
+			providerService.addLocation(location);
 		}
 		catch(LocationProcessingException ex) {
 			
@@ -321,8 +321,7 @@ public class LocationProviderController implements ServletContextAware{
 	@RequestMapping(value="returnFromFileUpload.request", method=RequestMethod.POST)
 	protected String returnFromFileUpload(@ModelAttribute("locationProvider")LocationProvider locationProvider,
 			@ModelAttribute("location")Location location) {
-		providerService.modifyUser(locationProvider);
-		
+		providerService.modifyLocation(location);
 		return "providerNavigation";
 	}
 	
@@ -502,7 +501,29 @@ public class LocationProviderController implements ServletContextAware{
 	 */
 	@RequestMapping(value="setupSubmissions.request", method=RequestMethod.GET)
 	protected String setupSubmissions(@ModelAttribute("locationProvider") LocationProvider locationProvider) {
+		Iterator<ProviderSubmission> iterator;
 		
-		return "viewSubmissions";
+		iterator = locationProvider.getRequestSubmissions().iterator();
+		// Add the Location and LocationRequest Objects to the ProviderSubmissions
+		while(iterator.hasNext() == true) {
+			ProviderSubmission submission;
+			Location location;
+			LocationRequest locationRequest;
+			Long id;
+			
+			submission = iterator.next();
+			
+			// Set the Location object so it can be displayed on the view submission jsp page.
+			id = submission.getLocationId();
+			location = providerService.getLocation(id);
+			submission.setLocation(location);
+			
+			// Set the LocationRequest object so it can be displayed on the view submission jsp page.
+			id = submission.getLocationRequestId();
+			locationRequest = scoutService.getLocationRequest(id);
+			submission.setLocationRequest(locationRequest);
+		}
+		
+		return "viewSubmissionsList";
 	}
 }

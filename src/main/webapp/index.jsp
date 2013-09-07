@@ -1,4 +1,7 @@
 <html>
+<head>
+<link rel="stylesheet" type="text/css" href="./images/lmStyle.css">
+</head>
 <body>
 <script>
 	<!--
@@ -15,11 +18,15 @@
 <br/>
 <form name="homeForm" action="" method="POST">
 <!-- 	<input type="hidden" name="_method"/> -->
-	<table border=0 width="1000">
+	<table border=0 width="1200">
 		<tr>
-			<th align="left" width="498">Location Provider</th>
+			<th align="left" width="598">Location Provider</th>
 			<th rowspan="9" width="333"><div align="center" style="width:3px; height:250px; background-color: #000000"></div></th>
-			<th align="left" width="498">Location Scout</th>
+			<th align="left" width="598">Location Scout</th>
+		</tr>
+		<tr>
+			<td class="errorMessageSmaller">${userProviderAlreadyExistsMessage}</td>
+			<td class="errorMessageSmaller">${userScoutAlreadyExistsMessage}</td>
 		</tr>
 		<tr>
 			<td>Login</td>
@@ -57,8 +64,8 @@
 		</tr>
 		<tr>
 			<td><input type="button" name="newProviderBttn" value="Create New Location Provider..." onClick='submitButtonClick("createNewProvider.request", "GET")'/><!-- <a href="createNewProvider.request">Register for a new Provider account</a> --></td>
-			<!-- <td>&nbsp;</td> -->
-			<td><input type="button" name="newScoutBttn" value="Create New Location Scout..." onClick='submitButtonClick("createNewScout.request", "GET")'/>
+			<td>&nbsp;</td> 
+			<td><input type="button" name="newScoutBttn" value="Create New Location Scout..." onClick='submitButtonClick("createNewScout.request", "GET")'/></td>
 		</tr>
 	</table>
 </form>

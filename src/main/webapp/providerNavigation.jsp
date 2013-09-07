@@ -20,12 +20,17 @@
 			<br/>
 			<a href="editLocationListings.jsp">Edit a Location</a>
 			</br/>
-			<a href="deleteLocationList.jsp">Delete a Location</a>
+			<a href="deleteLocations.jsp">Delete a Location</a>
 		</p>
 		<p>
 			<h3><u>Location Requests</u></h3>
 			<a href="setupSearchLocationRequest.request">View a list of Location Requests</a>
 		</p>
+		<p>
+			<h3><u>Submissions</u></h3>
+			<a href="setupSubmissions.request">List of Submissions</a>
+		</p>
+		
 		<br/>
 		<a href="./index.jsp">Home</a>
 	</form>

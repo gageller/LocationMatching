@@ -73,7 +73,13 @@ public class ProviderSubmission {
 	 * Instance of the LocationRequest associated with the locationRequestId
 	 */
 	@Transient
-	private LocationRequest locationRequest;
+	private LocationRequest locationRequest = null;
+	
+	/**
+	 * Instance of the Location associated with the locationId;
+	 */
+	@Transient
+	private Location location = null;
 	
 	/**
 	 * Pointer back to the Location Provider parent
@@ -107,6 +113,9 @@ public class ProviderSubmission {
 	public LocationRequest getLocationRequest() {
 		return locationRequest;
 	}
+	public Location getLocation() {
+		return location;
+	}
 	
 	// Setter Methods
 	public void setId(Long id) {
@@ -132,6 +141,9 @@ public class ProviderSubmission {
 	}
 	public void setLocationRequest(LocationRequest locationRequest) {
 		this.locationRequest = locationRequest;
+	}
+	public void setLocation(Location location) {
+		this.location = location;
 	}
 }
 
