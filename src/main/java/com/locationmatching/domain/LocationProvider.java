@@ -23,7 +23,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import com.locationmatching.component.Location;
 import com.locationmatching.component.ProviderSubmission;
-import com.locationmatching.enums.LocationPlanType;
+import com.locationmatching.enums.UserPlanType;
 
 /**
  * Location Provider searches through list of Location Scout requests to see
@@ -44,8 +44,9 @@ public class LocationProvider extends User {
 	 * Collection of Location objects associated with this provider.
 	 */
 	@OneToMany(mappedBy="locationOwner") // mappedBy is equivalent to inverse=true in the mapping file.
-	@org.hibernate.annotations.Cascade(value={org.hibernate.annotations.CascadeType.ALL, 
-			org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
+//	@org.hibernate.annotations.Cascade(value={org.hibernate.annotations.CascadeType.ALL, 
+	//		org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
+	@org.hibernate.annotations.Cascade(value=org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
 	@LazyCollection(value = LazyCollectionOption.FALSE)
 	@Fetch(value=FetchMode.SELECT)
 	@OrderBy // Ordering by primary key is assumed when not given a value
@@ -65,13 +66,13 @@ public class LocationProvider extends User {
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name="USER_PLAN_TYPE")
-	private LocationPlanType userPlanType;
+	private UserPlanType userPlanType;
 	
 	// Getter Methods
 	public Set<Location> getProviderLocations() {
 		return providerLocations;
 	}
-	public LocationPlanType getUserPlanType() {
+	public UserPlanType getUserPlanType() {
 		return userPlanType;
 	}
 	public Set<ProviderSubmission>getRequestSubmissions() {
@@ -82,7 +83,7 @@ public class LocationProvider extends User {
 	public void setProviderLocations(Set<Location> providerLocations) {
 		this.providerLocations = providerLocations;
 	}
-	public void setUserPlanType(LocationPlanType userPlanType) {
+	public void setUserPlanType(UserPlanType userPlanType) {
 		this.userPlanType = userPlanType;
 	}
 	public void setRequestSubmissions(Set<ProviderSubmission> requestSubmissions) {

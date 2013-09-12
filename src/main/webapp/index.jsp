@@ -1,6 +1,6 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="./images/lmStyle.css">
+<link rel="stylesheet" type="text/css" href="./css/lmStyle.css">
 </head>
 <body>
 <script>
@@ -68,6 +68,7 @@
 			<td><input type="button" name="newScoutBttn" value="Create New Location Scout..." onClick='submitButtonClick("createNewScout.request", "GET")'/></td>
 		</tr>
 	</table>
+	<a href="iFrames.jsp">iFrames</a>
 </form>
 </body>
 </html>

@@ -21,7 +21,7 @@
 	<form name="editList" action="editLocationSetup.request" method="POST" commandName="locationProvider">
 		<input type="hidden" name="editId"/>
 		<c:forEach items="${locationProvider.providerLocations}" var="location">
-			<table border="1">
+			<table border="1" width="600">
 				<tr>
 					<td colspan="4"><b>Location Name:</b> ${location.locationName}</td>
 					<td><input type="button" value="Edit Location..." onClick='editLocationBttnClick("${location.id}")'/></td>						
@@ -41,6 +41,7 @@
 					<td>${location.locationZipcode}</td>					
 				</tr>
 			</table>
+			<br/>
 		</c:forEach>
 	</form>
 	<br/>

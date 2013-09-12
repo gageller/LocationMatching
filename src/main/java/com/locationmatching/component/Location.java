@@ -8,8 +8,6 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -21,9 +19,10 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 
 import com.locationmatching.domain.LocationProvider;
-import com.locationmatching.enums.LocationPlanType;
+import com.locationmatching.enums.PhotoPlanType;
 
 /**
  * Location details including any pictures provided by the Location Provider.
@@ -92,33 +91,52 @@ public class Location {
 	 */
 	@Column(name="LOCATION_ZIPCODE")
 	private String locationZipcode;
-	
+
 	/**
 	 * Plan type of this location. 
 	 * Each location can have it's own individual plan.
 	 * If the provider has a premium subscription, all
 	 * of the locations are premium plan types.
 	 */
-	@Enumerated(EnumType.STRING)
-	@Column(name="LOCATION_PLAN_TYPE")
-	private LocationPlanType locationPlanType;
+//	@Enumerated(EnumType.STRING)
+//	@Column(name="LOCATION_PLAN_TYPE")
+//	private UserPlanType locationPlanType;
 	
 	/**
-	 * Number of images associated with this location.
-	 * The number of images will determine whether the
+	 * Number of free photos associated with this location.
+	 * The number of free photos will determine whether the
 	 * provider needs to pay for additional photos or
-	 * they can subscribe to the premium plan and get unlimited
-	 * images.
 	 */
-	@Column(name="NUMBER_OF_IMAGES")
-	private Integer numberOfImages = 0;
+	@Column(name="NUMBER_OF_FREE_PHOTOS")
+	private Integer numberOfFreePhotos = 0;
+	
+	/**
+	 * Number of paid for photos
+	 */
+	@Column(name="NUMBER_OF_PAID_PHOTOS")
+	private Integer numberOfPaidPhotos;
+	
+	/**
+	 * Number of free videos. Not currently being used.
+	 */
+	@Column(name="NUMBER_OF_FREE_VIDEOS")
+	private Integer numberOfFreeVideos;
+	
+	/**
+	 * Number of paid for videos. Not currently being used.
+	 */
+	@Column(name="NUMBER_OF_PAID_VIDEOS")
+	private Integer numberOfPaidVideos;
+	
 	/**
 	 * Collection of images associated with this location.
 	 */
 	@OneToMany(mappedBy="parentLocation") // mappedBy is equivalent to inverse=true
 	@Fetch(value = FetchMode.JOIN)
-	@org.hibernate.annotations.Cascade(value={org.hibernate.annotations.CascadeType.DELETE_ORPHAN, 
-			org.hibernate.annotations.CascadeType.ALL})
+	@org.hibernate.annotations.Cascade(value=org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+	@Where(clause="hidden=0 and approved=1")
+//	@org.hibernate.annotations.Cascade(value={org.hibernate.annotations.CascadeType.DELETE_ORPHAN, 
+//			org.hibernate.annotations.CascadeType.ALL})
 	Set<Image>locationImages = new LinkedHashSet();
 	
 	/**
@@ -167,11 +185,22 @@ public class Location {
 	public LocationProvider getLocationOwner() {
 		return locationOwner;
 	}
-	public LocationPlanType getLocationPlanType() {
+	/*
+	public UserPlanType getLocationPlanType() {
 		return locationPlanType;
 	}
-	public Integer getNumberOfImages() {
-		return numberOfImages;
+*/
+	public Integer getNumberOfFreePhotos() {
+		return numberOfFreePhotos;
+	}
+	public Integer getNumberOfPaidPhotos() {
+		return numberOfPaidPhotos;
+	}
+	public Integer getNumberOfFreeVideos() {
+		return numberOfFreeVideos;
+	}
+	public Integer getNumberOfPaidVideos() {
+		return numberOfPaidVideos;
 	}
 	public Set<Image> getLocationImages() {
 		return locationImages;
@@ -214,11 +243,22 @@ public class Location {
 	public void setLocationOwner(LocationProvider locationOwner) {
 		this.locationOwner = locationOwner;
 	}
-	public void setLocationPlanType(LocationPlanType locationPlanType) {
+/*
+	public void setLocationPlanType(UserPlanType locationPlanType) {
 		this.locationPlanType = locationPlanType;
 	}
-	public void setNumberOfImages(Integer numberOfImages) {
-		this.numberOfImages = numberOfImages;
+*/
+	public void setNumberOfFreePhotos(Integer numberOfFreePhotos) {
+		this.numberOfFreePhotos = numberOfFreePhotos;
+	}
+	public void setNumberOfPaidPhotos(Integer numberOfPaidPhotos) {
+		this.numberOfPaidPhotos = numberOfPaidPhotos;
+	}
+	public void setNumberOfFreeVideos(Integer numberOfFreeVideos) {
+		this.numberOfFreeVideos = numberOfFreeVideos;
+	}
+	public void setNumberOfPaidVideos(Integer numberOfPaidVideos) {
+		this.numberOfPaidVideos = numberOfPaidVideos;
 	}
 	public void setLocationImages(HashSet<Image> locationImages) {
 		this.locationImages = locationImages;
@@ -231,6 +271,38 @@ public class Location {
 	}
 	public void setCoverPhotoUrl(String coverPhotoUrl) {
 		this.coverPhotoUrl = coverPhotoUrl;
+	}
+	
+	/**
+	 * Reset the isCoverPhoto flag to false for all of the Image objects.
+	 * Pull out the Image associated with the passed in Id and set its
+	 * isCoverPhoto flag to true. Take the url and set the this Location's
+	 * coverPhotoUrl to the Image's relativeUrl.
+	 * 
+	 * @param id - Id of the photo to set as the cover/main photo
+	 */
+	public void setCoverPhotoUrl(Long id) {
+		Iterator<Image> iterator;
+		
+		// Iterate through the Image's isCoverPhoto to false except
+		// for the Image that matches the passed in id. Set its flag
+		// to true.
+		iterator = locationImages.iterator();
+		while(iterator.hasNext() == true) {
+			Long imageId;
+			Image image;
+			
+			image = iterator.next();
+			imageId = image.getId();
+			if(imageId.equals(id) == true) {
+				// Found the Image object to set as the Cover/Main image
+				image.setCoverPhoto(true);
+				coverPhotoUrl = image.getRelativeUrlPath();
+			}
+			else {
+				image.setCoverPhoto(false);
+			}
+		}
 	}
 	
 	@Override
@@ -285,8 +357,17 @@ public class Location {
 	public void addImage(Image image) {
 		locationImages.add(image);
 		image.setParentLocation(this);
-		// Increment the number of images
-		numberOfImages++;
+		// Increment the number of photos based on
+		// whether the photo is free or paid for
+		PhotoPlanType photoPlanType;
+		
+		photoPlanType = image.getPhotoPlanType();
+		if(photoPlanType == PhotoPlanType.FREE_PHOTO) {
+			numberOfFreePhotos++;
+		}
+		else {
+			numberOfPaidPhotos++;
+		}
 	}
 	
 	/**
@@ -296,9 +377,19 @@ public class Location {
 	public void removeImage(Image image) {
 		if (locationImages.remove(image) == true) {
 			// The collection contained the image
-			// So decrement the numberOfImages variable
-			// because the image has been removed.
-			numberOfImages--;
+			// So check to see which photo type plan the 
+			// image belongs to. Then decrement the correct
+			// number of photos variable depending on whether
+			// the image is free or paid for.
+			PhotoPlanType photoPlanType;
+			
+			photoPlanType = image.getPhotoPlanType();
+			if(photoPlanType == PhotoPlanType.FREE_PHOTO) {
+				numberOfFreePhotos--;
+			}
+			else {
+				numberOfPaidPhotos--;
+			}
 		}
 	}
 	
@@ -321,8 +412,20 @@ public class Location {
 		
 		if(image != null) {
 			locationImages.remove(image);
-			// Decrement the numberOfImages
-			numberOfImages--;
+			// The collection contained the image
+			// So check to see which photo type plan the 
+			// image belongs to. Then decrement the correct
+			// number of photos variable depending on whether
+			// the image is free or paid for.
+			PhotoPlanType photoPlanType;
+			
+			photoPlanType = image.getPhotoPlanType();
+			if(photoPlanType == PhotoPlanType.FREE_PHOTO) {
+				numberOfFreePhotos--;
+			}
+			else {
+				numberOfPaidPhotos--;
+			}
 		}
 	}
 	

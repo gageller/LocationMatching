@@ -2,6 +2,7 @@ package com.locationmatching.service;
 
 import java.io.File;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -147,12 +148,19 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 
 	@Override
 	/**
-	 * Delete the user based on the id passed in.
+	 * FOR ADMIN USE.
+	 * 
+	 * Delete the user based on the id passed in. This will cascade down through the collections
+	 * and delete them from the database. We also need to delete any image files associated with
+	 * this LocationProvider.
+	 * 
+	 * @param id - Id of the LocationProvider to delete.
 	 */
 	public void deleteUser(Long id) {
 		Session session = null;
 		Transaction transaction = null;
 		LocationProvider user;
+		Iterator<Location> locationIterator;
 		
 		try {
 			session = HibernateUtil.getSession();
@@ -160,6 +168,16 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 			
 			// Retrieve the user from its id and delete it.
 			user = (LocationProvider) session.get(LocationProvider.class, id);
+			// Delete the image files.
+			locationIterator = user.getProviderLocations().iterator();
+			
+			while(locationIterator.hasNext() == true) {
+				Location location;
+				
+				location = locationIterator.next();
+				deleteImageFiles(location.getLocationImages());
+			}
+			
 			session.delete(user);
 			
 			transaction.commit();
@@ -431,15 +449,18 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 
 	@Override
 	/**
-	 * Delete the Location instance that are associated with
-	 * the ids selected by the user to delete.
 	 * 
-	 * @param  locationsToDelete - Ids of the locations selected by the user to delete.
+	 * Mark the Location instance that are associated with the ids selected by the 
+	 * user to inactive. Photos for this Location will be deleted.
+	 * Locations are keep for audit purposes.
+	 * 
+	 * @param locationProvider - Need to have the location provider so we can get the
+	 * locations based on the passed in ids
+	 * @param locationsToDelete - Ids of the locations selected by the user to delete.
 	 */
 	public void deleteLocations(LocationProvider locationProvider, String[] locationsToDelete) {
 		Session session = null;
 		Transaction transaction = null;
-		
 		
 		try {
 			session = HibernateUtil.getSession();
@@ -453,8 +474,12 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 				location = locationProvider.removeLocation(Long.valueOf(id));
 				
 				deleteImageFiles(location.getLocationImages());
-				session.delete(location);
+				location.setActive(false);
+				
+				session.update(location);
 			}
+			
+			session.delete(locationProvider);
 			
 			transaction.commit();
 		}
@@ -554,6 +579,50 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 			transaction = session.beginTransaction();
 			
 			session.update(location);
+			
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			throw ex;
+		}
+		finally {
+			try {
+				session.close();
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * Add image to the database.
+	 * 
+	 * @param image - Image object to add.
+	 */
+	@Override
+	public void addImage(Image image) {
+		Session session = null;
+		Transaction transaction = null;
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			session.save(image);
 			
 			transaction.commit();
 		}

@@ -253,7 +253,7 @@ public class LocationScoutServiceImpl implements LocationScoutService {
 			session = HibernateUtil.getSession();
 			transaction = session.beginTransaction();
 			
-			session.update(scout);
+			session.save(locationRequest);
 
 			transaction.commit();
 		}

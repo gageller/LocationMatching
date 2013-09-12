@@ -35,7 +35,7 @@ import com.locationmatching.component.ScoutAlert;
 import com.locationmatching.domain.LocationProvider;
 import com.locationmatching.domain.LocationScout;
 import com.locationmatching.domain.User;
-import com.locationmatching.enums.LocationPlanType;
+import com.locationmatching.enums.UserPlanType;
 import com.locationmatching.enums.LocationType;
 import com.locationmatching.enums.SubmissionResponse;
 import com.locationmatching.enums.UserType;
@@ -165,7 +165,8 @@ public class LocationProviderController implements ServletContextAware{
 			// Found the provider so proceed onto the provider
 			// info page.
 			model.addAttribute("locationProvider", provider);
-			view = "providerNavigation";
+			model.addAttribute("mainIFrameUrl", "provider.jsp");
+			view = "iFrames";
 		}
 		else {
 			// Not found. Need to add code to handle error message
@@ -210,7 +211,6 @@ public class LocationProviderController implements ServletContextAware{
 		model.addAttribute("locationProvider", provider);
 		
 		return "newLocationProvider";
-		
 	}
 	
 	/**
@@ -231,7 +231,7 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the user type
 		locationProvider.setUserType(UserType.PROVIDER);
 		// Set the new user's plan type to the Pay Per Photo plan type
-		locationProvider.setUserPlanType(LocationPlanType.PER_PHOTO);
+		locationProvider.setUserPlanType(UserPlanType.BASIC);
 		
 		// Go to the provider.jsp page to add locations
 		nextPage = "providerNavigation";
@@ -266,29 +266,25 @@ public class LocationProviderController implements ServletContextAware{
 	@RequestMapping(value="addLocation.request", method=RequestMethod.GET)
 	protected String setupNewLocation(@ModelAttribute("locationProvider")LocationProvider locationProvider, Model model) {
 		Location location = new Location();
-		LocationPlanType providerPlanType;
 		Date currentDate = new Date(System.currentTimeMillis());
-		// Set the number of images to 0 for new location
-		location.setNumberOfImages(0);
+		
+		// Set the number of free and paid for photos to 0 for new location
+		location.setNumberOfFreePhotos(0);
+		location.setNumberOfPaidPhotos(0);
+		
+		// Set the number of free and paid for videos to 0
+		location.setNumberOfFreeVideos(0);
+		location.setNumberOfPaidVideos(0);
+		
 		// Set this as active. May not need active flag anymore.
 		location.setActive(true);
-		// Get the user plan type from the parent LocationProvider.
-		// If plan is Premium set the plan type for this location to
-		// premium, otherwise set it to free.
-		providerPlanType = locationProvider.getUserPlanType();
-		if(providerPlanType == LocationPlanType.PREMIUM) {
-			location.setLocationPlanType(LocationPlanType.PREMIUM);
-		}
-		else {
-			location.setLocationPlanType(LocationPlanType.PER_PHOTO);
-		}
-
-		model.addAttribute("location", location);
-		
+	
 		// Set the creation and modified date.
 		location.setCreationDate(currentDate);
 		location.setModifiedDate(currentDate);
 		
+		model.addAttribute("location", location);
+
 		return "addLocation";
 	}
 	
@@ -296,9 +292,8 @@ public class LocationProviderController implements ServletContextAware{
 	 * Persist the new location to the database
 	 */
 	@RequestMapping(value="addLocation.request", method=RequestMethod.POST)
-	protected String addNewLocation(@ModelAttribute("locationProvider")LocationProvider locationProvider, Location location) {
-		// Set the number of images added when creating this file.
-		location.setNumberOfImages(location.getLocationImages().size());
+	protected String addNewLocation(@ModelAttribute("locationProvider")LocationProvider locationProvider, 
+			@ModelAttribute("location") Location location) {
 		try {
 			locationProvider.addLocation(location);
 			providerService.addLocation(location);
@@ -320,9 +315,13 @@ public class LocationProviderController implements ServletContextAware{
 	 */
 	@RequestMapping(value="returnFromFileUpload.request", method=RequestMethod.POST)
 	protected String returnFromFileUpload(@ModelAttribute("locationProvider")LocationProvider locationProvider,
-			@ModelAttribute("location")Location location) {
+			@ModelAttribute("location")Location location, 
+			@RequestParam(value="mainPhotoRadio", defaultValue="0") long coverPhotoImageId,
+			@RequestParam("nextPage") String nextPage) {
+		location.setCoverPhotoUrl(coverPhotoImageId);
 		providerService.modifyLocation(location);
-		return "providerNavigation";
+		
+		return nextPage;
 	}
 	
 	/**
@@ -351,7 +350,7 @@ public class LocationProviderController implements ServletContextAware{
 				break;
 			}
 		}
-		model.addAttribute("editLocation", editLocation);
+		model.addAttribute("location", editLocation);
 		
 		return "editLocation";
 	}
@@ -360,9 +359,9 @@ public class LocationProviderController implements ServletContextAware{
 	 * Update the edited location to the database
 	 */
 	@RequestMapping(value="editLocation.request", method=RequestMethod.POST)
-	protected String editLocation(@ModelAttribute("locationProvider")LocationProvider locationProvider, @ModelAttribute("editLocation") Location editLocation) {
+	protected String editLocation(@ModelAttribute("locationProvider")LocationProvider locationProvider, @ModelAttribute("location") Location editLocation) {
 		// Persist the modifications to the database.
-		providerService.modifyUser(locationProvider);
+		providerService.modifyLocation(editLocation);
 		
 		return "editLocationListings";
 	}
@@ -396,6 +395,7 @@ public class LocationProviderController implements ServletContextAware{
 		
 		return "searchLocationRequests";
 	}
+	
 	@RequestMapping(value="gotoPhoto.request", method=RequestMethod.POST)
 	protected String gotoPhoto(@ModelAttribute("location")Location location, Model model) {
 		UploadForm uploadForm = new UploadForm();
@@ -526,4 +526,10 @@ public class LocationProviderController implements ServletContextAware{
 		
 		return "viewSubmissionsList";
 	}
+	/*
+	protected String navigateFromSubmissionListingPage() {
+		
+		return nextPage;
+	}
+	*/
 }

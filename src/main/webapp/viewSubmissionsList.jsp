@@ -11,6 +11,7 @@
 <body>
 <h2>Submissions</h2>
 	<form:form modelAttribute="locationProvider">
+		<input type="hidden" name="nextPage" value="providerNavigation"/>
 		<c:if test="${locationProvider.requestSubmissions.size() == 0}">
 			<p>You have no submissions at this time.</p>
 		</c:if>
@@ -20,7 +21,7 @@
 					<th width="250">Location Name</th>
 					<th width="250">Submission Date</th>
 					<th width="250"></th>
-					<th width="250"></th>
+					<th width="250">Delete Submission:<input type="checkbox" name="deleteSubmission" value="${submission.id}"/></th>
 				</tr>
 				<tr>
 					<td>${submission.location.locationName}</td>
@@ -75,6 +76,7 @@
 		</c:forEach>
 	</form:form>
 	<br/>
+	<!-- <a href="navigateFromSubmissionListingPage.request">My Main Page</a> -->
 	<a href="./providerNavigation.jsp">My Main Page</a>
 	<br/>
 	<a href="./index.jsp">Home</a>

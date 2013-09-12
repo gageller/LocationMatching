@@ -9,6 +9,9 @@ import com.locationmatching.enums.LocationType;
 public class GlobalVars {
 	public static Map<String, String> stateMap = new LinkedHashMap<String, String>();
 	public static EnumMap<LocationType, String> locationTypes = new EnumMap<LocationType, String>(LocationType.class);
+	// Total number of free images for Basic and Premium plans
+	public final static int BASIC_FREE_PHOTO_AMOUNT = 5;
+	public final static int PREMIUM_FREE_PHOTO_AMOUNT = 10;
 	
 	static {
 		stateMap.put("", "");

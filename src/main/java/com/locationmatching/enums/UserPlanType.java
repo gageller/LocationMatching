@@ -10,11 +10,11 @@ package com.locationmatching.enums;
  * @version 0.0.1
  *
  */
-public enum LocationPlanType {
+public enum UserPlanType {
 	/**
 	 * Free - Up to three pictures per location
 	 * PerPhoto - Up to three pictures plus one time cost for each additional picture.
 	 * Premium - Unlimited locations with unlimited pictures per location.
 	 */
-	FREE, PER_PHOTO, PREMIUM;
+	BASIC, PREMIUM;
 }

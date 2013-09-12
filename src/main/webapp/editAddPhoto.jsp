@@ -12,7 +12,7 @@
 	<!--
 		function saveImages() {
 			document.forms("addPhoto").action="returnFromFileUpload.request";
-			document.forms("addPhoto").nextPage.value="providerNavigation";
+			document.forms("addPhoto").nextPage.value="editLocation";
 			document.forms("addPhoto").submit();
 		}
 	-->
@@ -21,43 +21,41 @@
 </head>
 <body>
 	<h2>Add Photo</h2>
-	<form:form name="addPhoto" method="POST" action="uploadFile.request" enctype="multipart/form-data">
+	<form:form name="addPhoto" method="POST" action="uploadFile.request" enctype="multipart/form-data" modelAttribute="editLocation">
 			<input name="multipartFile" type="file" size="75"/>
 			<input type="submit" value="Add Photo"/>
-			<input type="hidden" name="nextPage" value="addPhoto"/>
+			<input type="hidden" name="nextPage" value="editAddPhoto"/>
 			
 			<p class="errorMessage">${errorMessage}</p>
 			<p class="successMessage">${fileuploadSuccessMessage}</p>
 			<table cellspacing="10px" width="1000">
 			<c:set var="itemCount" value="0"/>
 				<tr>
-			<c:forEach items="${location.locationImages}" var="image">
-				<c:if test="${image.hidden == false}">
-					<c:if test="${itemCount == 3}">
+			<c:forEach items="${editLocation.locationImages}" var="image">
+				<c:if test="${itemCount == 3}">
+					</tr>
+					<tr>
+					<c:set var="itemCount" value="0"/>
+				</c:if>
+					<td>
+					<table>
+						<tr>
+							<td colspan="2"><img alt="Location Photo" src="${image.relativeUrlPath}" height="300" width="400"/></td>
 						</tr>
 						<tr>
-						<c:set var="itemCount" value="0"/>
-					</c:if>
-						<td>
-						<table>
-							<tr>
-								<td colspan="2"><img alt="Location Photo" src="${image.relativeUrlPath}" height="300" width="400"/></td>
-							</tr>
-							<tr>
-								<td><input type="radio" name="mainPhotoRadio" <c:if test="${image.isCoverPhoto() == true}">checked </c:if>value="${image.id}"/> Main Photo </td>
-							
-								<td>${image.photoPlanType}</td>
-							</tr>
-						</table>
-						</td>
+							<td><input type="radio" name="mainPhotoRadio" <c:if test="${image.isCoverPhoto() == true}">checked </c:if>value="${image.id}"/> Main Photo </td>
 						
-					<c:set var="itemCount" value="${itemCount + 1}"/>
-				</c:if>
+							<td>${image.photoPlanType}</td>
+						</tr>
+					</table>
+					</td>
+					
+				<c:set var="itemCount" value="${itemCount + 1}"/>
 			</c:forEach>
 			</tr>
 		</table>
 		<br/>
-		<input type="button" onClick="saveImages()" value="My Main Page"/>
+		<input type="button" onClick="saveImages()" value="Finish Editing Location"/>
 		<br/>
 		<a href="./index.jsp">Home</a>
 		

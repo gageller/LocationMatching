@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.locationmatching.enums.ImageType;
+import com.locationmatching.enums.PhotoPlanType;
 
 /**
  * 
@@ -85,7 +86,14 @@ public class Image {
 	 * in the email to the location scout who owns the location request.
 	 */
 	@Column(name="COVER_PHOTO")
-	private Boolean coverPhoto;
+	private Boolean coverPhoto = false;
+	
+	/**
+	 * Enum of the photo plan this Image belongs to. FREE_PHOTO or PAID_PHOTO
+	 */
+	@Enumerated(EnumType.STRING)
+	@Column(name="PHOTO_PLAN_TYPE")
+	private PhotoPlanType photoPlanType;
 	
 	/**
 	 * Parent location for this image.
@@ -93,6 +101,14 @@ public class Image {
 	@ManyToOne()
 	@JoinColumn(name="LOCATION_ID")
 	private Location parentLocation;
+	
+	/**
+	 * Flag to determine whether or not to show the image. This will be used
+	 * when the user deletes an image. The actually images will be deleted but
+	 * the row in the database will not be deleted. This is for audit purposes.
+	 */
+	@Column(name="HIDDEN")
+	private Boolean hidden = false;
 	
 	// Getter Methods
 	public Long getId() {
@@ -125,6 +141,12 @@ public class Image {
 	public Boolean getCoverPhoto() {
 		return coverPhoto;
 	}
+	public PhotoPlanType getPhotoPlanType() {
+		return photoPlanType;
+	}
+	public Boolean getHidden() {
+		return hidden;
+	}
 	
 	// Setter Methods
 	public void setId(Long id) {
@@ -156,6 +178,12 @@ public class Image {
 	}
 	public void setCoverPhoto(Boolean isCoverPhoto) {
 		this.coverPhoto = isCoverPhoto;
+	}
+	public void setPhotoPlanType(PhotoPlanType photoPlanType) {
+		this.photoPlanType = photoPlanType;
+	}
+	public void setHidden(Boolean hidden) {
+		this.hidden = hidden;
 	}
 	
 	/**

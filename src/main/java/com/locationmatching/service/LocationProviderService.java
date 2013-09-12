@@ -2,6 +2,7 @@ package com.locationmatching.service;
 
 import java.util.List;
 
+import com.locationmatching.component.Image;
 import com.locationmatching.component.Location;
 import com.locationmatching.domain.LocationProvider;
 import com.locationmatching.domain.User;
@@ -17,4 +18,5 @@ public interface LocationProviderService {
 	public void modifyLocation(Location location);
 	public Location getLocation(Long id);
 	public void deleteLocations(LocationProvider locationProvider, String[] locationsToDelete);
+	public void addImage(Image image);
 }
