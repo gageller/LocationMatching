@@ -41,7 +41,7 @@
 						<td>
 						<table>
 							<tr>
-								<td colspan="2"><img alt="Location Photo" src="${image.relativeUrlPath}" height="300" width="400"/></td>
+								<td colspan="2"><img alt="Location Photo" src="${image.relativeUrlPath}" height="250" width="330"/></td>
 							</tr>
 							<tr>
 								<td><input type="radio" name="mainPhotoRadio" <c:if test="${image.isCoverPhoto() == true}">checked </c:if>value="${image.id}"/> Main Photo </td>

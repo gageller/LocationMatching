@@ -28,9 +28,9 @@
 </script>
 </head>
 <body>
+<h2>Account Information and Locations</h2>
 <form:form name="provider" method="GET" commandName="locationProvider">
 	<input type="hidden" name="locationIndex"/>
-	<h2>${locationProvider.firstName} ${locationProvider.lastName }</h2>
 	<table>
 		<tr>
 			<td class="boldCellText">Email Address:</td>
@@ -40,19 +40,21 @@
 			<td>Phone Number:</td>
 			<td>${locationProvider.phoneNumber}</td>
 		</tr>
+<!-- 
 		<tr>
 			<td><input type="button" value="Edit User Information..." onClick='processButtonClick("editProvider.request")'/></td>
 		</tr>
+-->		
 	</table>
 	<br/>
-	<input type="button" name="addLocationBttn" value="Add Location..." onClick='processButtonClick("addLocation.request")'/>
+<!-- 	<input type="button" name="addLocationBttn" value="Add Location..." onClick='processButtonClick("addLocation.request")'/> -->
 	<br/>
 	<h3>Locations</h3>
 			<c:forEach items="${locationProvider.providerLocations}" var="location">
 				<table border="1" width="600">
 					<tr>
-						<td colspan="4"><b>Location Name:</b> ${location.locationName}</td>
-						<td><input type="button" value="Edit Location..." onClick='editLocationButtonClick("${location.id}")'/></td>						
+						<td colspan="5"><b>Location Name:</b> ${location.locationName}</td>
+					<!-- 	<td><input type="button" value="Edit Location..." onClick='editLocationButtonClick("${location.id}")'/></td> -->						
 					</tr>
 					<tr>
 						<td><b>Address:</b></td>
@@ -72,9 +74,11 @@
 				<br/>
 			</c:forEach>
 	</form:form>
+<!-- 	
 	<br/>
 	<a href="./providerNavigation.jsp">My Main Page</a>
 	<br/>
 	<a href="./index.jsp">Home</a>
+-->
 </body>
 </html>

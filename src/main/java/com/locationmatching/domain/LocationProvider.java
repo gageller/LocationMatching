@@ -2,16 +2,13 @@ package com.locationmatching.domain;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -24,6 +21,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import com.locationmatching.component.Location;
 import com.locationmatching.component.ProviderSubmission;
 import com.locationmatching.enums.UserPlanType;
+import com.locationmatching.enums.UserType;
 
 /**
  * Location Provider searches through list of Location Scout requests to see
@@ -38,7 +36,7 @@ import com.locationmatching.enums.UserPlanType;
  *
  */
 @Entity
-@Table(name="LocationProvider")
+@DiscriminatorValue(value=UserType.Values.PROVIDER)
 public class LocationProvider extends User {
 	/**
 	 * Collection of Location objects associated with this provider.

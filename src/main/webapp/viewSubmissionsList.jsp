@@ -76,10 +76,10 @@
 		</c:forEach>
 	</form:form>
 	<br/>
-	<!-- <a href="navigateFromSubmissionListingPage.request">My Main Page</a> -->
+	<!--
 	<a href="./providerNavigation.jsp">My Main Page</a>
 	<br/>
 	<a href="./index.jsp">Home</a>
-	
+	-->
 </body>
 </html>

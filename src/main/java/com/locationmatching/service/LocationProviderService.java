@@ -19,4 +19,6 @@ public interface LocationProviderService {
 	public Location getLocation(Long id);
 	public void deleteLocations(LocationProvider locationProvider, String[] locationsToDelete);
 	public void addImage(Image image);
+	public void setCoverPicture(Location location);
+	public void deleteImages(Location location, String[] photoDeleteIds);
 }

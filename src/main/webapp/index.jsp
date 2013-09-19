@@ -25,8 +25,8 @@
 			<th align="left" width="598">Location Scout</th>
 		</tr>
 		<tr>
-			<td class="errorMessageSmaller">${userProviderAlreadyExistsMessage}</td>
-			<td class="errorMessageSmaller">${userScoutAlreadyExistsMessage}</td>
+			<td class="errorMessageSmaller">${userProviderLoginErrorMessage}</td>
+			<td class="errorMessageSmaller">${userScoutLoginErrorMessage}</td>
 		</tr>
 		<tr>
 			<td>Login</td>
@@ -54,7 +54,7 @@
 			<td><input type="password" name="scoutPassword"/></td>
 		</tr>
 		<tr>
-			<td><input type="button" name="providerSubmit" value="Submit" onClick='submitButtonClick("providerNavigation.request", "POST")'/></td>
+			<td><input type="button" name="providerSubmit" value="Submit" onClick='submitButtonClick("providerAuthentication.request", "POST")'/></td>
 			<!-- <td>&nbsp;</td> -->
 			<td><input type="button" name="scoutSubmit" value="Submit" onClick='submitButtonClick("scout.request", "POST")'/></td>
 		</tr>
@@ -68,7 +68,7 @@
 			<td><input type="button" name="newScoutBttn" value="Create New Location Scout..." onClick='submitButtonClick("createNewScout.request", "GET")'/></td>
 		</tr>
 	</table>
-	<a href="iFrames.jsp">iFrames</a>
+
 </form>
 </body>
 </html>

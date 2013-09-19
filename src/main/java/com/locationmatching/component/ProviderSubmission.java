@@ -85,7 +85,7 @@ public class ProviderSubmission {
 	 * Pointer back to the Location Provider parent
 	 */
 	@ManyToOne()
-	@JoinColumn(name="LOCATIONPROVIDER_ID", nullable=false, insertable=true, updatable=false)
+	@JoinColumn(name="USER_ID", nullable=false, insertable=true, updatable=false)
 	private LocationProvider submissionOwner;
 	
 	// Getter Methods

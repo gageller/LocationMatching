@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -11,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -25,7 +28,9 @@ import com.locationmatching.enums.UserType;
  * 
  */
 @Entity
-@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Table(name="User")
+@DiscriminatorColumn(name="USER_TYPE", discriminatorType=DiscriminatorType.STRING)
 public abstract class User implements Serializable{
 	static final long serialVersionUID = 1L;
 	
@@ -80,9 +85,9 @@ public abstract class User implements Serializable{
 	 * Which type of user this is. 
 	 * Provider or Scout
 	 */
-	@Enumerated(EnumType.STRING)
-	@Column(name="USER_TYPE")
-	private UserType userType;
+//	@Enumerated(EnumType.STRING)
+//	@Column(name="USER_TYPE")
+//	private UserType userType;
 	
 	// Getter Methods
 	public Long getId() {
@@ -112,9 +117,9 @@ public abstract class User implements Serializable{
 	public String getPassword() {
 		return password;
 	}
-	public UserType getUserType() {
-		return userType;
-	}
+//	public UserType getUserType() {
+//		return userType;
+//	}
 	
 	// Setter Methods
 	public void setId(Long id) {
@@ -144,7 +149,7 @@ public abstract class User implements Serializable{
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public void setUserType(UserType userType) {
-		this.userType = userType;
-	}
+//	public void setUserType(UserType userType) {
+//		this.userType = userType;
+//	}
 }

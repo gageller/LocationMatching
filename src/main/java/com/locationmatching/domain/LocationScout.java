@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -16,6 +17,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import com.locationmatching.component.LocationRequest;
 import com.locationmatching.component.ScoutAlert;
+import com.locationmatching.enums.UserType;
 
 /**
  * Location scout submits request for the location that is being sought.
@@ -27,7 +29,7 @@ import com.locationmatching.component.ScoutAlert;
  * @version 0.0.1
  */
 @Entity
-@Table(name="LocationScout")
+@DiscriminatorValue(value=UserType.Values.SCOUT)
 public class LocationScout extends User {
 	/**
 	 * Set of Request objects for this scout.

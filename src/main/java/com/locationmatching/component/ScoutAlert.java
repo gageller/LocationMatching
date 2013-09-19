@@ -61,7 +61,7 @@ public class ScoutAlert {
 	private Boolean viewed;
 
 	@ManyToOne()
-	@JoinColumn(name="LOCATIONSCOUT_ID", nullable=false, insertable=true, updatable=false)
+	@JoinColumn(name="USER_ID", nullable=false, insertable=true, updatable=false)
 	/**
 	 * Location Scout owner of the alert
 	 */

@@ -40,7 +40,7 @@ public class LocationRequest {
 	 * Pointer back to the parent scout
 	 */
 	@ManyToOne()
-	@JoinColumn(name="LOCATIONSCOUT_ID", nullable=false, insertable=true, updatable=false)
+	@JoinColumn(name="USER_ID", nullable=false, insertable=true, updatable=false)
 	private LocationScout requestOwner;
 	
 	@Column(name="LOCATION_REQUEST_NAME")

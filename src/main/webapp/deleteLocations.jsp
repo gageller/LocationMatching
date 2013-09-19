@@ -22,9 +22,11 @@
 		<br/>
 		<input type="submit" value="Delete Locations"/>
 	</form:form>
+<!-- 
 	<br/>
 	<a href="./providerNavigation.jsp">My Main Page</a>
 	<br/>
 	<a href="./index.jsp">Home</a>
+-->
 </body>
 </html>

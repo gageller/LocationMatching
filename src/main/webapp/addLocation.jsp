@@ -12,6 +12,7 @@
 <title>Add a New Location</title>
 </head>
 <body> 
+<h2>Add a New Location</h2>
 	<form:form name="addLocation" action="addLocation.request" method="POST"  modelAttribute="location">
 		<input type="hidden" name="source" value="${locationProvider.id}" />
 		<table>
@@ -51,10 +52,11 @@
 
 		<input type="submit" value="Finish Adding Location"/>		
 		</form:form>
+<!-- 
 	<br/>
 	<a href="./providerNavigation.jsp">My Main Page</a>
 	<br/>
 	<a href="./index.jsp">Home</a>
-
+-->
 </body>
 </html>

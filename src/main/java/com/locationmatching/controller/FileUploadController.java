@@ -204,7 +204,10 @@ public class FileUploadController implements ServletContextAware{
 			model.addAttribute("errorMessage", message);
 		}
 		
-		return nextPage;
+		// Set the name of the template to use for the view.
+		model.addAttribute("templateName", "addPhotoPage");
+		
+		return "locationProviderHomePage";
 	}
 
 

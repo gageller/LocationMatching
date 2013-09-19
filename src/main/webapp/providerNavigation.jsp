@@ -7,18 +7,21 @@
 <title>Provider Navigation</title>
 </head>
 <body>
+	<h2>${locationProvider.firstName} ${locationProvider.lastName}</h2>
+
 	<form method="GET" commandName="locationProvider">
-		<h2>${locationProvider.firstName} ${locationProvider.lastName}</h2>
 		
 		<h3><u>Manage My Account</u></h3>
 		<p>
-			<a href="provider.jsp">View Account Information and Locations</a>
+			<a href="returnMainPage.request">View Account Information and Locations</a>
+			<br/>
+			<a href="setupEditLocationProvider.request">Edit Account Information</a>
 		</p>
 		<p>
 			<h3><u>Manage My Locations</u></h3>
 			<a href="addLocation.request">Add a Location</a>
 			<br/>
-			<a href="editLocationListings.jsp">Edit a Location</a>
+			<a href="setupEditLocationListings.request">Edit a Location</a>
 			</br/>
 			<a href="deleteLocations.jsp">Delete a Location</a>
 		</p>

@@ -2,6 +2,10 @@ package com.locationmatching.component;
 
 import java.util.Date;
 
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+
+import com.locationmatching.domain.User;
 import com.locationmatching.enums.CreditCardType;
 
 /**
@@ -45,6 +49,13 @@ public class CreditCardImpl implements CreditCard {
 	 */
 	Date expirationDate;
 	
+	/**
+	 * Owner of the Credit Card
+	 */
+	@OneToOne()
+	@JoinColumn(name="USER_ID", nullable=false, insertable=true, updatable=false)
+	private User creditCardHolder;
+	
 	// Getter Methods
 	public Long getId() {
 		return id;
@@ -69,7 +80,11 @@ public class CreditCardImpl implements CreditCard {
 	public Date getExpirationDate() {
 		return expirationDate;
 	}
-
+	public User getCreditCardHolder() {
+		return creditCardHolder;
+	}
+	
+	// Setter Methods
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -93,5 +108,7 @@ public class CreditCardImpl implements CreditCard {
 	public void setExpirationDate(Date expirationDate) {
 		this.expirationDate = expirationDate;
 	}
-
+	public void setCreditCardHolder(User creditCardHolder) {
+		this.creditCardHolder = creditCardHolder;
+	}
 }

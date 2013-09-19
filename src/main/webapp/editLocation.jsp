@@ -4,11 +4,21 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Edit Location</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<title>Edit Location</title>
+	<script type="text/javascript">
+		<!--
+		function bttnClick(action) {
+			document.forms("editLocationForm").action = action;
+			document.forms("editLocationForm").method="GET";
+			document.forms("editLocationForm").submit();
+		}
+		-->
+	</script>
 </head>
 <body>
-	<form:form action="editLocation.request" method="POST" modelAttribute="editLocation">
+	<h2>Edit this Location</h2>
+	<form:form name="editLocationForm" action="editLocation.request" method="POST" modelAttribute="location">
 
 		<table>
 			<tr>
@@ -35,14 +45,26 @@
 				<td>Zip Code*</td>
 				<td><form:input path="locationZipcode"/></td>
 			</tr>
-		</table>
-		<br/>
-		<input type="button" name="addImage" value="Add/Delete Photos..."/>
-		<input type="submit" value="Update"/>		
+			<tr>
+				<td colspan="2">&nbsp;</td>
+			</tr>
+			<tr>
+				<td><input type="button" name="addPhoto" value="Add Photos..." onClick="bttnClick('gotoAddPhoto.request')"/></td>
+				<td><input type="button" name="deletePhoto" value="Delete Photos..." onClick="bttnClick('setupDeletePhotos.request')"/></td>
+			</tr>
+			<tr>
+				<td colspan="2">&nbsp;</td>
+			</tr>
+			<tr>
+				<td><input type="submit" value="Update Location Information"/></td>
+			</tr>
+		</table>	
 	</form:form>
+<!-- 
 <br/>
 <a href="./providerNavigation.jsp">My Main Page</a>
 <br/>
 <a href="./index.jsp">Home</a>
+-->
 </body>
 </html>

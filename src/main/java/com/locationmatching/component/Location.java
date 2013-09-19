@@ -46,7 +46,7 @@ public class Location {
 	 * Parent of this location
 	 */
 	@ManyToOne()
-	@JoinColumn(name="LOCATIONPROVIDER_ID", nullable=false, insertable=true, updatable=false)
+	@JoinColumn(name="USER_ID", nullable=false, insertable=true, updatable=false)
 	LocationProvider locationOwner;
 	
 	/**
@@ -93,16 +93,6 @@ public class Location {
 	private String locationZipcode;
 
 	/**
-	 * Plan type of this location. 
-	 * Each location can have it's own individual plan.
-	 * If the provider has a premium subscription, all
-	 * of the locations are premium plan types.
-	 */
-//	@Enumerated(EnumType.STRING)
-//	@Column(name="LOCATION_PLAN_TYPE")
-//	private UserPlanType locationPlanType;
-	
-	/**
 	 * Number of free photos associated with this location.
 	 * The number of free photos will determine whether the
 	 * provider needs to pay for additional photos or
@@ -134,9 +124,7 @@ public class Location {
 	@OneToMany(mappedBy="parentLocation") // mappedBy is equivalent to inverse=true
 	@Fetch(value = FetchMode.JOIN)
 	@org.hibernate.annotations.Cascade(value=org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-	@Where(clause="hidden=0 and approved=1")
-//	@org.hibernate.annotations.Cascade(value={org.hibernate.annotations.CascadeType.DELETE_ORPHAN, 
-//			org.hibernate.annotations.CascadeType.ALL})
+//	@Where(clause="hidden=0 and approved=1")
 	Set<Image>locationImages = new LinkedHashSet();
 	
 	/**
@@ -144,6 +132,12 @@ public class Location {
 	 */
 	@Column(name="COVER_PHOTO_URL")
 	private String coverPhotoUrl;
+	
+	/**
+	 * Id of the cover photo
+	 */
+	@Column(name="COVER_PHOTO_ID")
+	Long coverPhotoId;
 	
 	/**
 	 * Date Created
@@ -185,11 +179,6 @@ public class Location {
 	public LocationProvider getLocationOwner() {
 		return locationOwner;
 	}
-	/*
-	public UserPlanType getLocationPlanType() {
-		return locationPlanType;
-	}
-*/
 	public Integer getNumberOfFreePhotos() {
 		return numberOfFreePhotos;
 	}
@@ -213,6 +202,9 @@ public class Location {
 	}
 	public String getCoverPhotoUrl() {
 		return coverPhotoUrl;
+	}
+	public Long getCoverPhotoId() {
+		return coverPhotoId;
 	}
 	
 	// Setter Methods
@@ -243,11 +235,6 @@ public class Location {
 	public void setLocationOwner(LocationProvider locationOwner) {
 		this.locationOwner = locationOwner;
 	}
-/*
-	public void setLocationPlanType(UserPlanType locationPlanType) {
-		this.locationPlanType = locationPlanType;
-	}
-*/
 	public void setNumberOfFreePhotos(Integer numberOfFreePhotos) {
 		this.numberOfFreePhotos = numberOfFreePhotos;
 	}
@@ -396,7 +383,7 @@ public class Location {
 	/**
 	 * Remove the image using the id
 	 */
-	public void removeImage(Long id) {
+	public Image removeImage(Long id) {
 		Iterator<Image> itr;
 		Image image = null;
 		
@@ -427,6 +414,8 @@ public class Location {
 				numberOfPaidPhotos--;
 			}
 		}
+		
+		return image;
 	}
 	
 	/**

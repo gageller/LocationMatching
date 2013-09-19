@@ -19,6 +19,10 @@
 {
 	color:red;
 }
+.boldText
+{
+	font-weight:bold;
+}
 .tableCellNoBorder
 {
 	border:none;

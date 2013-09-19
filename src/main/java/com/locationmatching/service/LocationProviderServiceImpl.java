@@ -2,6 +2,7 @@ package com.locationmatching.service;
 
 import java.io.File;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -175,7 +176,7 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 				Location location;
 				
 				location = locationIterator.next();
-				deleteImageFiles(location.getLocationImages());
+				deleteImageFiles(location.getLocationImages(), true);
 			}
 			
 			session.delete(user);
@@ -473,13 +474,13 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 				id = locationsToDelete[index];
 				location = locationProvider.removeLocation(Long.valueOf(id));
 				
-				deleteImageFiles(location.getLocationImages());
+				deleteImageFiles(location.getLocationImages(), true);
 				location.setActive(false);
 				
 				session.update(location);
 			}
 			
-			session.delete(locationProvider);
+//			session.delete(locationProvider);
 			
 			transaction.commit();
 		}
@@ -509,14 +510,64 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 		}
 	}
 	
-	private void deleteImageFiles(Set<Image>deleteImages) {
-		for(Image image: deleteImages) {
-			String absoluteFilePath;
-			File deleteFile;
+	/**
+	 * Set the cover photo url and id in the Location object.
+	 * Persist the image settings for the cover photo flag. The settings for
+	 * the cover photo flag have been set by the setCoverPhotoUrl method of the 
+	 * The cascading style for the parent Location object is set to delete-orphan.
+	 * Because of this just updating the parent Location will not be cascading down
+	 * to the Image collection.
+	 * 
+	 * @param location - Location object that contains the collection of images
+	 */
+	@Override
+	public void setCoverPicture(Location location) {
+		Session session = null;
+		Transaction transaction = null;
+		Iterator<Image> iterator;
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
 			
-			absoluteFilePath = image.getAbsoluteFilePath();
-			deleteFile = new File(absoluteFilePath);
-			deleteFile.delete();
+			// Update the Location parent object because the cover photo url
+			// has been updated.
+			session.update(location);
+			
+			// Now iterate through the Image collection and update each of Image
+			// objects because the cover page flag has changed.
+			iterator = location.getLocationImages().iterator();
+			while(iterator.hasNext() == true) {
+				Image image;
+				
+				image= iterator.next();
+				session.update(image);
+			}
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			throw ex;
+		}
+		finally {
+			try {
+				session.close();
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
 
@@ -625,6 +676,119 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 			session.save(image);
 			
 			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			throw ex;
+		}
+		finally {
+			try {
+				session.close();
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+	/**
+	 * Iterate through the collection of Image objects and delete the 
+	 * associated image files off of the server.
+	 * 
+	 * @param deleteImages - image files to delete off of the server.
+	 * @param deleteDirectory - Flag to determine whether to delete the directory folder. This would be done when all of the images have been deleted. 
+	 */
+	private void deleteImageFiles(Set<Image>deleteImages, boolean deleteDirectory) {
+		String absoluteFilePath;
+		File deleteFile;
+		
+		// If we are deleting the directory as well, we need to strip off
+		// the file name and create a new file object for the directory and
+		// delete it.
+		if(deleteDirectory == true) {
+			Iterator<Image> iterator;
+			
+			iterator = deleteImages.iterator();
+			if(iterator.hasNext() == true) {
+				Image image;
+				int index;
+				
+				image = iterator.next();
+				absoluteFilePath = image.getAbsoluteFilePath();
+				// Strip off the file name and delete the entire directory.
+				index = absoluteFilePath.lastIndexOf(File.separator);
+				absoluteFilePath = absoluteFilePath.substring(0, index);
+				
+				deleteFile = new File(absoluteFilePath);
+				
+				if(deleteFile.isDirectory() == true) {
+					deleteFile.delete();
+				}
+			}
+		}
+		else {
+			// We are not deleting the entire directory so just delete the 
+			// selected files.
+			for(Image image: deleteImages) {
+				absoluteFilePath = image.getAbsoluteFilePath();
+				deleteFile = new File(absoluteFilePath);
+				deleteFile.delete();
+			}
+		}
+	}
+
+	/**
+	 * Delete photos based on the ids passed in from the
+	 * String array
+	 * 
+	 * @param location - Location that owns the pictures;
+	 * @param photoDeleteIds - Array of ids of Images to delete.
+	 */
+	@Override
+	public void deleteImages(Location location, String[] photoDeleteIds) {
+		Session session = null;
+		Transaction transaction = null;
+		Set<Image> imagesToDelete = new HashSet<Image>();
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			// Loop through the delete Image id array and call the Location's
+			// removeImage method which will return the Image object that has been
+			// removed. Set that Image object's hidden flag to true and add it to 
+			// the Image set that will be deleted from the server.
+			// objects because the cover page flag has changed.
+			for(int index = 0; index < photoDeleteIds.length; index++) {
+				Image image;
+				
+				image = location.removeImage(Long.valueOf(photoDeleteIds[index]));
+				image.setHidden(true);
+				
+				session.update(image);
+				// Add image to set so we can get the file path and delete the image
+				// off of the server.
+				imagesToDelete.add(image);
+			}
+			transaction.commit();
+			boolean deleteDirectory = false;
+			
+			// Delete the directory if there are no more Image objects in the collection.
+			if(location.getLocationImages().isEmpty() == true) {
+				deleteDirectory = true;
+			}
+			deleteImageFiles(imagesToDelete, deleteDirectory);
 		}
 		catch(HibernateException ex) {
 			try{

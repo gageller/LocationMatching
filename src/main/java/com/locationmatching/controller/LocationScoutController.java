@@ -87,7 +87,7 @@ public class LocationScoutController {
 		locationScout.setCreationDate(date);
 		locationScout.setLastAccessDate(date);
 		// Set the user type
-		locationScout.setUserType(UserType.SCOUT);
+//		locationScout.setUserType(UserType.SCOUT);
 		
 		// Go to the provider.jsp page to add locations
 		nextPage = "scoutNavigation";
@@ -106,7 +106,7 @@ public class LocationScoutController {
 			// user back to register page
 			locationScout.setUserName("");
 			locationScout.setPassword("");
-			model.addAttribute("userScoutAlreadyExistsMessage", "This User Name already exists. Please select another User Name.");
+			model.addAttribute("userScoutLoginErrorMessage", "This User Name already exists. Please select another User Name.");
 		}
 		
 		return nextPage;
@@ -133,8 +133,8 @@ public class LocationScoutController {
 			view = "scoutNavigation";
 		}
 		else {
-			// Not found. Need to add code to handle error message
-			view = "redirect:/index.jsp";
+			model.addAttribute("userScoutLoginErrorMessage", "We could not find this User Name. Please try again.");
+			view = "forward:/index.jsp";
 		}
 		
 		return view;
