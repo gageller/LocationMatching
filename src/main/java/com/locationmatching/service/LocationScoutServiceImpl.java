@@ -16,7 +16,9 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
+import com.locationmatching.component.Location;
 import com.locationmatching.component.LocationRequest;
+import com.locationmatching.domain.LocationProvider;
 import com.locationmatching.domain.LocationScout;
 import com.locationmatching.domain.User;
 import com.locationmatching.enums.LocationType;
@@ -24,8 +26,8 @@ import com.locationmatching.exception.LocationProcessingException;
 import com.locationmatching.exception.UserAlreadyExistsException;
 import com.locationmatching.util.HibernateUtil;
 @Service
-public class LocationScoutServiceImpl implements LocationScoutService {
-
+public class LocationScoutServiceImpl extends LocationUserService {
+/*
 	@Override
 	public void createUser(LocationScout user) {
 		Session session = null;
@@ -183,6 +185,7 @@ public class LocationScoutServiceImpl implements LocationScoutService {
 		return null;
 	}
 
+	
 	@Override
 	public User authenticateUser(String userName, String password) {
 		Session session = null;
@@ -236,16 +239,15 @@ public class LocationScoutServiceImpl implements LocationScoutService {
 		
 		return scout;
 	}
-
+*/
 	/**
 	 * Add the newly created LocationRequest object to the database. 
 	 * We do an update on the parent (LocationScout) to add the LocationRequest
 	 * to the database through the association that was set up
 	 * 
-	 * @param LocationScout
-	 * @param LocationRequest
+	 * @param LocationRequest - New LocationRequest object to save to database.
 	 */
-	public void addLocationRequest(LocationScout scout, LocationRequest locationRequest) {
+	public void addLocationRequest(LocationRequest locationRequest) {
 		Session session = null;
 		Transaction transaction = null;
 		
@@ -381,7 +383,7 @@ public class LocationScoutServiceImpl implements LocationScoutService {
 		return locationRequests;
 	}
 */
-	@Override
+//	@Override
 	public Map<Long, LocationRequest> getLocationRequests(LocationRequest searchRequest) {
 		ArrayList<LocationRequest>locationRequestsList = null;
 		Map<Long, LocationRequest>locationRequests = new TreeMap<Long, LocationRequest>();
@@ -479,15 +481,8 @@ public class LocationScoutServiceImpl implements LocationScoutService {
 	
 		return locationRequests;
 	}
-/*
-	@Override
-	public Map<Long, LocationRequest> getLocationRequests(
-			LocationRequest searchRequest) {
-		// TODO Auto-generated method stub
-		return null;
-	}*/
 
-	@Override
+//	@Override
 	public LocationRequest getLocationRequest(Long id) {
 		Session session = null;
 		Transaction transaction = null;
@@ -528,5 +523,72 @@ public class LocationScoutServiceImpl implements LocationScoutService {
 			}
 		}
 		return locationRequest;
+	}
+
+	/**
+	 * Update the modified LocationRequest object to the database.
+	 * 
+	 * @param locationRequest - The update LocationRequest
+	 */
+	public void modifyLocationRequest(LocationRequest locationRequest) {
+		Session session = null;
+		Transaction transaction = null;
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			session.update(locationRequest);
+			
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			throw ex;
+		}
+		finally {
+			try {
+				if(session != null) {
+					session.close();
+				}
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	// Methods for the Location Provider that are defined as abstract in the LocationUserService
+	// base class so just implement empty method bodies.
+	@Override
+	public void addLocation(Location location) {}
+
+	@Override
+	public void modifyLocation(Location location) {}
+
+	@Override
+	public void setCoverPicture(Location location) {}
+
+	@Override
+	public void deleteImages(Location location, String[] photoDeleteIds) {}
+
+	@Override
+	public void deleteLocations(LocationProvider locationProvider, String[] locationsToDelete) {}
+
+	@Override
+	public Location getLocation(Long id) {
+		return null;
 	}
 }

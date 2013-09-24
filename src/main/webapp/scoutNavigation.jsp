@@ -12,13 +12,15 @@
 		
 		<h3><u>Manage My Account</u></h3>
 		<p>
-			<a href="scout.jsp">View Account Information and Location Requests</a>
+			<a href="returnScoutMainPage.request">View Account Information and Location Requests</a>
+			<br/>
+			<a href="setupEditLocationScout.request">Edit Account Information</a>
 		</p>
 		<p>
 			<h3><u>Manage My Location Requests</u></h3>
 			<a href="addLocationRequest.request">Add a Location Request</a>
 			<br/>
-			<a href="editLocationRequestListings.jsp">Edit a Location Request</a>
+			<a href="setupEditLocationRequestListings.request">Edit a Location Request</a>
 			</br/>
 			<a href="deleteLocationRequestListing.jsp">Delete a Location Request</a>
 		</p>

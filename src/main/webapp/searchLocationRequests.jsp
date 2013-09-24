@@ -103,9 +103,11 @@
 				</table>
 				<br/>
 	</c:forEach>
+<!-- 
 	<br/>
 	<a href="./providerNavigation.jsp">My Main Page</a>
 	<br/>
 	<a href="./index.jsp">Home</a>
+-->
 </body>
 </html>

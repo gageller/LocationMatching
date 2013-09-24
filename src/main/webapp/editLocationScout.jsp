@@ -10,16 +10,16 @@
 <script type="text/javascript">
 	<!--
 	function cancelBttnClicked() {
-		document.forms("editProviderForm").action = "returnProviderMainPage.request";
-		document.forms("editProviderForm").method = "GET";
-		document.forms("editProviderForm").submit();
+		document.forms("editScoutForm").action = "returnScoutMainPage.request";
+		document.forms("editScoutForm").method = "GET";
+		document.forms("editScoutForm").submit();
 	}
 	-->
 </script>
 </head>
 <body>
 	<h2>Edit Provider Information</h2>
-	<form:form name="editProviderForm" action="editLocationProvider.request" method="POST" modelAttribute="locationProvider">
+	<form:form name="editScoutForm" action="editLocationScout.request" method="POST" modelAttribute="locationScout">
 		<table>
 			<tr>
 				<td>First Name: </td>

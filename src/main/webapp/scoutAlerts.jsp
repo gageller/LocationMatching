@@ -26,13 +26,13 @@
 		<c:forEach items="${locationScout.requestAlerts}" var="requestAlert">
 			<table  style="border: 1px solid;"  width="650" <c:if test="${requestAlert.viewed == false}">class="unreadScoutAlert"</c:if>>
 				<tr>
-					<td class="tableCellNoBorder" width="225">City: ${requestAlert.location.locationCity}</td>
-					<td width="275">State: ${requestAlert.location.locationState}</td>
-					<td width="150">Zip Code: ${requestAlert.location.locationZipcode}</td>
+					<td class="tableCellNoBorder" width="225"><label class="boldText">City: </label>${requestAlert.location.locationCity}</td>
+					<td width="275"><label class="boldText">State: </label>${requestAlert.location.locationState}</td>
+					<td width="150"><label class="boldText">Zip Code: </label>${requestAlert.location.locationZipcode}</td>
 				</tr>
 				<tr class="tableCellNoBorder">
 					<td><img src="${requestAlert.location.coverPhotoUrl}" width="100", height="75"/></td>
-					<td>Location Provider Email Address: ${requestAlert.location.locationOwner.emailAddress}</td>
+					<td><label class="boldText">Location Provider Email Address: </label>${requestAlert.location.locationOwner.emailAddress}</td>
 					<td><input type="button" value="View Location Photos" onClick='showLocationPhotos(${requestAlert.locationId})')/></td>
 				</tr>
 			</table>

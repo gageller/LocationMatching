@@ -28,39 +28,25 @@
 			
 			<p class="errorMessage">${errorMessage}</p>
 			<p class="successMessage">${fileuploadSuccessMessage}</p>
-			<table cellspacing="10px" width="1000">
-			<c:set var="itemCount" value="0"/>
+			<table cellspacing="10px" width="100%">
 				<tr>
-			<c:forEach items="${location.locationImages}" var="image">
+			<c:forEach items="${location.locationImages}" var="image" varStatus="iterationStatus">
 				<c:if test="${image.hidden == false}">
-					<c:if test="${itemCount == 3}">
-						</tr>
-						<tr>
-						<c:set var="itemCount" value="0"/>
-					</c:if>
-						<td>
-						<table>
-							<tr>
-								<td colspan="2"><img alt="Location Photo" src="${image.relativeUrlPath}" height="250" width="330"/></td>
-							</tr>
-							<tr>
-								<td><input type="radio" name="mainPhotoRadio" <c:if test="${image.isCoverPhoto() == true}">checked </c:if>value="${image.id}"/> Main Photo </td>
+								<td><img alt="Location Photo" src="${image.relativeUrlPath}" height="250" width="330"/><br/>
+								<input type="radio" name="mainPhotoRadio" <c:if test="${image.isCoverPhoto() == true}">checked </c:if>value="${image.id}"/> Main Photo&nbsp;&nbsp;
 							
-								<td>${image.photoPlanType}</td>
-							</tr>
-						</table>
-						</td>
-						
-					<c:set var="itemCount" value="${itemCount + 1}"/>
+								${image.photoPlanType}</td>
+ 	 				<c:if test="${iterationStatus.count % 3 == 0}">
+	 					<!-- Only three photos per row -->
+	 					</tr>
+	 					<tr>
+	 				</c:if>
 				</c:if>
 			</c:forEach>
 			</tr>
 		</table>
 		<br/>
-		<input type="button" onClick="saveImages()" value="My Main Page"/>
-		<br/>
-		<a href="./index.jsp">Home</a>
-		
+		<input type="button" onClick="saveImages()" value="Save Photos for this Location"/>
 	</form:form>
 </body>
 </html>

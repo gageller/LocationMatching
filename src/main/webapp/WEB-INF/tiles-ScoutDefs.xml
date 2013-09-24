@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+	<!-- LOCATION PROVIDER TEMPLATES -->		
+  	<definition name="baseScoutLayout" template="/layouts/baseScoutLayout.jsp">
+	    <put-attribute name="title" value="Template" />
+	    <put-attribute name="header" value="/locationScoutHeader.jsp" />
+	    <put-attribute name="menu" value="/scoutNavigation.jsp" />
+	    <put-attribute name="body" expression="/scout.jsp" />
+	    <put-attribute name="footer" value="/locationScoutFooter.jsp" />
+	</definition>
+ 
+  	<definition name="locationScoutHomePage" extends="baseScoutLayout">
+      	<put-attribute name="title" value="Location Scout" />
+      	<put-attribute name="body" value="/scout.jsp" />
+	</definition>
+	<definition name="editLocationScoutPage" extends="baseScoutLayout">
+	    <put-attribute name="title" value="Edit Scout Information"/>
+	    <put-attribute name="body" value="/editLocationScout.jsp"/>
+	</definition>
+ 	<definition name="addLocationRequestPage" extends="baseScoutLayout">
+      	<put-attribute name="title" value="Add a Location Request" />
+      	<put-attribute name="body" value="/addLocationRequest.jsp"></put-attribute>
+  	</definition>
+  	<definition name="editLocationRequestListingsPage" extends="baseScoutLayout">
+      	<put-attribute name="title" value="Locations to Edit"/>
+      	<put-attribute name="body" value="/editLocationRequestListings.jsp"/>
+  	</definition>
+   	<definition name="editLocationRequestPage" extends="baseScoutLayout">
+      	<put-attribute name="title" value="Edit this Location"/>
+      	<put-attribute name="body" value="/editLocationRequest.jsp"/>
+  	</definition>
+<!--  	<definition name="deleteLocationPage" extends="baseScoutLayout">
+  	    <put-attribute name="title" value="Delete this Location"/>
+  	    <put-attribute name="body" value="/deleteLocations.jsp"/>
+  	</definition>
+  	<definition name="addPhotoPage" extends="baseScoutLayout">
+      	<put-attribute name="title" value="Add a New Photo"/>
+      	<put-attribute name="body" value="/addPhoto.jsp"></put-attribute>
+  	</definition>
+  	<definition name="deletePhotosPage" extends="baseScoutLayout">
+ 		<put-attribute name="title" value="Delete Selected Photos"/> 	    
+  	    <put-attribute name="body" value="/deletePhotos.jsp"/>
+  	</definition>
+  	<definition name="searchLocationRequestsPage" extends="baseScoutLayout">
+  	    <put-attribute name="title" value="Search Location Requests"/>
+  	    <put-attribute name="body" value="/searchLocationRequests.jsp"/>
+  	</definition>
+  	<definition name="locationSubmissionsPage" extends="baseScoutLayout">
+  	    <put-attribute name="title" value="Location Submissions"/>
+  	    <put-attribute name="body" value="/viewSubmissionsList.jsp"/>
+  	</definition>
+  -->
+</tiles-definitions>

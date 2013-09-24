@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.Criteria;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import com.locationmatching.component.Image;
 import com.locationmatching.component.Location;
+import com.locationmatching.component.LocationRequest;
 import com.locationmatching.domain.LocationProvider;
 import com.locationmatching.domain.User;
 import com.locationmatching.exception.LocationProcessingException;
@@ -33,13 +35,14 @@ import com.locationmatching.util.HibernateUtil;
  * @version 0.0.1
  */
 @Service
-public class LocationProviderServiceImpl implements LocationProviderService {
+public class LocationProviderServiceImpl extends LocationUserService {
 
-	@Override
+//	@Override
 	/**
 	 * Persists the new user to the database. Throws an HibernateException
 	 * if the commit or closing the session fails.
 	 */
+	/*
 	public void createUser(User user) {
 		Session session = null;
 		Transaction transaction = null;
@@ -100,14 +103,14 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 			}
 		}
 	}
-
-	@Override
+*/
+//	@Override
 	/**
 	 * Retrieve the user from the database based on the id passed in.
 	 * 
 	 * @return User
 	 */
-	public User getUser(Long id) {
+/*	public User getUser(Long id) {
 		Session session = null;
 		Transaction transaction = null;
 		LocationProvider user = null;
@@ -147,7 +150,7 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 		return user;
 	}
 
-	@Override
+//	@Override
 	/**
 	 * FOR ADMIN USE.
 	 * 
@@ -157,7 +160,7 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 	 * 
 	 * @param id - Id of the LocationProvider to delete.
 	 */
-	public void deleteUser(Long id) {
+/*	public void deleteUser(Long id) {
 		Session session = null;
 		Transaction transaction = null;
 		LocationProvider user;
@@ -208,12 +211,12 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 			}
 		}
 	}
-
-	@Override
+*/
+//	@Override
 	/**
 	 * Persist the modified user to the database.
 	 */
-	public void modifyUser(User user) {
+/*	public void modifyUser(User user) {
 		Session session = null;
 		Transaction transaction = null;
 		
@@ -250,14 +253,14 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 			}
 		}
 	}
-
-	@Override
+*/
+//	@Override
 	/**
 	 * Returns a list of all of the Location Providers.
 	 * 
 	 * @return List<User>
 	 */
-	public List<User> getAllUsers() {
+/*	public List<User> getAllUsers() {
 		List<User> providerList = null;
 		Session session = null;
 		Transaction transaction = null;
@@ -300,15 +303,15 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 		
 		return providerList;
 	}
-
-	@Override
+*/
+//	@Override
 	/**
 	 * Retrieve the user based on the user name and password passed in. If not
 	 * found, return null;
 	 * 
 	 * @return LocationProvider
 	 */
-	public User authenticateUser(String userName, String password) {
+/*	public User authenticateUser(String userName, String password) {
 		Session session = null;
 		Transaction transaction = null;
 		LocationProvider provider;
@@ -360,7 +363,7 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 		
 		return provider;
 	}
-	
+*/	
 	/**
 	 * Add a new location for this provider to the database. 
 	 */
@@ -401,7 +404,7 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 		}
 	}
 
-	@Override
+//	@Override
 	/**
 	 * Get the Location associated with the id.
 	 * 
@@ -448,7 +451,7 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 		return location;
 	}
 
-	@Override
+//	@Override
 	/**
 	 * 
 	 * Mark the Location instance that are associated with the ids selected by the 
@@ -520,7 +523,7 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 	 * 
 	 * @param location - Location object that contains the collection of images
 	 */
-	@Override
+//	@Override
 	public void setCoverPicture(Location location) {
 		Session session = null;
 		Transaction transaction = null;
@@ -571,7 +574,7 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 		}
 	}
 
-	@Override
+//	@Override
 	public void addLocation(Location location) {
 		Session session = null;
 		Transaction transaction = null;
@@ -620,7 +623,7 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 		}
 	}
 
-	@Override
+//	@Override
 	public void modifyLocation(Location location) {
 		Session session = null;
 		Transaction transaction = null;
@@ -664,7 +667,7 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 	 * 
 	 * @param image - Image object to add.
 	 */
-	@Override
+/*	@Override
 	public void addImage(Image image) {
 		Session session = null;
 		Transaction transaction = null;
@@ -702,6 +705,7 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 			}
 		}
 	}
+*/	
 	/**
 	 * Iterate through the collection of Image objects and delete the 
 	 * associated image files off of the server.
@@ -709,45 +713,35 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 	 * @param deleteImages - image files to delete off of the server.
 	 * @param deleteDirectory - Flag to determine whether to delete the directory folder. This would be done when all of the images have been deleted. 
 	 */
-	private void deleteImageFiles(Set<Image>deleteImages, boolean deleteDirectory) {
-		String absoluteFilePath;
+/*	private void deleteImageFiles(Set<Image>deleteImages, boolean deleteDirectory) {
+		String absoluteFilePath = "";
 		File deleteFile;
-		
+
+		// Delete the image files from the server.
+		for(Image image: deleteImages) {
+			absoluteFilePath = image.getAbsoluteFilePath();
+			deleteFile = new File(absoluteFilePath);
+			deleteFile.delete();
+		}
+
 		// If we are deleting the directory as well, we need to strip off
 		// the file name and create a new file object for the directory and
 		// delete it.
 		if(deleteDirectory == true) {
-			Iterator<Image> iterator;
+			int index;
 			
-			iterator = deleteImages.iterator();
-			if(iterator.hasNext() == true) {
-				Image image;
-				int index;
-				
-				image = iterator.next();
-				absoluteFilePath = image.getAbsoluteFilePath();
-				// Strip off the file name and delete the entire directory.
-				index = absoluteFilePath.lastIndexOf(File.separator);
-				absoluteFilePath = absoluteFilePath.substring(0, index);
-				
-				deleteFile = new File(absoluteFilePath);
-				
-				if(deleteFile.isDirectory() == true) {
-					deleteFile.delete();
-				}
-			}
-		}
-		else {
-			// We are not deleting the entire directory so just delete the 
-			// selected files.
-			for(Image image: deleteImages) {
-				absoluteFilePath = image.getAbsoluteFilePath();
-				deleteFile = new File(absoluteFilePath);
+			// Strip off the file name and delete the entire directory.
+			index = absoluteFilePath.lastIndexOf(File.separator);
+			absoluteFilePath = absoluteFilePath.substring(0, index);
+			
+			deleteFile = new File(absoluteFilePath);
+			
+			if(deleteFile.isDirectory() == true) {
 				deleteFile.delete();
 			}
 		}
 	}
-
+*/
 	/**
 	 * Delete photos based on the ids passed in from the
 	 * String array
@@ -755,7 +749,7 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 	 * @param location - Location that owns the pictures;
 	 * @param photoDeleteIds - Array of ids of Images to delete.
 	 */
-	@Override
+//	@Override
 	public void deleteImages(Location location, String[] photoDeleteIds) {
 		Session session = null;
 		Transaction transaction = null;
@@ -772,21 +766,34 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 			// objects because the cover page flag has changed.
 			for(int index = 0; index < photoDeleteIds.length; index++) {
 				Image image;
+				String imageId;
 				
-				image = location.removeImage(Long.valueOf(photoDeleteIds[index]));
+				imageId = photoDeleteIds[index];
+				image = location.removeImage(Long.valueOf(imageId));
 				image.setHidden(true);
 				
+				// If this image is the cover photo, we need to set the cover photo url
+				// of the Location object to blank.
+				if(image.isCoverPhoto() == true) {
+					location.setCoverPhotoUrl("");
+				}
 				session.update(image);
 				// Add image to set so we can get the file path and delete the image
 				// off of the server.
 				imagesToDelete.add(image);
 			}
+			
+			// Update the Location object because the picture count has changed.
+			session.update(location);
+			
 			transaction.commit();
 			boolean deleteDirectory = false;
 			
 			// Delete the directory if there are no more Image objects in the collection.
+			// Also set the Location's coverPhotoUrl to empty string.
 			if(location.getLocationImages().isEmpty() == true) {
 				deleteDirectory = true;
+				location.setCoverPhotoUrl("");
 			}
 			deleteImageFiles(imagesToDelete, deleteDirectory);
 		}
@@ -814,6 +821,18 @@ public class LocationProviderServiceImpl implements LocationProviderService {
 				ex.printStackTrace();
 			}
 		}
+	}
+
+	// Methods for the Location Scout that are defined as abstract in the LocationUserService
+	// base class so just implement empty method bodies.
+	@Override
+	public LocationRequest getLocationRequest(Long id) {
+		return null;
+	}
+
+	@Override
+	public Map<Long, LocationRequest> getLocationRequests(LocationRequest searchRequest) {
+		return null;
 	}
 }	
 

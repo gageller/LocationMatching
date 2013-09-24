@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,28 +20,30 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.locationmatching.component.Location;
 import com.locationmatching.component.LocationRequest;
 import com.locationmatching.component.ScoutAlert;
+import com.locationmatching.domain.LocationProvider;
 import com.locationmatching.domain.LocationScout;
+import com.locationmatching.domain.User;
 import com.locationmatching.enums.LocationType;
-import com.locationmatching.enums.UserType;
 import com.locationmatching.exception.UserAlreadyExistsException;
-import com.locationmatching.service.LocationProviderService;
-import com.locationmatching.service.LocationScoutService;
+import com.locationmatching.service.LocationProviderServiceImpl;
+import com.locationmatching.service.LocationScoutServiceImpl;
+import com.locationmatching.service.LocationUserService;
 import com.locationmatching.util.GlobalVars;
 
 @Controller
 @SessionAttributes({"locationScout", "locationRequest"})
 public class LocationScoutController {
 	@Autowired
-	LocationScoutService scoutService;
+	LocationScoutServiceImpl scoutService;
 	
-	public void setScoutService(LocationScoutService scoutService) {
+	public void setScoutService(LocationScoutServiceImpl scoutService) {
 		this.scoutService = scoutService;
 	}
 
 	@Autowired
-	LocationProviderService providerService;
+	LocationProviderServiceImpl providerService;
 	
-	public void setProviderService(LocationProviderService providerService) {
+	public void setProviderService(LocationProviderServiceImpl providerService) {
 		this.providerService = providerService;
 	}
 	
@@ -86,12 +90,13 @@ public class LocationScoutController {
 		// Set the current time and last accessed time for this new provider.
 		locationScout.setCreationDate(date);
 		locationScout.setLastAccessDate(date);
+		locationScout.setActive(true);
 		// Set the user type
 //		locationScout.setUserType(UserType.SCOUT);
 		
 		// Go to the provider.jsp page to add locations
-		nextPage = "scoutNavigation";
-		
+		nextPage = "locationScoutHomePage";
+	
 		try {
 			Long id;
 			
@@ -109,7 +114,11 @@ public class LocationScoutController {
 			model.addAttribute("userScoutLoginErrorMessage", "This User Name already exists. Please select another User Name.");
 		}
 		
-		return nextPage;
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "locationScoutHomePage");
+		
+		return nextPage;	
+
 	}
 	
 	/**
@@ -118,7 +127,7 @@ public class LocationScoutController {
 	 * 
 	 * @return String
 	 */
-	@RequestMapping(value="/scout.request", method=RequestMethod.POST)
+	@RequestMapping(value="scout.request", method=RequestMethod.POST)
 	public String authenticateUser(@RequestParam("scoutUserName")String userName,
 			@RequestParam("scoutPassword")String password, Model model) {
 		String view;
@@ -130,7 +139,10 @@ public class LocationScoutController {
 			// Found the provider so proceed onto the provider
 			// info page.
 			model.addAttribute("locationScout", scout);
-			view = "scoutNavigation";
+			// Set the name of the template to use for the next view
+			model.addAttribute("templateName", "locationScoutHomePage");
+			
+			view = "locationScoutHomePage";
 		}
 		else {
 			model.addAttribute("userScoutLoginErrorMessage", "We could not find this User Name. Please try again.");
@@ -140,6 +152,41 @@ public class LocationScoutController {
 		return view;
 	}
 	
+	/**
+	 * Setup template navigation attributes for going to next page
+	 * 
+	 * @param model - Set template attributes to go to next page
+	 * @return
+	 */
+	@RequestMapping(value="setupEditLocationScout.request", method=RequestMethod.GET)
+	protected String setupEditLocationScout(Model model) {
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "editLocationScoutPage");
+		
+		return "locationScoutHomePage";	
+	}
+	
+	/**
+	 * Persist the changes for the LocationScout to the database
+	 * 
+	 * @param locationScout - LocationScout object with the updated changes
+	 * @param model - Template name to navigate to the next page.
+	 * @return
+	 */
+	@RequestMapping(value="editLocationScout.request", method=RequestMethod.POST)
+	protected String editScoutInformation(@ModelAttribute("locationScout") LocationScout locationScout,
+			Model model) {
+		// Update the changes to the database
+		scoutService.modifyUser(locationScout);
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "locationScoutHomePage");
+		
+		return "locationScoutHomePage";	
+	}
+	
+	///////////////////////////////////////////////////////////
+	// LOCATION REQUEST PROCESSING
+	///////////////////////////////////////////////////////////
 	/**
 	 * Instantiate the new LocationRequest object and add it
 	 * to the model. Proceed onto the addLocationRequest.jsp
@@ -155,24 +202,102 @@ public class LocationScoutController {
 		locationRequest = new LocationRequest();
 		model.addAttribute("locationRequest", locationRequest);
 		
-		return "addLocationRequest";
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "addLocationRequestPage");
+		
+		return "locationScoutHomePage";	
 	}
 	
+
 	/**
-	 * Persist the new LocationRequest object to the database.
+	 * Add new LocationRequest to the database
 	 * 
-	 * @return String
+	 * @param locationRequest - New LocationRequest
+	 * @param locationScout - Owner of the LocationRequest
+	 * @param model - Add navigation template name.
+	 * @return
 	 */
 	@RequestMapping(value="addLocationRequest.request", method=RequestMethod.POST)
 	protected String addNewLocationRequest(@ModelAttribute("locationRequest") LocationRequest locationRequest,
-			@ModelAttribute("locationScout") LocationScout locationScout) {
+			@ModelAttribute("locationScout") LocationScout locationScout, Model model) {
 		
 		// Setup the Scout, Request association.
 		locationScout.addLocationRequest(locationRequest);
 		
-		scoutService.addLocationRequest(locationScout, locationRequest);
+		// Save the new LocationRequest to the database.
+		scoutService.addLocationRequest(locationRequest);
 		
-		return "scout";
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "addLocationRequestPage");
+		
+		return "locationScoutHomePage";	
+	}
+	
+	/**
+	 * Set the navigation attributes for the next page template.
+	 * 
+	 * @param model - Add navigation template name for the next page
+	 * @return
+	 */
+	@RequestMapping(value="setupEditLocationRequestListings.request")
+	protected String setupEditLocationRequestListings(Model model) {
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "editLocationRequestListingsPage");
+		
+		return "locationScoutHomePage";	
+	}
+	
+	/**
+	 * Set the navigation attributes for the next page template.
+	 * 
+	 * @param model - Navigation attributes for next page template
+	 * @return
+	 */
+	@RequestMapping(value="	setupEditLocationRequest.request", method=RequestMethod.POST)
+	protected String setupEditLocationRequest(@RequestParam("editId") long editId, 
+			@ModelAttribute("locationScout")LocationScout locationScout, 
+			Model model) {
+		
+		Set<LocationRequest> locationRequests;
+		LocationRequest editLocationRequest = null;
+		Iterator<LocationRequest>itr;
+		
+		locationRequests = locationScout.getLocationRequests();
+		itr = locationRequests.iterator();
+
+
+		while(itr.hasNext() == true) {
+			Long id;
+			
+			editLocationRequest = itr.next();
+			id = editLocationRequest.getId();
+			
+			if(id.equals(editId) == true) {
+				break;
+			}
+		}
+		model.addAttribute("locationRequest", editLocationRequest);
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "editLocationRequestPage");
+		
+		return "locationScoutHomePage";	
+	}
+	
+	/**
+	 * Update the modified LocationRequest object to the database.
+	 * 
+	 * @param locationRequest - The modified LocationRequest object.
+	 * @param model - Attributes for navigation to next page template.
+	 * @return
+	 */
+	@RequestMapping(value="editLocationRequest.request", method=RequestMethod.POST)
+	protected String editLocationRequest(@ModelAttribute("locationRequest") LocationRequest locationRequest,
+			Model model) {
+		scoutService.modifyLocationRequest(locationRequest);
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "editLocationRequestListingsPage");
+		
+		return "locationScoutHomePage";	
 	}
 	
 	/**
@@ -229,6 +354,22 @@ public class LocationScoutController {
 		
 		model.addAttribute("alertLocation", alertLocation);
 		
-;		return "viewLocationPhotos";
+		return "viewLocationPhotos";
 	}
+	
+	/**
+	 * Return to the main page.
+	 * 
+	 * @param model - Put the template name that we are navigating back to display
+	 * @return
+	 */
+	@RequestMapping(value="returnScoutMainPage.request", method=RequestMethod.GET)
+	protected String returnToScoutMainPage(Model model)
+	{
+		model.addAttribute("templateName", "locationScoutHomePage");
+		
+		return "locationScoutHomePage";
+
+	}
+
 }

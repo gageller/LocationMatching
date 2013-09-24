@@ -36,7 +36,7 @@
 	<h2>Delete Photos</h2>
 	<label class="successMessage">Select Photos to Delete</label>
 	<form:form name="deletePhotosForm" action="deletePhotos.request" method="POST" modelAttribute="location">
-		<table width="100%">
+		<table cellspacing="10px" width="100%">
 			<tr>
 			<c:forEach items="${location.locationImages}" var="image" varStatus="iterationStatus">
 	 			<c:if test="${image.hidden == false}">

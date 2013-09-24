@@ -6,30 +6,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link rel="stylesheet" type="text/css" href="css/lmStyle.css">
 <title>Location Scout</title>
-<script>
-	<!--
-		// Process either the Location Provider edit bttn click or
-		// the Add Location bttn click.
-		function processButtonClick(action) {
-			document.forms("provider").action = action;
-			document.forms("provider").submit();
-		}
-	
-		// Process the edit button click for a particular
-		// location
-		function editLocationRequestButtonClick(index) {
-			document.forms("provider").locationIndex.value = index;
-			document.forms("provider").action = "editLocationRequest.request";
-			document.forms("provider").submit();
-		}
-	-->
-</script>
 </head>
 <body>
-<form:form name="provider" method="GET" commandName="locationScout">
+<form:form name="scoutForm" method="GET" commandName="locationScout">
 	<input type="hidden" name="requestIndex"/>
-	<h2>${locationScout.firstName} ${locationScout.lastName }</h2>
 	<table>
 		<tr>
 			<td class="boldCellText">Email Address:</td>
@@ -39,31 +21,26 @@
 			<td>Phone Number:</td>
 			<td>${locationScout.phoneNumber}</td>
 		</tr>
-		<tr>
-			<td><input type="button" value="Edit User Information..." onClick='processButtonClick("editProvider.request")'/></td>
-		</tr>
 	</table>
 	<br/>
-	<input type="button" name="addLocationRequestBttn" value="Add Location Request..." onClick='processButtonClick("addLocationRequest.request")'/>
-	<br/>
-	<h3>Locations</h3>
+	<h3>Location Requests</h3>
 		
 			<c:forEach items="${locationScout.locationRequests}" var="locationRequest">
-			<table width="1000">
+			<table width="1000" border="1">
 				<tbody>
 					<tr>
-						<td colspan="3"]><b>Location Name:</b> ${locationRequest.locationRequestName}</td>
-						<td><input type="button" value="Edit Location..." onClick='editLocationRequestButtonClick("${locationRequest.id}")'/></td>
+						<td colspan="2"]><label class="boldText">Location Name:</label> ${locationRequest.locationRequestName}</td>
+						<td colspan="2"]><label class="boldText">Type of Location: </label>${locationRequest.locationType}</td>
 					</tr>
 					<tr>
-						<th width="250" align="left">Type of Location:</th>
 						<th width="250" align="left">Location City:</th>
+						<th width="250" align="left">Location County:</th>
 						<th width="250" align="left">Location State:</th>
 						<th width="250" align="left">Location Zipcode:</th>
 					</tr>
 					<tr>	
-						<td>${locationRequest.locationType}</td>
 						<td>${locationRequest.locationRequestCity}</td>
+						<td>${locationRequest.locationRequestCounty}</td>
 						<td>${locationRequest.locationRequestState}</td>
 						<td>${locationRequest.locationRequestZipcode}</td>
 					</tr>
@@ -81,8 +58,8 @@
 						<td>${locationRequest.rate}</td>
 					</tr>
 					<tr>
-						<td width="500" colspan="2"><b>Location Description:</b></td>
-						<td width="500" colspan="2"><b>Project Notes:</b></td>
+						<td width="500" colspan="2"><label class="boldText">Location Description:</label></td>
+						<td width="500" colspan="2"><label class="boldText">Project Notes:</label></td>
 					</tr>
 					<tr>
 						<td width="500" colspan="2">${locationRequest.locationDescription}</td>
@@ -95,10 +72,11 @@
 			</c:forEach>
 
 	</form:form>
+<!-- 
 	<br/>
 		<a href="./scoutNavigation.jsp">My Main Page</a>
 	<br/>
 	<a href="./index.jsp">Home</a>
-
+-->
 </body>
 </html>

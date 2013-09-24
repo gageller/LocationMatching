@@ -81,6 +81,13 @@ public abstract class User implements Serializable{
 	 */
 	@Column(name="LAST_ACCESS_DATE")
 	private Date lastAccessDate;
+	
+	/**
+	 * Whether or not this user is active
+	 */
+	@Column(name="ACTIVE")
+	Boolean active;
+	
 	/**
 	 * Which type of user this is. 
 	 * Provider or Scout
@@ -117,6 +124,9 @@ public abstract class User implements Serializable{
 	public String getPassword() {
 		return password;
 	}
+	public Boolean getActive() {
+		return active;
+	}
 //	public UserType getUserType() {
 //		return userType;
 //	}
@@ -148,6 +158,9 @@ public abstract class User implements Serializable{
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 //	public void setUserType(UserType userType) {
 //		this.userType = userType;

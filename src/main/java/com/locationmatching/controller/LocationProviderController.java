@@ -39,13 +39,12 @@ import com.locationmatching.domain.User;
 import com.locationmatching.enums.LocationType;
 import com.locationmatching.enums.SubmissionResponse;
 import com.locationmatching.enums.UserPlanType;
-import com.locationmatching.enums.UserType;
 import com.locationmatching.exception.LocationProcessingException;
 import com.locationmatching.exception.UserAlreadyExistsException;
-import com.locationmatching.helper.UploadForm;
 import com.locationmatching.service.EmailService;
-import com.locationmatching.service.LocationProviderService;
-import com.locationmatching.service.LocationScoutService;
+import com.locationmatching.service.LocationProviderServiceImpl;
+import com.locationmatching.service.LocationScoutServiceImpl;
+import com.locationmatching.service.LocationUserService;
 import com.locationmatching.util.GlobalVars;
 
 /**
@@ -82,19 +81,19 @@ public class LocationProviderController implements ServletContextAware{
 	 * Hibernate based service for persisting LocationProvider data
 	 */
 	@Autowired
-	LocationProviderService providerService;
+	LocationProviderServiceImpl providerService;
 	
 	/**
 	 * Hibernate based service for persisting LocationScout data.
 	 */
-	@Autowired
-	LocationScoutService scoutService;
+	@Autowired()
+	LocationScoutServiceImpl scoutService;
 	
-	public void setProviderService(LocationProviderService providerService) {
+	public void setProviderService(LocationProviderServiceImpl providerService) {
 		this.providerService = providerService;
 	}
 	
-	public void setScoutService(LocationScoutService scoutService) {
+	public void setScoutService(LocationScoutServiceImpl scoutService) {
 		this.scoutService = scoutService;
 	}
 	
@@ -196,13 +195,13 @@ public class LocationProviderController implements ServletContextAware{
 	/**
 	 * Delete the Location Provider based on the id passed in.
 	 */
-	@RequestMapping(value="{id}", method=RequestMethod.DELETE)
+/*	@RequestMapping(value="{id}", method=RequestMethod.DELETE)
 	public String deleteProvider(@PathVariable("id") String id) {
 		providerService.deleteUser(Long.valueOf(id));
 		
 		return "deletedUser";
 	}
-	
+*/	
 	/**
 	 * Instantiate new Location Provider object and add to the Model.
 	 * Then continue onto the newLocationProvider.jsp page.
@@ -231,6 +230,8 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the current time and last accessed time for this new provider.
 		locationProvider.setCreationDate(date);
 		locationProvider.setLastAccessDate(date);
+		// This provider to active
+		locationProvider.setActive(true);
 		// Set the user type
 	//	locationProvider.setUserType(UserType.PROVIDER);
 		// Set the new user's plan type to the Pay Per Photo plan type
@@ -300,7 +301,7 @@ public class LocationProviderController implements ServletContextAware{
 	 * @param model - Put the template name that we are navigating back to display
 	 * @return
 	 */
-	@RequestMapping(value="returnMainPage.request", method=RequestMethod.GET)
+	@RequestMapping(value="returnProviderMainPage.request", method=RequestMethod.GET)
 	protected String returnToMainPage(Model model)
 	{
 		model.addAttribute("templateName", "locationProviderHomePage");
@@ -453,7 +454,7 @@ public class LocationProviderController implements ServletContextAware{
 		model.addAttribute("templateName", "editLocationPage");
 		
 		// Set the name of the template to use after the user has
-		// finished add the photos.
+		// finished adding the photos.
 		session.setAttribute("nextTemplateName", "editLocationListingsPage");
 
 		return "locationProviderHomePage";
@@ -463,17 +464,27 @@ public class LocationProviderController implements ServletContextAware{
 	 * Update the edited location to the database
 	 */
 	@RequestMapping(value="editLocation.request", method=RequestMethod.POST)
-	protected String editLocation(@ModelAttribute("locationProvider")LocationProvider locationProvider, @ModelAttribute("location") Location editLocation) {
+	protected String editLocation(@ModelAttribute("locationProvider")LocationProvider locationProvider, 
+			@ModelAttribute("location") Location editLocation,
+			Model model,
+			HttpSession session) {
 		// Persist the modifications to the database.
 		providerService.modifyLocation(editLocation);
 		
-		return "editLocationListings";
+		model.addAttribute("templateName", "editLocationListingsPage");
+
+		// Set the name of the template to use after the user has
+		// finished add the photos.
+		session.setAttribute("nextTemplateName", "editLocationListingsPage");
+
+		return "locationProviderHomePage";
 	}
 	
 	/**
 	 * Setup the ModelAttribute LocationRequest to be used to fill
 	 * in the parameters for the search.
-	 * @param Model
+	 * 
+	 * @param Model - Add new LocationRequest object to hold search filter options and set navigation template variables.
 	 * @return String
 	 */
 	@RequestMapping(value="setupSearchLocationRequest.request", method=RequestMethod.GET)
@@ -484,9 +495,20 @@ public class LocationProviderController implements ServletContextAware{
 		
 		model.addAttribute("searchLocationRequest", searchLocationRequest);
 		
-		return "searchLocationRequests";
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "searchLocationRequestsPage");
+		
+		return "locationProviderHomePage";	
 	}
 	
+	/**
+	 * Take the filter parameters passed in the LocationRequest object and return a result set
+	 * of LocationRequests that match.
+	 * 
+	 * @param searchLocationRequest - LocationRequest object that holds the filter values for retrieving the result set
+	 * @param model - Add the returned results to the model. Add navigation template parameters.
+	 * @return
+	 */
 	@RequestMapping(value="processSearchLocationRequest.request", method=RequestMethod.POST)
 	protected String searchLocationRequests(@ModelAttribute("searchLocationRequest")LocationRequest searchLocationRequest, Model model) {
 		Map<Long, LocationRequest> locationRequests;
@@ -497,7 +519,10 @@ public class LocationProviderController implements ServletContextAware{
 			model.addAttribute("requestSearchResults", locationRequests);
 		}
 		
-		return "searchLocationRequests";
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "searchLocationRequestsPage");
+		
+		return "locationProviderHomePage";	
 	}
 	
 	@RequestMapping(value="gotoAddPhoto.request", method=RequestMethod.GET)
@@ -523,8 +548,9 @@ public class LocationProviderController implements ServletContextAware{
 	}
 	
 	@RequestMapping(value="deletePhotos.request", method=RequestMethod.POST)
-	protected String deletePhotos(@RequestParam("deleteCheck") String[] photosToDelete, Model model) {
-		
+	protected String deletePhotos(@ModelAttribute("location") Location location, @RequestParam("deleteCheck") String[] photosToDelete, Model model) {
+		// Delete images from server and mark the Images in database as hidden.
+		providerService.deleteImages(location, photosToDelete);
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "locationProviderHomePage");
 		
@@ -610,8 +636,10 @@ public class LocationProviderController implements ServletContextAware{
 			message = "This location has already been submitted for this request.";
 			model.addAttribute("errorSubmissionMessage", message);
 		}
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "searchLocationRequestsPage");
 		
-		return "searchLocationRequests";
+		return "locationProviderHomePage";	
 	}
 
 	/**
@@ -620,6 +648,7 @@ public class LocationProviderController implements ServletContextAware{
 	 * @param model - Setup the parameters for the delete photos layout
 	 * @return - Page being navigated to.
 	 */
+	@RequestMapping(value="setupDeleteLocation.request", method=RequestMethod.GET)
 	protected String setupDeleteLocations(Model model) {
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "deleteLocationPage");

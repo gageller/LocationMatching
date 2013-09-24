@@ -19,7 +19,7 @@
  				<td><form:select path="locationType" items="${locationTypeList}"/></td>
 			</tr>
 			<tr>
-				<td>Location City*</td>
+				<td>Location City</td>
 				<td><form:input path="locationRequestCity"/></td>
 			</tr>
 			<tr>
@@ -27,11 +27,11 @@
  				<td><form:select path="locationRequestState" items="${stateSelectList}"/></td> 
 			</tr>
 			<tr>
-				<td>Location Zip Code*</td>
+				<td>Location Zip Code</td>
 				<td><form:input path="locationRequestZipcode"/></td>
 			</tr>
 			<tr>
-				<td>County where Location resides</td>
+				<td>County where Location resides*</td>
 				<td><form:input path="locationRequestCounty"/>
 			</tr>
 			<tr>
@@ -52,17 +52,19 @@
 			</tr>
 			<tr>
 				<td>Location Description*</td>
-				<td><form:textarea rows="3" columns="25" path="locationDescription"/></td>
+				<td><form:textarea rows="4" columns="80" path="locationDescription"/></td>
 			</tr>
 			<tr>
-				<td>Project Notes*</td>
-				<td><form:textarea rows="3" columns="25" path="projectNotes" /></td>
+				<td>Project Notes</td>
+				<td><form:textarea rows="4" columns="80" path="projectNotes" /></td>
 			</tr>
 		</table>
 		<br/>
 		<input type="submit" value="Add Location Request"/>	
+<!-- 		
 		<br/>
 		<a href="./index.jsp">Home</a>	
+-->
 	</form:form>
 
 </body>

@@ -8,7 +8,6 @@ import java.util.Date;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.DefaultValue;
 
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
@@ -30,7 +29,8 @@ import com.locationmatching.domain.LocationProvider;
 import com.locationmatching.enums.ImageType;
 import com.locationmatching.enums.PhotoPlanType;
 import com.locationmatching.enums.UserPlanType;
-import com.locationmatching.service.LocationProviderService;
+import com.locationmatching.service.LocationProviderServiceImpl;
+import com.locationmatching.service.LocationUserService;
 import com.locationmatching.util.GlobalVars;
 
 /**
@@ -47,9 +47,9 @@ public class FileUploadController implements ServletContextAware{
 	private ServletContext context;
 
 	@Autowired
-	private LocationProviderService providerService;
+	private LocationProviderServiceImpl providerService;
 	
-	public void setProviderService(LocationProviderService providerService) {
+	public void setProviderService(LocationProviderServiceImpl providerService) {
 		this.providerService = providerService;
 	}
 	

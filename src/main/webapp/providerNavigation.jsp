@@ -13,7 +13,7 @@
 		
 		<h3><u>Manage My Account</u></h3>
 		<p>
-			<a href="returnMainPage.request">View Account Information and Locations</a>
+			<a href="returnProviderMainPage.request">View Account Information and Locations</a>
 			<br/>
 			<a href="setupEditLocationProvider.request">Edit Account Information</a>
 		</p>
@@ -23,7 +23,7 @@
 			<br/>
 			<a href="setupEditLocationListings.request">Edit a Location</a>
 			</br/>
-			<a href="deleteLocations.jsp">Delete a Location</a>
+			<a href="setupDeleteLocation.request">Delete a Location</a>
 		</p>
 		<p>
 			<h3><u>Location Requests</u></h3>
