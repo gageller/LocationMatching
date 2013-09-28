@@ -6,49 +6,49 @@
 	<!-- LOCATION PROVIDER TEMPLATES -->		
   	<definition name="baseProviderLayout" template="/layouts/baseProviderLayout.jsp">
 	    <put-attribute name="title" value="Template" />
-	    <put-attribute name="header" value="/locationProviderHeader.jsp" />
-	    <put-attribute name="menu" value="/providerNavigation.jsp" />
-	    <put-attribute name="body" expression="/provider.jsp" />
-	    <put-attribute name="footer" value="/locationProviderFooter.jsp" />
+	    <put-attribute name="header" value="/provider/locationProviderHeader.jsp" />
+	    <put-attribute name="menu" value="/provider/providerNavigation.jsp" />
+	    <put-attribute name="body" expression="/provider/provider.jsp" />
+	    <put-attribute name="footer" value="/provider/locationProviderFooter.jsp" />
 	</definition>
   	<definition name="locationProviderHomePage" extends="baseProviderLayout">
       	<put-attribute name="title" value="Location Provider" />
-      	<put-attribute name="body" value="/provider.jsp" />
+      	<put-attribute name="body" value="/provider/provider.jsp" />
 	</definition>
 	<definition name="editLocationProviderPage" extends="baseProviderLayout">
 	    <put-attribute name="title" value="Edit Provider Information"/>
-	    <put-attribute name="body" value="/editLocationProvider.jsp"/>
+	    <put-attribute name="body" value="/provider/editLocationProvider.jsp"/>
 	</definition>
   	<definition name="addLocationPage" extends="baseProviderLayout">
       	<put-attribute name="title" value="Add a Location" />
-      	<put-attribute name="body" value="/addLocation.jsp"></put-attribute>
+      	<put-attribute name="body" value="/provider/addLocation.jsp"></put-attribute>
   	</definition>
   	<definition name="editLocationListingsPage" extends="baseProviderLayout">
       	<put-attribute name="title" value="Locations to Edit"/>
-      	<put-attribute name="body" value="/editLocationListings.jsp"/>
+      	<put-attribute name="body" value="/provider/editLocationListings.jsp"/>
   	</definition>
   	<definition name="editLocationPage" extends="baseProviderLayout">
       	<put-attribute name="title" value="Edit this Location"/>
-      	<put-attribute name="body" value="/editLocation.jsp"/>
+      	<put-attribute name="body" value="/provider/editLocation.jsp"/>
   	</definition>
   	<definition name="deleteLocationPage" extends="baseProviderLayout">
   	    <put-attribute name="title" value="Delete this Location"/>
-  	    <put-attribute name="body" value="/deleteLocations.jsp"/>
+  	    <put-attribute name="body" value="/provider/deleteLocations.jsp"/>
   	</definition>
   	<definition name="addPhotoPage" extends="baseProviderLayout">
       	<put-attribute name="title" value="Add a New Photo"/>
-      	<put-attribute name="body" value="/addPhoto.jsp"></put-attribute>
+      	<put-attribute name="body" value="/provider/addPhoto.jsp"></put-attribute>
   	</definition>
   	<definition name="deletePhotosPage" extends="baseProviderLayout">
  		<put-attribute name="title" value="Delete Selected Photos"/> 	    
-  	    <put-attribute name="body" value="/deletePhotos.jsp"/>
+  	    <put-attribute name="body" value="/provider/deletePhotos.jsp"/>
   	</definition>
   	<definition name="searchLocationRequestsPage" extends="baseProviderLayout">
   	    <put-attribute name="title" value="Search Location Requests"/>
-  	    <put-attribute name="body" value="/searchLocationRequests.jsp"/>
+  	    <put-attribute name="body" value="/provider/searchLocationRequests.jsp"/>
   	</definition>
   	<definition name="locationSubmissionsPage" extends="baseProviderLayout">
   	    <put-attribute name="title" value="Location Submissions"/>
-  	    <put-attribute name="body" value="/viewSubmissionsList.jsp"/>
+  	    <put-attribute name="body" value="/provider/viewSubmissionsList.jsp"/>
   	</definition>
 </tiles-definitions>

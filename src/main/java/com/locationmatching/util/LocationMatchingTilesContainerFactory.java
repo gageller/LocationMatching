@@ -34,6 +34,7 @@ public class LocationMatchingTilesContainerFactory extends BasicTilesContainerFa
 		try{
 			urls.add(applicationContext.getResource("/WEB-INF/tiles-ProviderDefs.xml"));
 			urls.add(applicationContext.getResource("/WEB-INF/tiles-ScoutDefs.xml"));
+			urls.add(applicationContext.getResource("/WEB-INF/tiles-Login-CreateAccountDefs.xml"));
 		}
 		catch(IOException ex) {
 			ex.printStackTrace();
@@ -65,7 +66,7 @@ public class LocationMatchingTilesContainerFactory extends BasicTilesContainerFa
 	            add(new MapELResolver(false));
 	            add(new ResourceBundleELResolver());
 	            add(new BeanELResolver(false));
-	        }
+	        } 
 	    };
 	    evaluator.setResolver(elResolver);
 	    attributeEvaluatorFactory.registerAttributeEvaluator("EL", evaluator);

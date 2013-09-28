@@ -77,6 +77,17 @@ public class LocationScoutController {
 		return "newLocationScout";
 	}
 	
+	@RequestMapping(value="setupLocationScoutSession.request", method=RequestMethod.POST)
+	protected String setupLocationScoutSession(@ModelAttribute("locationScout") LocationScout locationScout, Model model) {
+		//
+		model.addAttribute("locationScout", locationScout);
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "locationScoutHomePage");
+		
+		return "/scout/locationScoutHomePage";	
+
+	}
+
 	/**
 	 * Create the new Location Scout.
 	 * 
@@ -95,7 +106,7 @@ public class LocationScoutController {
 //		locationScout.setUserType(UserType.SCOUT);
 		
 		// Go to the provider.jsp page to add locations
-		nextPage = "locationScoutHomePage";
+		nextPage = "scout/locationScoutHomePage";
 	
 		try {
 			Long id;
@@ -142,7 +153,7 @@ public class LocationScoutController {
 			// Set the name of the template to use for the next view
 			model.addAttribute("templateName", "locationScoutHomePage");
 			
-			view = "locationScoutHomePage";
+			view = "scout/locationScoutHomePage";
 		}
 		else {
 			model.addAttribute("userScoutLoginErrorMessage", "We could not find this User Name. Please try again.");
@@ -163,7 +174,7 @@ public class LocationScoutController {
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "editLocationScoutPage");
 		
-		return "locationScoutHomePage";	
+		return "scout/locationScoutHomePage";	
 	}
 	
 	/**
@@ -181,7 +192,7 @@ public class LocationScoutController {
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "locationScoutHomePage");
 		
-		return "locationScoutHomePage";	
+		return "scout/locationScoutHomePage";	
 	}
 	
 	///////////////////////////////////////////////////////////
@@ -205,10 +216,9 @@ public class LocationScoutController {
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "addLocationRequestPage");
 		
-		return "locationScoutHomePage";	
+		return "scout/locationScoutHomePage";	
 	}
 	
-
 	/**
 	 * Add new LocationRequest to the database
 	 * 
@@ -228,9 +238,9 @@ public class LocationScoutController {
 		scoutService.addLocationRequest(locationRequest);
 		
 		// Set the name of the template to use for the next view
-		model.addAttribute("templateName", "addLocationRequestPage");
+		model.addAttribute("templateName", "locationScoutHomePage");
 		
-		return "locationScoutHomePage";	
+		return "scout/locationScoutHomePage";	
 	}
 	
 	/**
@@ -244,7 +254,7 @@ public class LocationScoutController {
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "editLocationRequestListingsPage");
 		
-		return "locationScoutHomePage";	
+		return "scout/locationScoutHomePage";	
 	}
 	
 	/**
@@ -280,7 +290,7 @@ public class LocationScoutController {
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "editLocationRequestPage");
 		
-		return "locationScoutHomePage";	
+		return "scout/locationScoutHomePage";	
 	}
 	
 	/**
@@ -297,7 +307,40 @@ public class LocationScoutController {
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "editLocationRequestListingsPage");
 		
-		return "locationScoutHomePage";	
+		return "scout/locationScoutHomePage";	
+	}
+	
+	/**
+	 * Setup navigation template attributes.
+	 * 
+	 * @param model - Store navigation template attributes in the Model
+	 * @return
+	 */
+	@RequestMapping(value="setupDeleteLocationRequests.request", method=RequestMethod.GET)
+	protected String setupDeleteLocationRequests(Model model) {
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "deleteLocationRequestsPage");
+		
+		return "scout/locationScoutHomePage";	
+	}
+	
+	/**
+	 * 
+	 * @param locationScout - Owner of LocationRequests collection
+	 * @param deleteCheckBoxArray - Array containing the id of the checked check boxes.
+	 * @param model - Setup navigation template to next page.
+	 * 
+	 * @return String - Next page
+	 */
+	@RequestMapping(value="deleteLocationRequests.request", method=RequestMethod.POST)
+	protected String deleteLocationRequests(@ModelAttribute("locationScout") LocationScout locationScout,
+			@RequestParam("") String[] deleteCheckBoxArray,
+			Model model) {
+		scoutService.deleteLocationRequest(locationScout, deleteCheckBoxArray);
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "locationScoutHomePage");
+		
+		return "scout/locationScoutHomePage";	
 	}
 	
 	/**
@@ -307,7 +350,7 @@ public class LocationScoutController {
 	 * @return - Name of the view we are going to.
 	 */
 	@RequestMapping(value="setupScoutAlerts.request", method=RequestMethod.GET)
-	protected String setupScoutAlerts(@ModelAttribute("locationScout")LocationScout locationScout) {
+	protected String setupScoutAlerts(@ModelAttribute("locationScout")LocationScout locationScout, Model model) {
 		Set<ScoutAlert>alerts;
 		Iterator<ScoutAlert> iterator;
 		
@@ -326,7 +369,10 @@ public class LocationScoutController {
 			alert.setLocation(location);
 		}
 		
-		return "scoutAlerts";
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "scoutAlertsPage");
+		
+		return "scout/locationScoutHomePage";	
 	}
 	
 	/**
@@ -347,14 +393,17 @@ public class LocationScoutController {
 		requestedAlert.setViewed(true);
 		requestedAlert.setViewedDate(new Date(System.currentTimeMillis()));
 		
-		// Update the LocationScout values to the database.
-		scoutService.modifyUser(locationScout);
+		// Update the Scout Alert values to the database.
+		scoutService.modifyScoutAlert(requestedAlert);
 		
 		alertLocation = requestedAlert.getLocation();
 		
 		model.addAttribute("alertLocation", alertLocation);
 		
-		return "viewLocationPhotos";
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "viewLocationPhotosPage");
+		
+		return "/scout/locationScoutHomePage";	
 	}
 	
 	/**
@@ -368,7 +417,7 @@ public class LocationScoutController {
 	{
 		model.addAttribute("templateName", "locationScoutHomePage");
 		
-		return "locationScoutHomePage";
+		return "scout/locationScoutHomePage";
 
 	}
 

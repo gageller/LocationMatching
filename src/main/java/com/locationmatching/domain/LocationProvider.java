@@ -54,8 +54,7 @@ public class LocationProvider extends User {
 	 * Collection of submissions for location requests
 	 */
 	@OneToMany(mappedBy="submissionOwner") // mapped by is equivalent to inverse=true in the mapping file.
-	@org.hibernate.annotations.Cascade(value={org.hibernate.annotations.CascadeType.ALL,
-			org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
+	@org.hibernate.annotations.Cascade(value=org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
 	@LazyCollection(value=LazyCollectionOption.FALSE)
 	@Fetch(value=FetchMode.SELECT)
 	@OrderBy(value="submissionDate")

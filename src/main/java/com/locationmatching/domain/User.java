@@ -90,11 +90,11 @@ public abstract class User implements Serializable{
 	
 	/**
 	 * Which type of user this is. 
-	 * Provider or Scout
+	 * Admin, Provider or Scout
 	 */
-//	@Enumerated(EnumType.STRING)
-//	@Column(name="USER_TYPE")
-//	private UserType userType;
+	@Enumerated(EnumType.STRING)
+	@Column(name="USER_TYPE", nullable=false, insertable=false, updatable=false)
+	private UserType userType;
 	
 	// Getter Methods
 	public Long getId() {
@@ -127,9 +127,9 @@ public abstract class User implements Serializable{
 	public Boolean getActive() {
 		return active;
 	}
-//	public UserType getUserType() {
-//		return userType;
-//	}
+	public UserType getUserType() {
+		return userType;
+	}
 	
 	// Setter Methods
 	public void setId(Long id) {

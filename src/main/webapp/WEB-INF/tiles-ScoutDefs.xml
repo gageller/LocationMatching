@@ -6,49 +6,49 @@
 	<!-- LOCATION PROVIDER TEMPLATES -->		
   	<definition name="baseScoutLayout" template="/layouts/baseScoutLayout.jsp">
 	    <put-attribute name="title" value="Template" />
-	    <put-attribute name="header" value="/locationScoutHeader.jsp" />
-	    <put-attribute name="menu" value="/scoutNavigation.jsp" />
-	    <put-attribute name="body" expression="/scout.jsp" />
-	    <put-attribute name="footer" value="/locationScoutFooter.jsp" />
+	    <put-attribute name="header" value="/scout/locationScoutHeader.jsp" />
+	    <put-attribute name="menu" value="/scout/scoutNavigation.jsp" />
+	    <put-attribute name="body" expression="/scout/scout.jsp" />
+	    <put-attribute name="footer" value="/scout/locationScoutFooter.jsp" />
 	</definition>
  
   	<definition name="locationScoutHomePage" extends="baseScoutLayout">
       	<put-attribute name="title" value="Location Scout" />
-      	<put-attribute name="body" value="/scout.jsp" />
+      	<put-attribute name="body" value="/scout/scout.jsp" />
 	</definition>
 	<definition name="editLocationScoutPage" extends="baseScoutLayout">
 	    <put-attribute name="title" value="Edit Scout Information"/>
-	    <put-attribute name="body" value="/editLocationScout.jsp"/>
+	    <put-attribute name="body" value="/scout/editLocationScout.jsp"/>
 	</definition>
  	<definition name="addLocationRequestPage" extends="baseScoutLayout">
       	<put-attribute name="title" value="Add a Location Request" />
-      	<put-attribute name="body" value="/addLocationRequest.jsp"></put-attribute>
+      	<put-attribute name="body" value="/scout/addLocationRequest.jsp"></put-attribute>
   	</definition>
   	<definition name="editLocationRequestListingsPage" extends="baseScoutLayout">
       	<put-attribute name="title" value="Locations to Edit"/>
-      	<put-attribute name="body" value="/editLocationRequestListings.jsp"/>
+      	<put-attribute name="body" value="/scout/editLocationRequestListings.jsp"/>
   	</definition>
    	<definition name="editLocationRequestPage" extends="baseScoutLayout">
       	<put-attribute name="title" value="Edit this Location"/>
       	<put-attribute name="body" value="/editLocationRequest.jsp"/>
   	</definition>
-<!--  	<definition name="deleteLocationPage" extends="baseScoutLayout">
+ 	<definition name="deleteLocationRequestsPage" extends="baseScoutLayout">
   	    <put-attribute name="title" value="Delete this Location"/>
-  	    <put-attribute name="body" value="/deleteLocations.jsp"/>
+  	    <put-attribute name="body" value="/scout/deleteLocationRequests.jsp"/>
   	</definition>
-  	<definition name="addPhotoPage" extends="baseScoutLayout">
-      	<put-attribute name="title" value="Add a New Photo"/>
-      	<put-attribute name="body" value="/addPhoto.jsp"></put-attribute>
+   	<definition name="scoutAlertsPage" extends="baseScoutLayout">
+      	<put-attribute name="title" value="Alerts"/>
+      	<put-attribute name="body" value="/scout/scoutAlerts.jsp"></put-attribute>
   	</definition>
-  	<definition name="deletePhotosPage" extends="baseScoutLayout">
- 		<put-attribute name="title" value="Delete Selected Photos"/> 	    
-  	    <put-attribute name="body" value="/deletePhotos.jsp"/>
+  	<definition name="viewLocationPhotosPage" extends="baseScoutLayout">
+ 		<put-attribute name="title" value="Location Photos"/> 	    
+  	    <put-attribute name="body" value="/scout/viewLocationPhotos.jsp"/>
   	</definition>
-  	<definition name="searchLocationRequestsPage" extends="baseScoutLayout">
-  	    <put-attribute name="title" value="Search Location Requests"/>
-  	    <put-attribute name="body" value="/searchLocationRequests.jsp"/>
+  	<definition name="viewLocationPhotosPage" extends="baseScoutLayout">
+  	    <put-attribute name="title" value="View Location Photos"/>
+  	    <put-attribute name="body" value="/scout/viewLocationPhotos.jsp"/>
   	</definition>
-  	<definition name="locationSubmissionsPage" extends="baseScoutLayout">
+<!--   	<definition name="locationSubmissionsPage" extends="baseScoutLayout">
   	    <put-attribute name="title" value="Location Submissions"/>
   	    <put-attribute name="body" value="/viewSubmissionsList.jsp"/>
   	</definition>

@@ -135,6 +135,17 @@ public class LocationProviderController implements ServletContextAware{
 	////////////////////////////////////////////////////////////////////////////////
 	// Location Provider Actions
 	////////////////////////////////////////////////////////////////////////////////
+	
+	@RequestMapping(value="setupLocationProviderSession.request", method=RequestMethod.POST)
+	protected String setupLocationProviderSession(@ModelAttribute("locationProvider") LocationProvider locationProvider, Model model) {
+		//
+		model.addAttribute("locationProvider", locationProvider);
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "locationProviderHomePage");
+		
+		return "/provider/locationProviderHomePage";	
+	}
+
 	/**
 	 * Get the Location Provider based on the id passed in.
 	 */
@@ -238,7 +249,7 @@ public class LocationProviderController implements ServletContextAware{
 		locationProvider.setUserPlanType(UserPlanType.BASIC);
 		
 		// Go to the provider.jsp page to add locations
-		nextPage = "locationProviderHomePage";
+		nextPage = "/provider/locationProviderHomePage";
 		
 		try {
 			Long id;
@@ -274,7 +285,7 @@ public class LocationProviderController implements ServletContextAware{
 	protected String setProviderEdit(Model model) {
 		model.addAttribute("templateName", "editLocationProviderPage");
 		
-		return "locationProviderHomePage";
+		return "/provider/locationProviderHomePage";
 	}
 	
 	/**
@@ -292,7 +303,7 @@ public class LocationProviderController implements ServletContextAware{
 		
 		model.addAttribute("templateName", "locationProviderHomePage");
 		
-		return "locationProviderHomePage";
+		return "/provider/locationProviderHomePage";
 	}
 	
 	/**
@@ -306,7 +317,7 @@ public class LocationProviderController implements ServletContextAware{
 	{
 		model.addAttribute("templateName", "locationProviderHomePage");
 		
-		return "locationProviderHomePage";
+		return "/provider/locationProviderHomePage";
 
 	}
 	
@@ -340,7 +351,7 @@ public class LocationProviderController implements ServletContextAware{
 		model.addAttribute("location", location);
 		model.addAttribute("templateName", "addLocationPage");
 		
-		return "locationProviderHomePage";
+		return "/provider/locationProviderHomePage";
 	}
 	
 	/**
@@ -370,7 +381,7 @@ public class LocationProviderController implements ServletContextAware{
 		
 		model.addAttribute("templateName", "addPhotoPage");
 		
-		return "locationProviderHomePage";
+		return "/provider/locationProviderHomePage";
 	}
 	
 	/**
@@ -401,7 +412,7 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", nextTemplateName);
 		
-		return "locationProviderHomePage";
+		return "/provider/locationProviderHomePage";
 	}
 	
 	/**
@@ -415,7 +426,7 @@ public class LocationProviderController implements ServletContextAware{
 	protected String setupEditLocationListings(Model model) {
 		model.addAttribute("templateName", "editLocationListingsPage");
 		
-		return "locationProviderHomePage";
+		return "/provider/locationProviderHomePage";
 	}
 	
 	/**
@@ -457,7 +468,7 @@ public class LocationProviderController implements ServletContextAware{
 		// finished adding the photos.
 		session.setAttribute("nextTemplateName", "editLocationListingsPage");
 
-		return "locationProviderHomePage";
+		return "/provider/locationProviderHomePage";
 	}
 	
 	/**
@@ -477,7 +488,7 @@ public class LocationProviderController implements ServletContextAware{
 		// finished add the photos.
 		session.setAttribute("nextTemplateName", "editLocationListingsPage");
 
-		return "locationProviderHomePage";
+		return "/provider/locationProviderHomePage";
 	}
 	
 	/**
@@ -498,7 +509,7 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "searchLocationRequestsPage");
 		
-		return "locationProviderHomePage";	
+		return "/provider/locationProviderHomePage";	
 	}
 	
 	/**
@@ -522,7 +533,7 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "searchLocationRequestsPage");
 		
-		return "locationProviderHomePage";	
+		return "/provider/locationProviderHomePage";	
 	}
 	
 	@RequestMapping(value="gotoAddPhoto.request", method=RequestMethod.GET)
@@ -530,7 +541,7 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "addPhotoPage");
 		
-		return "locationProviderHomePage";
+		return "/provider/locationProviderHomePage";
 	}
 	
 	/**
@@ -544,7 +555,7 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "deletePhotosPage");
 		
-		return "locationProviderHomePage";	
+		return "/provider/locationProviderHomePage";	
 	}
 	
 	@RequestMapping(value="deletePhotos.request", method=RequestMethod.POST)
@@ -554,7 +565,7 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "locationProviderHomePage");
 		
-		return "locationProviderHomePage";	
+		return "/provider/locationProviderHomePage";	
 	}
 	
 	/**
@@ -599,7 +610,7 @@ public class LocationProviderController implements ServletContextAware{
 			locationProvider.addRequestSubmission(newSubmission);
 			
 			// Persist the new submission
-			providerService.modifyUser(locationProvider);
+			providerService.addProviderSubmission(newSubmission);
 			
 			// Add an alert to the Location Scout
 			ScoutAlert scoutAlert = new ScoutAlert();
@@ -612,7 +623,7 @@ public class LocationProviderController implements ServletContextAware{
 			
 			scout.addRequestAlert(scoutAlert);
 			// Persist the new alert
-			scoutService.modifyUser(scout);
+			scoutService.addScoutAlert(scoutAlert);
 			
 			StringBuilder emailBodyText = new StringBuilder();
 			
@@ -639,7 +650,7 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "searchLocationRequestsPage");
 		
-		return "locationProviderHomePage";	
+		return "/provider/locationProviderHomePage";	
 	}
 
 	/**
@@ -653,7 +664,7 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "deleteLocationPage");
 		
-		return "locationProviderHomePage";	
+		return "/provider/locationProviderHomePage";	
 	}
 	
 	/**
@@ -674,7 +685,7 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "locationProviderHomePage");
 		
-		return "locationProviderHomePage";	
+		return "/provider/locationProviderHomePage";	
 	}
 	
 	/**
@@ -714,7 +725,7 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "locationSubmissionsPage");
 		
-		return "locationProviderHomePage";	
+		return "/provider/locationProviderHomePage";	
 
 	}
 	/*

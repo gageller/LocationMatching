@@ -1,29 +1,19 @@
 package com.locationmatching.service;
 
-import java.io.File;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
 import com.locationmatching.component.Image;
 import com.locationmatching.component.Location;
-import com.locationmatching.component.LocationRequest;
+import com.locationmatching.component.ProviderSubmission;
 import com.locationmatching.domain.LocationProvider;
-import com.locationmatching.domain.User;
 import com.locationmatching.exception.LocationProcessingException;
-import com.locationmatching.exception.UserAlreadyExistsException;
 import com.locationmatching.util.HibernateUtil;
 
 /**
@@ -823,16 +813,56 @@ public class LocationProviderServiceImpl extends LocationUserService {
 		}
 	}
 
-	// Methods for the Location Scout that are defined as abstract in the LocationUserService
-	// base class so just implement empty method bodies.
-	@Override
-	public LocationRequest getLocationRequest(Long id) {
-		return null;
-	}
-
-	@Override
-	public Map<Long, LocationRequest> getLocationRequests(LocationRequest searchRequest) {
-		return null;
+	/**
+	 * Add the ProviderSubmission object to the database.
+	 * 
+	 * @param providerSubmission - The ProviderSubmission object to be added to the database.
+	 */
+	public void addProviderSubmission(ProviderSubmission providerSubmission) {
+		Session session = null;
+		Transaction transaction = null;
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			session.save(providerSubmission);
+			
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			StringBuilder exceptionMessage;
+			
+			ex.printStackTrace();
+			
+			exceptionMessage = new StringBuilder();
+			exceptionMessage.append("There was an error adding the Submission ");
+			exceptionMessage.append(". Please try to request at a later time. If the problem ");
+			exceptionMessage.append("persists, contact technical support. Sorry for the inconvience.");
+			
+			throw new LocationProcessingException(exceptionMessage.toString());
+		}
+		finally {
+			try {
+				session.close();
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
+		}
 	}
 }	
 

@@ -25,7 +25,7 @@ public class EmailServiceImpl implements EmailService {
 			props.put("mail.smtp.auth", "true");
 
 			sender.setJavaMailProperties(props);
-			sender.setHost("smtp-server.roadrunner.com");
+			sender.setHost("smtp-server.socal.rr.com");
 			sender.setPort(587);
 			sender.setUsername("gageller");
 			sender.setPassword("rayray");

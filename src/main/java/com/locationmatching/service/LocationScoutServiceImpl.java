@@ -1,29 +1,22 @@
 package com.locationmatching.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
-import com.locationmatching.component.Location;
 import com.locationmatching.component.LocationRequest;
-import com.locationmatching.domain.LocationProvider;
+import com.locationmatching.component.ScoutAlert;
 import com.locationmatching.domain.LocationScout;
-import com.locationmatching.domain.User;
 import com.locationmatching.enums.LocationType;
 import com.locationmatching.exception.LocationProcessingException;
-import com.locationmatching.exception.UserAlreadyExistsException;
 import com.locationmatching.util.HibernateUtil;
 @Service
 public class LocationScoutServiceImpl extends LocationUserService {
@@ -284,105 +277,6 @@ public class LocationScoutServiceImpl extends LocationUserService {
 		}
 	}
 	
-	/*
-	public Map<Long, LocationRequest>getLocationRequests(LocationRequest searchRequest) {
-		ArrayList<LocationRequest>locationRequestsList = null;
-		Map<Long, LocationRequest>locationRequests = new TreeMap<Long, LocationRequest>();
-		Iterator<LocationRequest> iterator;
-		Session session = null;
-		Transaction transaction = null;
-		
-		try {
-			Criteria criteria;
-			String value;
-			LocationType locationType;
-			
-			session = HibernateUtil.getSession();
-			transaction = session.beginTransaction();
-			
-			criteria = session.createCriteria(LocationRequest.class);
-			
-			// Location Request Name
-			value = searchRequest.getLocationRequestName();
-			if(value != null && value.isEmpty() == false) {
-				criteria.add(Restrictions.eq("locationRequestName", value));				
-			}
-
-			// Location Request City
-			value = searchRequest.getLocationRequestCity();
-			if(value != null && value.isEmpty() == false) {
-				criteria.add(Restrictions.eq("locationRequestCity", value));				
-			}
-
-			// Location Request State
-			value = searchRequest.getLocationRequestState();
-			if(value != null && value.isEmpty() == false) {
-				criteria.add(Restrictions.eq("locationRequestState", value));				
-			}
-
-			// Location Request Zip Code
-			value = searchRequest.getLocationRequestZipcode();
-			if(value != null && value.isEmpty() == false) {
-				criteria.add(Restrictions.eq("locationRequestZipcode", value));				
-			}
-
-			// Location Request County
-			value = searchRequest.getLocationRequestCounty();
-			if(value != null && value.isEmpty() == false) {
-				criteria.add(Restrictions.eq("locationRequestCounty", value));				
-			}
-
-			// Location Type
-			locationType = searchRequest.getLocationType();
-			if(locationType != null && locationType != LocationType.BLANK) {
-				criteria.add(Restrictions.eq("locationType", locationType));				
-			}
-
-			locationRequestsList = (ArrayList<LocationRequest>) criteria.list();
-			iterator = locationRequestsList.iterator();
-			
-			// Iterate through the collection and add each LocationRequest to the 
-			// map keyed by its id.
-			while(iterator.hasNext() == true) {
-				Long id;
-				LocationRequest locationRequest;
-				
-				locationRequest = iterator.next();
-				locationRequests.put(locationRequest.getId(), locationRequest);
-			}
-
-			transaction.commit();
-		}
-		catch(HibernateException ex) {
-			try{
-				if(transaction != null) {
-					// The commit failed so roll back the changes
-					transaction.rollback();
-				}
-			}
-			catch(HibernateException rollbackException) {
-				rollbackException.printStackTrace();
-				
-				throw rollbackException;
-			}
-			ex.printStackTrace();
-			
-			throw ex;
-		}
-		finally {
-			try {
-				if(session != null) {
-					session.close();
-				}
-			}
-			catch(HibernateException ex) {
-				ex.printStackTrace();
-			}
-		}
-	
-		return locationRequests;
-	}
-*/
 //	@Override
 	public Map<Long, LocationRequest> getLocationRequests(LocationRequest searchRequest) {
 		ArrayList<LocationRequest>locationRequestsList = null;
@@ -525,6 +419,57 @@ public class LocationScoutServiceImpl extends LocationUserService {
 		return locationRequest;
 	}
 
+	public void deleteLocationRequest(LocationScout locationScout, String[] locationRequestIdsToDelete) {
+		Session session = null;
+		Transaction transaction = null;
+		LocationRequest locationRequest = null;
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			// Iterate through array of ids to delete and delete the associated 
+			// LocationRequests
+			for(int index = 0; index < locationRequestIdsToDelete.length; index++) {
+				String deleteId;
+				
+				deleteId = locationRequestIdsToDelete[index];
+				locationRequest = (LocationRequest) session.get(LocationRequest.class, Long.valueOf(deleteId));
+				// Remove from the LocationRequest collection
+				locationScout.removeLocationRequest(locationRequest.getId());
+				
+				session.delete(locationRequest);
+			}
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			throw ex;
+		}
+		finally {
+			try {
+				if(session != null) {
+					session.close();
+				}
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
 	/**
 	 * Update the modified LocationRequest object to the database.
 	 * 
@@ -569,26 +514,86 @@ public class LocationScoutServiceImpl extends LocationUserService {
 			}
 		}
 	}
+	
+	/**
+	 * Add the new ScoutAlert to the database
+	 * 
+	 * @param scoutAlert - The new alert to be added.
+	 */
+	public void addScoutAlert(ScoutAlert scoutAlert) {
+		Session session = null;
+		Transaction transaction = null;
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			session.save(scoutAlert);
 
-	// Methods for the Location Provider that are defined as abstract in the LocationUserService
-	// base class so just implement empty method bodies.
-	@Override
-	public void addLocation(Location location) {}
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			StringBuilder exceptionMessage;
+			
+			ex.printStackTrace();
+			
+			exceptionMessage = new StringBuilder();
+			exceptionMessage.append("There was an error adding the Alert ");
+			exceptionMessage.append(". Please try to request at a later time. If the problem ");
+			exceptionMessage.append("persists, contact technical support. Sorry for the inconvience.");
+			
+			throw new LocationProcessingException(exceptionMessage.toString());
+		}
+		finally {
+			if(session != null) {
+				try {
+					session.close();
+				}
+				catch(HibernateException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Modify the ScoutAlert object to the database
+	 * 
+	 * @param scoutAlert - The alert to be updated.
+	 */
+	public void modifyScoutAlert(ScoutAlert scoutAlert) {
+		Session session = null;
+		Transaction transaction = null;
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			session.update(scoutAlert);
 
-	@Override
-	public void modifyLocation(Location location) {}
-
-	@Override
-	public void setCoverPicture(Location location) {}
-
-	@Override
-	public void deleteImages(Location location, String[] photoDeleteIds) {}
-
-	@Override
-	public void deleteLocations(LocationProvider locationProvider, String[] locationsToDelete) {}
-
-	@Override
-	public Location getLocation(Long id) {
-		return null;
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			StringBuilder exceptionMessage;
+			
+			ex.printStackTrace();
+			
+			exceptionMessage = new StringBuilder();
+			exceptionMessage.append("There was an error modifying the Alert ");
+			exceptionMessage.append(". Please try to request at a later time. If the problem ");
+			exceptionMessage.append("persists, contact technical support. Sorry for the inconvience.");
+			
+			throw new LocationProcessingException(exceptionMessage.toString());
+		}
+		finally {
+			if(session != null) {
+				try {
+					session.close();
+				}
+				catch(HibernateException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
 	}
 }

@@ -410,7 +410,7 @@ public abstract class LocationUserService {
 			}
 		}
 	}
-	
+	/*
 	// Methods implemented for the Location Provider
 	public abstract void addLocation(Location location);
 	public abstract void modifyLocation(Location location);
@@ -422,4 +422,5 @@ public abstract class LocationUserService {
 	// Methods implemented for the Location Scout
 	public abstract LocationRequest getLocationRequest(Long id);
 	public abstract Map<Long, LocationRequest> getLocationRequests(LocationRequest searchRequest);
+	*/
 }

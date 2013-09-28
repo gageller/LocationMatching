@@ -35,8 +35,7 @@ public class LocationScout extends User {
 	 * Set of Request objects for this scout.
 	 */
 	@OneToMany(mappedBy="requestOwner") // mappedBy is equivalent to inverse=true in the mapping file.
-	@org.hibernate.annotations.Cascade(value={org.hibernate.annotations.CascadeType.ALL, 
-			org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
+	//@org.hibernate.annotations.Cascade(value=org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
 	@LazyCollection(value = LazyCollectionOption.FALSE)
 	@Fetch(value=FetchMode.SELECT)
 	private Set<LocationRequest> locationRequests = new LinkedHashSet<LocationRequest>();
@@ -45,8 +44,7 @@ public class LocationScout extends User {
 	 * Set of alerts of Location Provider submissions.
 	 */
 	@OneToMany(mappedBy="alertOwner")
-	@org.hibernate.annotations.Cascade(value={org.hibernate.annotations.CascadeType.ALL, 
-			org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
+	@org.hibernate.annotations.Cascade(value={org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
 	@LazyCollection(value = LazyCollectionOption.FALSE)
 	@Fetch(value=FetchMode.SELECT)
 	@OrderBy("creationDate")
@@ -136,12 +134,42 @@ public class LocationScout extends User {
 	
 	/**
 	 * Remove the LocationRequest object from the collection
+	 * 
 	 * @param locationRequest
 	 */
 	public void removeLocationRequest(LocationRequest locationRequest) {
-		locationRequests.remove(locationRequest);
+		boolean b;
+		b = locationRequests.remove(locationRequest);
+		System.out.println("remove location object = " + b);
 	}
 	
+	/**
+	 * Remove the LocationRequest object referenced by the passed in id from the collection.
+	 * Return the LocationRequest object that was removed from the collection.
+	 * 
+	 * @param id
+	 * @return The removed LocationRequest object.
+	 */
+	public LocationRequest removeLocationRequest(Long id) {
+		Iterator<LocationRequest> iterator;
+		
+		iterator = locationRequests.iterator();
+		
+		while(iterator.hasNext() == true) {
+			Long locationRequestId;
+			LocationRequest currentLocationRequest;
+			
+			currentLocationRequest = iterator.next();
+			locationRequestId = currentLocationRequest.getId();
+			
+			if(locationRequestId.equals(id) == true) {
+				locationRequests.remove(currentLocationRequest);
+				return currentLocationRequest;
+			}
+			
+		}
+		return null;
+	}
 	/**
 	 * Add the Scout Alert to the collection and set the alert's
 	 * parent pointer.
