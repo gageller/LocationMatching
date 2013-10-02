@@ -13,6 +13,12 @@ public class GlobalVars {
 	public final static int BASIC_FREE_PHOTO_AMOUNT = 5;
 	public final static int PREMIUM_FREE_PHOTO_AMOUNT = 10;
 	
+	// Email parameters
+	public final static String ADMIN_EMAIL_NAME = "gageller";
+	public final static String ADMIN_EMAIL_PASSWORD = "rayray";
+	public final static String EMAIL_HOST_SERVER = "smtp-server.socal.rr.com";
+	public final static int EMAIL_HOST_PORT = 587;
+	
 	static {
 		stateMap.put("", "");
 		stateMap.put("Alabama", "Alabama(AL)");

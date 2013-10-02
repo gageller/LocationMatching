@@ -96,6 +96,14 @@ public abstract class User implements Serializable{
 	@Column(name="USER_TYPE", nullable=false, insertable=false, updatable=false)
 	private UserType userType;
 	
+	/**
+	 * Determines the level of the user. Level 1 means that the Provider has a Premium Account
+	 * but does not have to pay for it. For Admin user level 1 can add or delete other users
+	 * including admin users. Admin user 2 cannot delete or add Admin Users.
+	 */
+	@Column(name="USER_LEVEL")
+	private Short userLevel;
+	
 	// Getter Methods
 	public Long getId() {
 		return id;
@@ -130,6 +138,9 @@ public abstract class User implements Serializable{
 	public UserType getUserType() {
 		return userType;
 	}
+	public Short getUserLevel() {
+		return userLevel;
+	}
 	
 	// Setter Methods
 	public void setId(Long id) {
@@ -162,6 +173,10 @@ public abstract class User implements Serializable{
 	public void setActive(Boolean active) {
 		this.active = active;
 	}
+	public void setUserLevel(Short userLevel) {
+		this.userLevel = userLevel;
+	}
+	
 //	public void setUserType(UserType userType) {
 //		this.userType = userType;
 //	}

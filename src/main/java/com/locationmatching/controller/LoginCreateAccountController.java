@@ -20,7 +20,7 @@ import com.locationmatching.service.GeneralUserServiceImpl;
  * @since 0.0.1
  */
 @Controller
-@SessionAttributes({"locationProvider", "locationScout"})
+@SessionAttributes({"locationProvider", "locationScout", "adminUser"})
 public class LoginCreateAccountController {
 	@Autowired
 	GeneralUserServiceImpl service;
@@ -75,7 +75,8 @@ public class LoginCreateAccountController {
 			}
 			
 			if(userType == UserType.ADMIN) {
-				nextPage = "locationScoutHomePage";
+				nextPage = "forward:/setupAdminSession.request";
+				model.addAttribute("adminUser", user);
 			}
 		}
 		

@@ -8,24 +8,6 @@
 <link rel="stylesheet" type="text/css" href="css/lmStyle.css">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Location Provider</title>
-<script>
-	<!--
-		// Process either the Location Provider edit bttn click or
-		// the Add Location bttn click.
-		function processButtonClick(action) {
-			document.forms("provider").action = action;
-			document.forms("provider").submit();
-		}
-	
-		// Process the edit button click for a particular
-		// location
-		function editLocationButtonClick(index) {
-			document.forms("provider").locationIndex.value = index;
-			document.forms("provider").action = "editLocation.request";
-			document.forms("provider").submit();
-		}
-	-->
-</script>
 </head>
 <body>
 <h2>Account Information and Locations</h2>
@@ -40,14 +22,8 @@
 			<td>Phone Number:</td>
 			<td>${locationProvider.phoneNumber}</td>
 		</tr>
-<!-- 
-		<tr>
-			<td><input type="button" value="Edit User Information..." onClick='processButtonClick("editProvider.request")'/></td>
-		</tr>
--->		
 	</table>
 	<br/>
-<!-- 	<input type="button" name="addLocationBttn" value="Add Location..." onClick='processButtonClick("addLocation.request")'/> -->
 	<br/>
 	<h3>Locations</h3>
 			<c:forEach items="${locationProvider.providerLocations}" var="location">
@@ -74,11 +50,5 @@
 				<br/>
 			</c:forEach>
 	</form:form>
-<!-- 	
-	<br/>
-	<a href="./providerNavigation.jsp">My Main Page</a>
-	<br/>
-	<a href="./index.jsp">Home</a>
--->
 </body>
 </html>

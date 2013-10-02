@@ -44,8 +44,8 @@ import com.locationmatching.exception.UserAlreadyExistsException;
 import com.locationmatching.service.EmailService;
 import com.locationmatching.service.LocationProviderServiceImpl;
 import com.locationmatching.service.LocationScoutServiceImpl;
-import com.locationmatching.service.LocationUserService;
 import com.locationmatching.util.GlobalVars;
+import com.sun.xml.internal.fastinfoset.util.StringArray;
 
 /**
  * Controller to handle request made by the Location Provider. This 
@@ -223,7 +223,7 @@ public class LocationProviderController implements ServletContextAware{
 		
 		model.addAttribute("locationProvider", provider);
 		
-		return "newLocationProvider";
+		return "/provider/newLocationProvider";
 	}
 	
 	/**
@@ -636,9 +636,11 @@ public class LocationProviderController implements ServletContextAware{
 			
 			// Find which of the location images is set to be the main photo.
 			coverImage = location.getCoverImage();
+			StringArray emailAddress = new StringArray();
 			
+			emailAddress.add(scout.getEmailAddress());
 			if(coverImage != null && scout != null) {
-				emailService.sendEmailWithInlinePicture(scout.getEmailAddress(), coverImage.getAbsoluteFilePath(), "Location Submitted", emailBodyText.toString());
+				emailService.sendEmailWithInlinePicture(emailAddress, coverImage.getAbsoluteFilePath(), "Location Submitted", emailBodyText.toString());
 			}
 			message = "Submission successful.";
 			model.addAttribute("successfulSubmissionMessage", message);

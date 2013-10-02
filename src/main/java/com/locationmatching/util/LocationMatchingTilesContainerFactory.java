@@ -35,6 +35,7 @@ public class LocationMatchingTilesContainerFactory extends BasicTilesContainerFa
 			urls.add(applicationContext.getResource("/WEB-INF/tiles-ProviderDefs.xml"));
 			urls.add(applicationContext.getResource("/WEB-INF/tiles-ScoutDefs.xml"));
 			urls.add(applicationContext.getResource("/WEB-INF/tiles-Login-CreateAccountDefs.xml"));
+			urls.add(applicationContext.getResource("/WEB-INF/tiles-AdminDefs.xml"));
 		}
 		catch(IOException ex) {
 			ex.printStackTrace();

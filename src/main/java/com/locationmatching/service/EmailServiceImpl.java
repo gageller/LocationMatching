@@ -10,31 +10,41 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import com.locationmatching.util.GlobalVars;
+import com.sun.xml.internal.fastinfoset.util.StringArray;
+
 @Service
 public class EmailServiceImpl implements EmailService {
 
 	@Override
-	public void sendEmailWithInlinePicture(String toEmailAddress,
+	public void sendEmailWithInlinePicture(StringArray toEmailAddresses,
 			String imageFilePath, String subject, String bodyText) {
 		JavaMailSenderImpl sender = new JavaMailSenderImpl();
 		MimeMessage message;
 		MimeMessageHelper messageHelper;
+		StringBuilder toAddresses;
 	
 		try {
+			toAddresses = new StringBuilder();
 			Properties props = new Properties();
 			props.put("mail.smtp.auth", "true");
 
 			sender.setJavaMailProperties(props);
-			sender.setHost("smtp-server.socal.rr.com");
-			sender.setPort(587);
-			sender.setUsername("gageller");
-			sender.setPassword("rayray");
+			sender.setHost(GlobalVars.EMAIL_HOST_SERVER);
+			sender.setPort(GlobalVars.EMAIL_HOST_PORT);
+			sender.setUsername(GlobalVars.ADMIN_EMAIL_NAME);
+			sender.setPassword(GlobalVars.ADMIN_EMAIL_PASSWORD);
 	
 			message = sender.createMimeMessage();
 			
+			// Loop through the toEmailAddresses array to create the toAddresses string.
+			for(int index = 0; index < toEmailAddresses.getSize(); index++) {
+				toAddresses.append(toEmailAddresses.get(index));
+				toAddresses.append(";");
+			}
 			// use the true flag to indicate you need a multipart message
 			messageHelper = new MimeMessageHelper(message, true);
-			messageHelper.setTo(toEmailAddress);
+			messageHelper.setTo(toAddresses.toString());
 			messageHelper.setFrom("gageller@roadrunner.com");
 			messageHelper.setSubject(subject);
 			messageHelper.setText(bodyText, true);

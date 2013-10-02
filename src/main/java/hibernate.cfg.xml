@@ -9,6 +9,7 @@
   <property name="hibernate.format_sql">true</property>
   <mapping class="com.locationmatching.domain.LocationProvider"/>
   <mapping class="com.locationmatching.domain.LocationScout"/>
+  <mapping class="com.locationmatching.domain.AdminUser"/>
   <mapping class="com.locationmatching.component.Image"/>
   <mapping class="com.locationmatching.component.Location"/>
   <mapping class="com.locationmatching.component.LocationRequest"/>
