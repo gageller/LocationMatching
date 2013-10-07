@@ -44,7 +44,7 @@ public class LocationProvider extends User {
 	@OneToMany(mappedBy="locationOwner") // mappedBy is equivalent to inverse=true in the mapping file.
 //	@org.hibernate.annotations.Cascade(value={org.hibernate.annotations.CascadeType.ALL, 
 	//		org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
-	@org.hibernate.annotations.Cascade(value=org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+//	@org.hibernate.annotations.Cascade(value=org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
 	@LazyCollection(value = LazyCollectionOption.FALSE)
 	@Fetch(value=FetchMode.SELECT)
 	@OrderBy // Ordering by primary key is assumed when not given a value

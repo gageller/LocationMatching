@@ -23,7 +23,8 @@ public class EmailServiceImpl implements EmailService {
 		MimeMessage message;
 		MimeMessageHelper messageHelper;
 		StringBuilder toAddresses;
-	
+		boolean addAddressDelimiter = false;
+		
 		try {
 			toAddresses = new StringBuilder();
 			Properties props = new Properties();
@@ -39,8 +40,58 @@ public class EmailServiceImpl implements EmailService {
 			
 			// Loop through the toEmailAddresses array to create the toAddresses string.
 			for(int index = 0; index < toEmailAddresses.getSize(); index++) {
+				if(addAddressDelimiter == true) {
+					toAddresses.append(";");
+				}
 				toAddresses.append(toEmailAddresses.get(index));
-				toAddresses.append(";");
+				addAddressDelimiter = true;
+			}
+			// use the true flag to indicate you need a multipart message
+			messageHelper = new MimeMessageHelper(message, true);
+			messageHelper.setTo(toAddresses.toString());
+			messageHelper.setFrom(GlobalVars.FROM_EMAIL_ADDRESS);
+			messageHelper.setSubject(subject);
+			messageHelper.setText(bodyText, true);
+			
+			// Setup inline image
+			FileSystemResource image = new FileSystemResource(imageFilePath);
+			messageHelper.addInline("inlineImage", image);
+			
+			sender.send(message);
+		}
+		catch (MessagingException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void sendEmail(StringArray toEmailAddresses, String subject,	String bodyText) {
+		JavaMailSenderImpl sender = new JavaMailSenderImpl();
+		MimeMessage message;
+		MimeMessageHelper messageHelper;
+		StringBuilder toAddresses;
+		boolean addAddressDelimiter = false;
+		
+		try {
+			toAddresses = new StringBuilder();
+			Properties props = new Properties();
+			props.put("mail.smtp.auth", "true");
+
+			sender.setJavaMailProperties(props);
+			sender.setHost(GlobalVars.EMAIL_HOST_SERVER);
+			sender.setPort(GlobalVars.EMAIL_HOST_PORT);
+			sender.setUsername(GlobalVars.ADMIN_EMAIL_NAME);
+			sender.setPassword(GlobalVars.ADMIN_EMAIL_PASSWORD);
+	
+			message = sender.createMimeMessage();
+			
+			// Loop through the toEmailAddresses array to create the toAddresses string.
+			for(int index = 0; index < toEmailAddresses.getSize(); index++) {
+				if(addAddressDelimiter == true) {
+					toAddresses.append(";");
+				}
+				toAddresses.append(toEmailAddresses.get(index));
+				addAddressDelimiter = true;
 			}
 			// use the true flag to indicate you need a multipart message
 			messageHelper = new MimeMessageHelper(message, true);
@@ -49,17 +100,12 @@ public class EmailServiceImpl implements EmailService {
 			messageHelper.setSubject(subject);
 			messageHelper.setText(bodyText, true);
 			
-			// Setup inline image
-			FileSystemResource image = new FileSystemResource(imageFilePath);
-			messageHelper.addInline("coverImage", image);
-			
 			sender.send(message);
 		}
 		catch (MessagingException e) {
 			e.printStackTrace();
 		}
-
-
+		
 	}
 
 }

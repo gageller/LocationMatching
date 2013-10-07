@@ -1,6 +1,7 @@
 package com.locationmatching.controller;
 
 import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.Iterator;
@@ -143,76 +144,9 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "locationProviderHomePage");
 		
-		return "/provider/locationProviderHomePage";	
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;	
 	}
 
-	/**
-	 * Get the Location Provider based on the id passed in.
-	 */
-	@RequestMapping(value="getProvider.request", method=RequestMethod.GET)
-	public ModelAndView getProvider(@PathVariable("id") String id) {
-		ModelAndView modelView = new ModelAndView();
-		LocationProvider user = (LocationProvider) providerService.getUser(Long.valueOf(id));
-		
-		modelView.addObject("", user);
-		modelView.setViewName("provider");
-		
-		return modelView;
-	}
-	
-	/**
-	 * Authenticate the provider logging in. If not found, send back to
-	 * login page else send to their provider page.
-	 * 
-	 * @return String
-	 */
-	@RequestMapping(value="providerAuthentication.request", method=RequestMethod.POST)
-	public String authenticateUser(@RequestParam("providerUserName")String userName,
-			@RequestParam("providerPassword")String password, Model model) {
-		String view;
-		LocationProvider provider;
-		
-		provider = (LocationProvider) providerService.authenticateUser(userName, password);
-		
-		if(provider != null) {
-			// Found the provider so proceed onto the provider
-			// info page.
-			model.addAttribute("locationProvider", provider);
-			model.addAttribute("templateName", "locationProviderHomePage");
-			view = "locationProviderHomePage";
-		}
-		else {
-			model.addAttribute("userProviderLoginErrorMessage", "We could not find this User Name. Please try again.");
-			view = "forward:/index.jsp";
-		}
-		
-		return view;
-	}
-	
-	/**
-	 * Get all of the Location Providers in the system
-	 */
-	@RequestMapping(value="getAllProviders.request", method=RequestMethod.GET)
-	public String getAllProviders(Model model) {
-		List<User> providerList;
-		
-		providerList = providerService.getAllUsers();
-		
-		model.addAttribute("providerList", providerList);
-		
-		return "allProviders";
-	}
-	
-	/**
-	 * Delete the Location Provider based on the id passed in.
-	 */
-/*	@RequestMapping(value="{id}", method=RequestMethod.DELETE)
-	public String deleteProvider(@PathVariable("id") String id) {
-		providerService.deleteUser(Long.valueOf(id));
-		
-		return "deletedUser";
-	}
-*/	
 	/**
 	 * Instantiate new Location Provider object and add to the Model.
 	 * Then continue onto the newLocationProvider.jsp page.
@@ -223,7 +157,7 @@ public class LocationProviderController implements ServletContextAware{
 		
 		model.addAttribute("locationProvider", provider);
 		
-		return "/provider/newLocationProvider";
+		return "/" + GlobalVars.PROVIDER_JSP_FOLDER + "/newLocationProvider";
 	}
 	
 	/**
@@ -243,13 +177,13 @@ public class LocationProviderController implements ServletContextAware{
 		locationProvider.setLastAccessDate(date);
 		// This provider to active
 		locationProvider.setActive(true);
-		// Set the user type
-	//	locationProvider.setUserType(UserType.PROVIDER);
+		// Set the user level to 2
+		locationProvider.setUserLevel(Short.valueOf("2"));
 		// Set the new user's plan type to the Pay Per Photo plan type
 		locationProvider.setUserPlanType(UserPlanType.BASIC);
 		
 		// Go to the provider.jsp page to add locations
-		nextPage = "/provider/locationProviderHomePage";
+		nextPage = GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
 		
 		try {
 			Long id;
@@ -285,7 +219,7 @@ public class LocationProviderController implements ServletContextAware{
 	protected String setProviderEdit(Model model) {
 		model.addAttribute("templateName", "editLocationProviderPage");
 		
-		return "/provider/locationProviderHomePage";
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
 	}
 	
 	/**
@@ -303,7 +237,7 @@ public class LocationProviderController implements ServletContextAware{
 		
 		model.addAttribute("templateName", "locationProviderHomePage");
 		
-		return "/provider/locationProviderHomePage";
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
 	}
 	
 	/**
@@ -317,7 +251,7 @@ public class LocationProviderController implements ServletContextAware{
 	{
 		model.addAttribute("templateName", "locationProviderHomePage");
 		
-		return "/provider/locationProviderHomePage";
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
 
 	}
 	
@@ -351,7 +285,7 @@ public class LocationProviderController implements ServletContextAware{
 		model.addAttribute("location", location);
 		model.addAttribute("templateName", "addLocationPage");
 		
-		return "/provider/locationProviderHomePage";
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
 	}
 	
 	/**
@@ -381,7 +315,7 @@ public class LocationProviderController implements ServletContextAware{
 		
 		model.addAttribute("templateName", "addPhotoPage");
 		
-		return "/provider/locationProviderHomePage";
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
 	}
 	
 	/**
@@ -401,7 +335,10 @@ public class LocationProviderController implements ServletContextAware{
 			@RequestParam(value="mainPhotoRadio", defaultValue="0") long coverPhotoImageId,
 			Model model,
 			HttpSession session) {
-		String nextTemplateName;
+		String nextTemplateName, emailSubject;
+		StringArray toEmailAddresses;
+		StringBuilder emailBodyText;
+		LocationProvider locationProvider;
 		
 		location.setCoverPhotoUrl(coverPhotoImageId);
 		providerService.setCoverPicture(location);
@@ -412,7 +349,38 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", nextTemplateName);
 		
-		return "/provider/locationProviderHomePage";
+		// Send an email to the Admin telling them that there are photos
+		// that need to be approved.
+		// Get the owner of this location.
+		toEmailAddresses = new StringArray();
+		emailBodyText = new StringBuilder();
+		
+		// Email Subject
+		emailSubject = "Photos needing review";
+		
+		// Email Body Text
+		// Get the owner of the location so we can get their user name
+		// for the email body text.
+		locationProvider = location.getLocationOwner();
+		
+		// Set the modified date for this location.
+		location.setModifiedDate(new Date(System.currentTimeMillis()));
+		providerService.modifyLocation(location);
+		
+		SimpleDateFormat format = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
+		format.applyPattern("MM/dd/yyyy");
+
+		emailBodyText.append(locationProvider.getUserName());
+		emailBodyText.append(" has submitted new photos on ");
+		emailBodyText.append(format.format(new Date(System.currentTimeMillis())));
+		emailBodyText.append(" that need to be reviewed");
+		
+		toEmailAddresses.add(GlobalVars.SUPPORT_EMAIL_ADDRESS);
+		
+		// Send the email to support to alert them that there are photos to review.
+		emailService.sendEmail(toEmailAddresses, emailSubject, emailBodyText.toString());
+		
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
 	}
 	
 	/**
@@ -426,7 +394,7 @@ public class LocationProviderController implements ServletContextAware{
 	protected String setupEditLocationListings(Model model) {
 		model.addAttribute("templateName", "editLocationListingsPage");
 		
-		return "/provider/locationProviderHomePage";
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
 	}
 	
 	/**
@@ -468,7 +436,7 @@ public class LocationProviderController implements ServletContextAware{
 		// finished adding the photos.
 		session.setAttribute("nextTemplateName", "editLocationListingsPage");
 
-		return "/provider/locationProviderHomePage";
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
 	}
 	
 	/**
@@ -479,6 +447,8 @@ public class LocationProviderController implements ServletContextAware{
 			@ModelAttribute("location") Location editLocation,
 			Model model,
 			HttpSession session) {
+		// Set the modified date for this location
+		editLocation.setModifiedDate(new Date(System.currentTimeMillis()));
 		// Persist the modifications to the database.
 		providerService.modifyLocation(editLocation);
 		
@@ -488,7 +458,7 @@ public class LocationProviderController implements ServletContextAware{
 		// finished add the photos.
 		session.setAttribute("nextTemplateName", "editLocationListingsPage");
 
-		return "/provider/locationProviderHomePage";
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
 	}
 	
 	/**
@@ -509,7 +479,7 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "searchLocationRequestsPage");
 		
-		return "/provider/locationProviderHomePage";	
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;	
 	}
 	
 	/**
@@ -533,7 +503,7 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "searchLocationRequestsPage");
 		
-		return "/provider/locationProviderHomePage";	
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;	
 	}
 	
 	@RequestMapping(value="gotoAddPhoto.request", method=RequestMethod.GET)
@@ -541,7 +511,7 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "addPhotoPage");
 		
-		return "/provider/locationProviderHomePage";
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
 	}
 	
 	/**
@@ -555,17 +525,21 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "deletePhotosPage");
 		
-		return "/provider/locationProviderHomePage";	
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;	
 	}
 	
 	@RequestMapping(value="deletePhotos.request", method=RequestMethod.POST)
 	protected String deletePhotos(@ModelAttribute("location") Location location, @RequestParam("deleteCheck") String[] photosToDelete, Model model) {
-		// Delete images from server and mark the Images in database as hidden.
+		// Delete images from server and mark the Images in database as DELETED.
+		// Set the location's modified date
+		location.setModifiedDate(new Date(System.currentTimeMillis()));
+		providerService.modifyLocation(location);
+		
 		providerService.deleteImages(location, photosToDelete);
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "locationProviderHomePage");
 		
-		return "/provider/locationProviderHomePage";	
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;	
 	}
 	
 	/**
@@ -631,7 +605,7 @@ public class LocationProviderController implements ServletContextAware{
 			emailBodyText.append("<h3>Location Submitted</h3>");
 			emailBodyText.append("<p>A Location Provider has submitted their property for your approval. ");
 			emailBodyText.append("Please login into your account to view pictures of this property.</p><br/>");
-			emailBodyText.append("<img src=\"cid:coverImage\"/>");
+			emailBodyText.append("<img src=\"cid:inlineImage\"/>");
 			emailBodyText.append("</body></html>");
 			
 			// Find which of the location images is set to be the main photo.
@@ -652,7 +626,7 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "searchLocationRequestsPage");
 		
-		return "/provider/locationProviderHomePage";	
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;	
 	}
 
 	/**
@@ -666,7 +640,7 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "deleteLocationPage");
 		
-		return "/provider/locationProviderHomePage";	
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;	
 	}
 	
 	/**
@@ -687,7 +661,7 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "locationProviderHomePage");
 		
-		return "/provider/locationProviderHomePage";	
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;	
 	}
 	
 	/**
@@ -727,13 +701,6 @@ public class LocationProviderController implements ServletContextAware{
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "locationSubmissionsPage");
 		
-		return "/provider/locationProviderHomePage";	
-
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;	
 	}
-	/*
-	protected String navigateFromSubmissionListingPage() {
-		
-		return nextPage;
-	}
-	*/
 }

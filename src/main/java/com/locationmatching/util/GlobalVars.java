@@ -13,11 +13,34 @@ public class GlobalVars {
 	public final static int BASIC_FREE_PHOTO_AMOUNT = 5;
 	public final static int PREMIUM_FREE_PHOTO_AMOUNT = 10;
 	
-	// Email parameters
+	// Email Parameters
+	// Email Server Parameters
+//	public final static String EMAIL_HOST_SERVER = "smtp-server.socal.rr.com";
+	public final static String EMAIL_HOST_SERVER = "smtp-server.roadrunner.com";
+	public final static int EMAIL_HOST_PORT = 587;
+	// Admin Email Server Login Credentials
 	public final static String ADMIN_EMAIL_NAME = "gageller";
 	public final static String ADMIN_EMAIL_PASSWORD = "rayray";
-	public final static String EMAIL_HOST_SERVER = "smtp-server.socal.rr.com";
-	public final static int EMAIL_HOST_PORT = 587;
+	public final static String FROM_EMAIL_ADDRESS = "gageller@roadrunner.com";
+	// Support Email Address
+	public final static String SUPPORT_EMAIL_ADDRESS = "gageller@adelphia.net";
+	// Customer Service Email Address
+	public final static String CUSTOMER_SERVICE_EMAIL_ADDRESS = "gageller@adelphia.net";
+	
+	// Admin, Provider and Scout jsp page folders
+	public final static String ADMIN_JSP_FOLDER = "admin";
+	public final static String PROVIDER_JSP_FOLDER = "provider";
+	public final static String SCOUT_JSP_FOLDER = "scout";
+	
+	// Admin, Provider and Scout template home page names
+	public final static String ADMIN_TEMPLATE_HOME_PAGE = "adminHomePage";
+	public final static String PROVIDER_TEMPLATE_HOME_PAGE = "locationProviderHomePage";
+	public final static String SCOUT_TEMPLATE_HOME_PAGE = "locationScoutHomePage";
+	
+	// Admin, Provider and Scout template home page URLs
+	public final static String ADMIN_TEMPLATE_HOME_PAGE_URL = "/" + ADMIN_JSP_FOLDER + "/" + ADMIN_TEMPLATE_HOME_PAGE;
+	public final static String PROVIDER_TEMPLATE_HOME_PAGE_URL = "/" + PROVIDER_JSP_FOLDER + "/" + PROVIDER_TEMPLATE_HOME_PAGE;
+	public final static String SCOUT_TEMPLATE_HOME_PAGE_URL = "/" + SCOUT_JSP_FOLDER + "/" + SCOUT_TEMPLATE_HOME_PAGE;
 	
 	static {
 		stateMap.put("", "");

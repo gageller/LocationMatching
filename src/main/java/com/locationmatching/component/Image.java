@@ -16,6 +16,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.locationmatching.enums.ImageType;
 import com.locationmatching.enums.PhotoPlanType;
+import com.locationmatching.enums.PhotoStatus;
 
 /**
  * 
@@ -41,13 +42,6 @@ public class Image {
 	private String fileName;
 	
 	/**
-	 * The image must first be reviewed before it can be visible
-	 * to location scouts. The default for this will be false.
-	 */
-	@Column(name="APPROVED")
-	private Boolean approved;
-	
-	/**
 	 * Date the file was uploaded
 	 */
 	@Column(name="UPLOAD_DATE")
@@ -56,8 +50,14 @@ public class Image {
 	/**
 	 * Date the image was approved to be displayed
 	 */
-	@Column(name="APPROVAL_DATE")
-	private Date approvalDate;
+	@Column(name="ADMIN_REVIEWED_DATE")
+	private Date adminReviewedDate;
+	
+	/**
+	 * Date the user deleted the photos
+	 */
+	@Column(name="DELETION_DATE")
+	private Date deletionDate;
 	
 	/**
 	 * Absolute path to the file location.
@@ -103,12 +103,18 @@ public class Image {
 	private Location parentLocation;
 	
 	/**
-	 * Flag to determine whether or not to show the image. This will be used
-	 * when the user deletes an image. The actually images will be deleted but
-	 * the row in the database will not be deleted. This is for audit purposes.
+	 * Enum of Status of this image. Could be not reviewed, approved, declined,
+	 * deleted, review skipped
 	 */
-	@Column(name="HIDDEN")
-	private Boolean hidden = false;
+	@Enumerated(EnumType.STRING)
+	@Column(name="STATUS")
+	private PhotoStatus status;
+	
+	/**
+	 * Notes added by person reviewing this image. Will probably be used for declined images.
+	 */
+	@Column(name="admin_notes")
+	private String adminNotes;
 	
 	// Getter Methods
 	public Long getId() {
@@ -117,14 +123,14 @@ public class Image {
 	public String getFileName() {
 		return fileName;
 	}
-	public Boolean getApproved() {
-		return approved;
-	}
 	public Date getUploadDate() {
 		return uploadDate;
 	}
-	public Date getApprovalDate() {
-		return approvalDate;
+	public Date getAdminReviewedDate() {
+		return adminReviewedDate;
+	}
+	public Date getDeletionDate() {
+		return deletionDate;
 	}
 	public String getAbsoluteFilePath() {
 		return absoluteFilePath;
@@ -144,8 +150,11 @@ public class Image {
 	public PhotoPlanType getPhotoPlanType() {
 		return photoPlanType;
 	}
-	public Boolean getHidden() {
-		return hidden;
+	public PhotoStatus getStatus() {
+		return status;
+	}
+	public String getAdminNotes() {
+		return adminNotes;
 	}
 	
 	// Setter Methods
@@ -155,14 +164,14 @@ public class Image {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-	public void setApproved(Boolean approved) {
-		this.approved = approved;
-	}
 	public void setUploadDate(Date uploadDate) {
 		this.uploadDate = uploadDate;
 	}
-	public void setApprovalDate(Date approvalDate) {
-		this.approvalDate = approvalDate;
+	public void setAdminReviewedDate(Date adminReviewedDate) {
+		this.adminReviewedDate = adminReviewedDate;
+	}
+	public void setDeletionDate(Date deletionDate) {
+		this.deletionDate = deletionDate;
 	}
 	public void setAbsoluteFilePath(String absoluteFilePath) {
 		this.absoluteFilePath = absoluteFilePath;
@@ -182,18 +191,11 @@ public class Image {
 	public void setPhotoPlanType(PhotoPlanType photoPlanType) {
 		this.photoPlanType = photoPlanType;
 	}
-	public void setHidden(Boolean hidden) {
-		this.hidden = hidden;
+	public void setStatus(PhotoStatus status) {
+		this.status = status;
 	}
-	
-	/**
-	 * Flag to tell whether or not this picture has been reviewed
-	 * and approved.
-	 * 
-	 * @return Boolean
-	 */
-	public Boolean isApproved() {
-		return approved;
+	public void setAdminNotes(String adminNotes) {
+		this.adminNotes = adminNotes;
 	}
 	
 	/**

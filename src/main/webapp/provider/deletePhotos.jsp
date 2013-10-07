@@ -39,7 +39,7 @@
 		<table cellspacing="10px" width="100%">
 			<tr>
 			<c:forEach items="${location.locationImages}" var="image" varStatus="iterationStatus">
-	 			<c:if test="${image.hidden == false}">
+	 			<c:if test="${image.status != PhotoStatus.DELETED && image.status != PhotoStatus.DECLINED}">
 							<td><img src="${image.relativeUrlPath}" height="250" width="330"/><br/>Delete <input type="checkbox" value="${image.id}" id="deleteCheckBoxes" name="deleteCheck"/></td>
  	 				<c:if test="${iterationStatus.count % 3 == 0}">
 	 					<!-- Only three photos per row -->

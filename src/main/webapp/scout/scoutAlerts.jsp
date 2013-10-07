@@ -33,7 +33,7 @@
 				<tr class="tableCellNoBorder">
 					<td><img src="${requestAlert.location.coverPhotoUrl}" width="100", height="75"/></td>
 					<td><label class="boldText">Location Provider Email Address: </label>${requestAlert.location.locationOwner.emailAddress}</td>
-					<td><input type="button" value="View Location Photos" onClick='showLocationPhotos(${requestAlert.locationId})')/></td>
+					<td><input type="button" value="View Location Photos" onClick='showLocationPhotos(${requestAlert.id})')/></td>
 				</tr>
 			</table>
 			<br/>

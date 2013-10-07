@@ -2,9 +2,8 @@ package com.locationmatching.service;
 
 import java.io.File;
 import java.util.Date;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.Criteria;
@@ -16,10 +15,6 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import com.locationmatching.component.Image;
-import com.locationmatching.component.Location;
-import com.locationmatching.component.LocationRequest;
-import com.locationmatching.domain.LocationProvider;
-import com.locationmatching.domain.LocationScout;
 import com.locationmatching.domain.User;
 import com.locationmatching.exception.UserAlreadyExistsException;
 import com.locationmatching.util.HibernateUtil;
@@ -143,6 +138,8 @@ public abstract class LocationUserService {
 			}
 		}
 	}
+	
+	
 	public User getUser(Long id) {
 		Session session = null;
 		Transaction transaction = null;
@@ -182,66 +179,7 @@ public abstract class LocationUserService {
 		
 		return user;
 	}
-	/**
-	 * FOR ADMIN USE.
-	 * 
-	 * Delete the user based on the id passed in. This will cascade down through the collections
-	 * and delete them from the database. We also need to delete any image files associated with
-	 * this LocationProvider.
-	 * 
-	 * @param id - Id of the LocationProvider to delete.
-	 */
-	public void deleteUser(Long id) {
-		Session session = null;
-		Transaction transaction = null;
-		User user;
-//		Iterator<Location> locationIterator;
-		
-		try {
-			session = HibernateUtil.getSession();
-			transaction = session.beginTransaction();
-			
-			// Retrieve the user from its id and delete it.
-			user = (User) session.get(User.class, id);
-			// Delete the image files.
-			/*locationIterator = user.getProviderLocations().iterator();
-			
-			while(locationIterator.hasNext() == true) {
-				Location location;
-				
-				location = locationIterator.next();
-				deleteImageFiles(location.getLocationImages(), true);
-			}
-*/			
-			session.delete(user);
-			
-			transaction.commit();
-		}
-		catch(HibernateException ex) {
-			try{
-				if(transaction != null) {
-					// The commit failed so roll back the changes
-					transaction.rollback();
-				}
-			}
-			catch(HibernateException rollbackException) {
-				rollbackException.printStackTrace();
-				
-				throw rollbackException;
-			}
-			ex.printStackTrace();
-			
-			throw ex;
-		}
-		finally {
-			try {
-				session.close();
-			}
-			catch(HibernateException ex) {
-				ex.printStackTrace();
-			}
-		}
-	}
+
 
 	/**
 	 * Persist the modified user to the database.
@@ -283,8 +221,9 @@ public abstract class LocationUserService {
 			}
 		}
 	}
+	
 	/**
-	 * Returns a list of all of the Location Providers.
+	 * Returns a list of all users.
 	 * 
 	 * @return List<User>
 	 */
@@ -375,6 +314,143 @@ public abstract class LocationUserService {
 			}
 		}
 	}
+	
+	/**
+	 * Retrieve the Image object based on the id passed in.
+	 * 
+	 * @param id - id of the Image object to return.
+	 * @return - Image object
+	 */
+	public Image getImage(Long id) {
+		Session session = null;
+		Transaction transaction = null;
+		Image image = null;
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			image = (Image) session.get(Image.class, id);
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			throw ex;
+		}
+		finally {
+			try {
+				session.close();
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
+		}
+		
+		return image;
+	}
+	
+	/**
+	 * Update the Image object passed in.
+	 * 
+	 * @param image - Image object to update.
+	 */
+	public void modifyImage(Image image) {
+		Session session = null;
+		Transaction transaction = null;
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			session.update(image);
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			throw ex;
+		}
+		finally {
+			try {
+				session.close();
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	public void deleteImage(Image image, boolean deleteDirectory) {
+		Set<Image> deleteImage = new HashSet<Image>();
+		Session session = null;
+		Transaction transaction = null;
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+	
+			// We are only marking the Image to be deleted
+			// so we are going to do an update of the Image object.
+			session.update(image);
+			
+			// Add file to Set to be deleted
+			deleteImage.add(image);
+			
+			// Delete the image file off of the server. If the directory is 
+			// empty, delete it too.
+			deleteImageFiles(deleteImage, deleteDirectory);
+			
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			throw ex;
+		}
+		finally {
+			try {
+				session.close();
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+	
 	/**
 	 * Iterate through the collection of Image objects and delete the 
 	 * associated image files off of the server.
@@ -410,17 +486,4 @@ public abstract class LocationUserService {
 			}
 		}
 	}
-	/*
-	// Methods implemented for the Location Provider
-	public abstract void addLocation(Location location);
-	public abstract void modifyLocation(Location location);
-	public abstract void setCoverPicture(Location location);
-	public abstract void deleteImages(Location location, String[] photoDeleteIds);
-	public abstract void deleteLocations(LocationProvider locationProvider, String[] locationsToDelete);
-	public abstract Location getLocation(Long id);
-	
-	// Methods implemented for the Location Scout
-	public abstract LocationRequest getLocationRequest(Long id);
-	public abstract Map<Long, LocationRequest> getLocationRequests(LocationRequest searchRequest);
-	*/
 }

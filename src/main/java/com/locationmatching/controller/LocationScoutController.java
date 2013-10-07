@@ -74,7 +74,7 @@ public class LocationScoutController {
 		
 		model.addAttribute("locationScout", scout);
 		
-		return "newLocationScout";
+		return "/" + GlobalVars.SCOUT_JSP_FOLDER + "/newLocationScout";
 	}
 	
 	@RequestMapping(value="setupLocationScoutSession.request", method=RequestMethod.POST)
@@ -84,7 +84,7 @@ public class LocationScoutController {
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "locationScoutHomePage");
 		
-		return "/scout/locationScoutHomePage";	
+		return GlobalVars.SCOUT_TEMPLATE_HOME_PAGE_URL;	
 
 	}
 
@@ -102,11 +102,12 @@ public class LocationScoutController {
 		locationScout.setCreationDate(date);
 		locationScout.setLastAccessDate(date);
 		locationScout.setActive(true);
+		locationScout.setUserLevel(Short.valueOf("2"));
 		// Set the user type
 //		locationScout.setUserType(UserType.SCOUT);
 		
 		// Go to the provider.jsp page to add locations
-		nextPage = "scout/locationScoutHomePage";
+		nextPage = GlobalVars.SCOUT_TEMPLATE_HOME_PAGE_URL;
 	
 		try {
 			Long id;
@@ -153,7 +154,7 @@ public class LocationScoutController {
 			// Set the name of the template to use for the next view
 			model.addAttribute("templateName", "locationScoutHomePage");
 			
-			view = "scout/locationScoutHomePage";
+			view = GlobalVars.SCOUT_TEMPLATE_HOME_PAGE_URL;
 		}
 		else {
 			model.addAttribute("userScoutLoginErrorMessage", "We could not find this User Name. Please try again.");
@@ -174,7 +175,7 @@ public class LocationScoutController {
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "editLocationScoutPage");
 		
-		return "scout/locationScoutHomePage";	
+		return GlobalVars.SCOUT_TEMPLATE_HOME_PAGE_URL;	
 	}
 	
 	/**
@@ -192,7 +193,7 @@ public class LocationScoutController {
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "locationScoutHomePage");
 		
-		return "scout/locationScoutHomePage";	
+		return GlobalVars.SCOUT_TEMPLATE_HOME_PAGE_URL;	
 	}
 	
 	///////////////////////////////////////////////////////////
@@ -216,7 +217,7 @@ public class LocationScoutController {
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "addLocationRequestPage");
 		
-		return "scout/locationScoutHomePage";	
+		return GlobalVars.SCOUT_TEMPLATE_HOME_PAGE_URL;	
 	}
 	
 	/**
@@ -240,7 +241,7 @@ public class LocationScoutController {
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "locationScoutHomePage");
 		
-		return "scout/locationScoutHomePage";	
+		return GlobalVars.SCOUT_TEMPLATE_HOME_PAGE_URL;	
 	}
 	
 	/**
@@ -254,7 +255,7 @@ public class LocationScoutController {
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "editLocationRequestListingsPage");
 		
-		return "scout/locationScoutHomePage";	
+		return GlobalVars.SCOUT_TEMPLATE_HOME_PAGE_URL;	
 	}
 	
 	/**
@@ -290,7 +291,7 @@ public class LocationScoutController {
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "editLocationRequestPage");
 		
-		return "scout/locationScoutHomePage";	
+		return GlobalVars.SCOUT_TEMPLATE_HOME_PAGE_URL;	
 	}
 	
 	/**
@@ -307,7 +308,7 @@ public class LocationScoutController {
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "editLocationRequestListingsPage");
 		
-		return "scout/locationScoutHomePage";	
+		return GlobalVars.SCOUT_TEMPLATE_HOME_PAGE_URL;	
 	}
 	
 	/**
@@ -321,7 +322,7 @@ public class LocationScoutController {
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "deleteLocationRequestsPage");
 		
-		return "scout/locationScoutHomePage";	
+		return GlobalVars.SCOUT_TEMPLATE_HOME_PAGE_URL;	
 	}
 	
 	/**
@@ -340,7 +341,7 @@ public class LocationScoutController {
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "locationScoutHomePage");
 		
-		return "scout/locationScoutHomePage";	
+		return GlobalVars.SCOUT_TEMPLATE_HOME_PAGE_URL;	
 	}
 	
 	/**
@@ -372,7 +373,7 @@ public class LocationScoutController {
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "scoutAlertsPage");
 		
-		return "scout/locationScoutHomePage";	
+		return GlobalVars.SCOUT_TEMPLATE_HOME_PAGE_URL;	
 	}
 	
 	/**
@@ -403,7 +404,7 @@ public class LocationScoutController {
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "viewLocationPhotosPage");
 		
-		return "/scout/locationScoutHomePage";	
+		return GlobalVars.SCOUT_TEMPLATE_HOME_PAGE_URL;	
 	}
 	
 	/**
@@ -417,7 +418,7 @@ public class LocationScoutController {
 	{
 		model.addAttribute("templateName", "locationScoutHomePage");
 		
-		return "scout/locationScoutHomePage";
+		return GlobalVars.SCOUT_TEMPLATE_HOME_PAGE_URL;
 
 	}
 

@@ -9,18 +9,21 @@
 </head>
 <h2>Location Photos</h2>
 <body>
+	<h2>${alertLocation.locationName}</h2>
 	<table cellspacing="10px" width="1000">
 		<c:set var="itemCount" value="0"/>
 			<tr>
 		<c:forEach items="${alertLocation.locationImages}" var="image">
-			<c:if test="${itemCount == 3}">
-				</tr>
-				<tr>
-				<c:set var="itemCount" value="0"/>
-			</c:if>
-				<td><img alt="Location Photo" src="${image.relativeUrlPath}" height="250" width="330"/></td>
-				
-			<c:set var="itemCount" value="${itemCount + 1}"/>
+		 	<c:if test="${image.status.value.equals(\"APPROVED\") == true}"> 
+				<c:if test="${itemCount == 3}">
+					</tr>
+					<tr>
+					<c:set var="itemCount" value="0"/>
+				</c:if>
+					<td><img alt="Location Photo" src="${image.relativeUrlPath}" height="250" width="330"/></td>
+					
+				<c:set var="itemCount" value="${itemCount + 1}"/>
+	 		</c:if>
 		</c:forEach>
 		</tr>
 	</table>

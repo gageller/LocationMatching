@@ -1,5 +1,6 @@
 package com.locationmatching.service;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -13,6 +14,7 @@ import com.locationmatching.component.Image;
 import com.locationmatching.component.Location;
 import com.locationmatching.component.ProviderSubmission;
 import com.locationmatching.domain.LocationProvider;
+import com.locationmatching.enums.PhotoStatus;
 import com.locationmatching.exception.LocationProcessingException;
 import com.locationmatching.util.HibernateUtil;
 
@@ -760,7 +762,8 @@ public class LocationProviderServiceImpl extends LocationUserService {
 				
 				imageId = photoDeleteIds[index];
 				image = location.removeImage(Long.valueOf(imageId));
-				image.setHidden(true);
+				image.setStatus(PhotoStatus.DELETED);
+				image.setDeletionDate(new Date(System.currentTimeMillis()));
 				
 				// If this image is the cover photo, we need to set the cover photo url
 				// of the Location object to blank.

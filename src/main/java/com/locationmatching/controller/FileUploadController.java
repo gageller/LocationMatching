@@ -28,9 +28,9 @@ import com.locationmatching.component.Location;
 import com.locationmatching.domain.LocationProvider;
 import com.locationmatching.enums.ImageType;
 import com.locationmatching.enums.PhotoPlanType;
+import com.locationmatching.enums.PhotoStatus;
 import com.locationmatching.enums.UserPlanType;
 import com.locationmatching.service.LocationProviderServiceImpl;
-import com.locationmatching.service.LocationUserService;
 import com.locationmatching.util.GlobalVars;
 
 /**
@@ -99,7 +99,7 @@ public class FileUploadController implements ServletContextAware{
 					image.setUploadDate(new Date(System.currentTimeMillis()));
 					image.setAbsoluteFilePath(absoluteFilePath);
 					image.setRelativeUrlPath(relativeUrlPath);
-					image.setApproved(false);
+					image.setStatus(PhotoStatus.NOT_REVIEWED);
 					image.setFileName(fileName);
 					
 					// Set the image type based on the content type from the
@@ -207,7 +207,7 @@ public class FileUploadController implements ServletContextAware{
 		// Set the name of the template to use for the view.
 		model.addAttribute("templateName", "addPhotoPage");
 		
-		return "locationProviderHomePage";
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
 	}
 
 

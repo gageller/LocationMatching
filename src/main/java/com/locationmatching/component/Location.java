@@ -124,7 +124,7 @@ public class Location {
 	@OneToMany(mappedBy="parentLocation") // mappedBy is equivalent to inverse=true
 	@Fetch(value = FetchMode.JOIN)
 //	@org.hibernate.annotations.Cascade(value=org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-	@Where(clause="hidden=0")
+	@Where(clause="status != 'DECLINED' and status != 'DELETED'")
 	Set<Image>locationImages = new LinkedHashSet();
 	
 	/**

@@ -22,18 +22,7 @@
 			<h3><u>Manage Photos</u></h3>
 			<a href="setupApproveDeclinePhotos.request">Approve/Decline Photos</a>
 			<br/>
-			<a href="setupEditLocationListings.request">Edit a Location</a>
-			</br/>
-			<a href="setupDeleteLocation.request">Delete a Location</a>
-		</p>
-		<p>
-			<h3><u>Location Requests</u></h3>
-			<a href="setupSearchLocationRequest.request">View a list of Location Requests</a>
-		</p>
-		<p>
-			<h3><u>Submissions</u></h3>
-			<a href="setupSubmissions.request">List of Submissions</a>
-		</p>
+			<a href="setupReviewPhotoHistory">Review Photo History</a>
 		
 		<br/>
 		<a href="./index.jsp">Home</a>
