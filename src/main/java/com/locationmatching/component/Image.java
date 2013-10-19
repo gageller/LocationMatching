@@ -116,6 +116,13 @@ public class Image {
 	@Column(name="admin_notes")
 	private String adminNotes;
 	
+	/**
+	 * Flag to tell if the user has hidden the photo. We are not deleting photos.
+	 * We are letting the user hide the ones they don't want to show instead.
+	 */
+	@Column(name="hidden")
+	private Boolean hidden;
+	
 	// Getter Methods
 	public Long getId() {
 		return id;
@@ -156,7 +163,9 @@ public class Image {
 	public String getAdminNotes() {
 		return adminNotes;
 	}
-	
+	public Boolean getHidden() {
+		return hidden;
+	}
 	// Setter Methods
 	public void setId(Long id) {
 		this.id = id;
@@ -197,6 +206,9 @@ public class Image {
 	public void setAdminNotes(String adminNotes) {
 		this.adminNotes = adminNotes;
 	}
+	public void setHidden(Boolean hidden) {
+		this.hidden = hidden;
+	}
 	
 	/**
 	 * Flag to tell whether this image will be used as the main or cover image
@@ -207,4 +219,14 @@ public class Image {
 	public Boolean isCoverPhoto() {
 		return coverPhoto;
 	}
+	
+	/**
+	 * Flag that tells us if the photo is hidden or not.
+	 * 
+	 * @return Boolean
+	 */
+	public Boolean isHidden() {
+		return hidden;
+	}
 }
+

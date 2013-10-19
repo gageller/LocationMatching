@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -125,6 +126,7 @@ public class Location {
 	@Fetch(value = FetchMode.JOIN)
 //	@org.hibernate.annotations.Cascade(value=org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
 	@Where(clause="status != 'DECLINED' and status != 'DELETED'")
+	@OrderBy(value="id, photoPlanType")
 	Set<Image>locationImages = new LinkedHashSet();
 	
 	/**
@@ -255,6 +257,9 @@ public class Location {
 	}
 	public void setModifiedDate(Date modifiedDate) {
 		this.modifiedDate = modifiedDate;
+	}
+	public void setCoverPhotoId(Long coverPhotoId) {
+		this.coverPhotoId = coverPhotoId;
 	}
 	public void setCoverPhotoUrl(String coverPhotoUrl) {
 		this.coverPhotoUrl = coverPhotoUrl;

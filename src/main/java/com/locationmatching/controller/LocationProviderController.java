@@ -5,12 +5,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.UriBuilder;
@@ -20,14 +20,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.ServletContextAware;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.locationmatching.component.Image;
 import com.locationmatching.component.Location;
@@ -36,10 +34,10 @@ import com.locationmatching.component.ProviderSubmission;
 import com.locationmatching.component.ScoutAlert;
 import com.locationmatching.domain.LocationProvider;
 import com.locationmatching.domain.LocationScout;
-import com.locationmatching.domain.User;
 import com.locationmatching.enums.LocationType;
 import com.locationmatching.enums.SubmissionResponse;
 import com.locationmatching.enums.UserPlanType;
+import com.locationmatching.exception.DuplicateLocationException;
 import com.locationmatching.exception.LocationProcessingException;
 import com.locationmatching.exception.UserAlreadyExistsException;
 import com.locationmatching.service.EmailService;
@@ -302,25 +300,60 @@ public class LocationProviderController implements ServletContextAware{
 	protected String addNewLocation(@ModelAttribute("locationProvider")LocationProvider locationProvider, 
 			@ModelAttribute("location") Location location,
 			Model model, HttpSession session) {
+		String nextPage = "addLocationPage";
+
 		try {
+			
 			// Set the name of the template to use for the view after the
 			// user has finished adding photos.
 			session.setAttribute("nextTemplateName", "locationProviderHomePage");
 			locationProvider.addLocation(location);
+			
+			// Make sure the address for this location does not already exist in the database. 
+			// If it does, a DuplicateLocationException will be thrown by the providerService.
+			providerService.validateLocation(location);
+			
+			// Location does not already exist so add it.
 			providerService.addLocation(location);
+			
+			// Add the number of free photos remaining to the model so it is displayed
+			// on the add photo page. Since this is a new Location it will be the maximum 
+			// for this plan type. So get the provider's plan type and get the maximum
+			// photo count.
+			UserPlanType userPlanType = locationProvider.getUserPlanType();
+			int numberOfFreePhotosRemaining;
+			
+			numberOfFreePhotosRemaining = GlobalVars.BASIC_FREE_PHOTO_AMOUNT;
+			
+			if(userPlanType == UserPlanType.PREMIUM) {
+				numberOfFreePhotosRemaining = GlobalVars.PREMIUM_FREE_PHOTO_AMOUNT;
+			}
+
+			model.addAttribute("numberOfRemainingFreePhotos", numberOfFreePhotosRemaining);
+			nextPage = "addPhotoPage";
+		}
+		catch(DuplicateLocationException ex) {
+			String errorMessage;
+			
+//			ex.printStackTrace();
+			
+			errorMessage = ex.getExceptionMessage();
+			model.addAttribute("errorMessage", errorMessage);
 		}
 		catch(LocationProcessingException ex) {
-			
+			ex.printStackTrace();
+			model.addAttribute("errorMessage", ex.getExceptionMessage());
 		}
 		
-		model.addAttribute("templateName", "addPhotoPage");
+		model.addAttribute("templateName", nextPage);
 		
 		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
 	}
 	
 	/**
 	 * Update the LocationProvider's new Location with the added photos. Persist data to
-	 * database.
+	 * database. We can get to this method from the Add Photo page when adding a new location
+	 * or from the Manage Photos page if a location is being edited.
 	 * 
 	 * @param location - The location object that was created or is being modified.
 	 * @param coverPhotoImageId - id of the image to set as the main/cover image.
@@ -328,7 +361,8 @@ public class LocationProviderController implements ServletContextAware{
 	 * picked up on the jsp through expression language.
 	 * @param session - HttpSession to retrieve the name of the next template to 
 	 * use for the view.
-	 * @return 
+	 * 
+	 * @return Next Page.
 	 */
 	@RequestMapping(value="returnFromFileUpload.request", method=RequestMethod.POST)
 	protected String returnFromFileUpload(@ModelAttribute("location")Location location, 
@@ -341,6 +375,8 @@ public class LocationProviderController implements ServletContextAware{
 		LocationProvider locationProvider;
 		
 		location.setCoverPhotoUrl(coverPhotoImageId);
+		location.setCoverPhotoId(coverPhotoImageId);
+		
 		providerService.setCoverPicture(location);
 		
 		// Name of the template to use for the next view.
@@ -506,11 +542,153 @@ public class LocationProviderController implements ServletContextAware{
 		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;	
 	}
 	
-	@RequestMapping(value="gotoAddPhoto.request", method=RequestMethod.GET)
-	protected String gotoPhoto(@ModelAttribute("location")Location location, Model model) {
+	@RequestMapping(value="setupAddPhoto.request", method=RequestMethod.GET)
+	protected String setupAddPhoto(@ModelAttribute("location")Location location, Model model) {
+		int planTotalFreePhotos, numberOfFreePhotosRemaining, numberOfFreePhotosUsed;
+		
+		// Get the Location Provider of this Location User Plan Type
+		UserPlanType userPlanType = location.getLocationOwner().getUserPlanType();
+		
+		// Get the number of total free pictures depending on the plan type
+		if(userPlanType == UserPlanType.PREMIUM) {
+			planTotalFreePhotos = GlobalVars.PREMIUM_FREE_PHOTO_AMOUNT;
+		}
+		else {
+			planTotalFreePhotos = GlobalVars.BASIC_FREE_PHOTO_AMOUNT;
+		}
+		
+		numberOfFreePhotosUsed = location.getNumberOfFreePhotos();
+		numberOfFreePhotosRemaining = planTotalFreePhotos - numberOfFreePhotosUsed;
+		
+		// If the number of free photos remaining is 0, display a message to the user to
+		// let them know that they need to pay for additional photos
+		if(numberOfFreePhotosRemaining == 0) {
+			String payForPhotosMessage = new String();
+			
+			payForPhotosMessage = String.format(GlobalVars.PAY_FOR_PHOTO_MESSAGE, GlobalVars.PRICE_PER_LOCATION_PHOTO);
+			model.addAttribute("payForPhotosMessage", payForPhotosMessage);
+		}
+		
+		// Display the number of free photos left.
+		model.addAttribute("numberOfRemainingFreePhotos", Long.valueOf(numberOfFreePhotosRemaining));
+
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "addPhotoPage");
 		
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
+	}
+	
+	/**
+	 * Setup the Manage Photos jsp page.
+	 * 
+	 * @param location - The Location object that contains these pictures
+	 * @param model - Add navigation template variable. Add the number of 
+	 * remaining free photos to the model to display on the jsp page.
+	 * @return
+	 */
+	@RequestMapping(value="setupManageExistingPhotos.request", method=RequestMethod.GET)
+	protected String setupManageExistingPhotos(@ModelAttribute("location") Location location, Model model) {
+		int numberOfFreePhotos, planTotalFreePhotos, numberOfRemainingFreePhotos = 0;
+		
+		numberOfFreePhotos = location.getNumberOfFreePhotos();
+		
+		// Get the Location Provider of this Location User Plan Type
+		UserPlanType userPlanType = location.getLocationOwner().getUserPlanType();
+		
+		if(userPlanType == UserPlanType.PREMIUM) {
+			planTotalFreePhotos = GlobalVars.PREMIUM_FREE_PHOTO_AMOUNT;
+		}
+		else {
+			planTotalFreePhotos = GlobalVars.BASIC_FREE_PHOTO_AMOUNT;
+		}
+		
+		// Check to see if the location has any free photos remaining.
+		if(numberOfFreePhotos < planTotalFreePhotos) {
+			// The user still has free photos for this location.
+			numberOfRemainingFreePhotos = planTotalFreePhotos - numberOfFreePhotos;
+		}
+		
+		model.addAttribute("numberOfRemainingFreePhotos", Long.valueOf(numberOfRemainingFreePhotos));
+		
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "managePhotosPage");
+
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
+	}
+	
+	
+	@RequestMapping(value="manageExistingPhotos.request", method=RequestMethod.POST)
+	protected String manageExistingPhotos(@ModelAttribute("location") Location location, Model model, HttpServletRequest request) {
+		Map<String, String[]> requestParameters;
+		Set<String> parameters;
+		Iterator<String> iterator;
+		String coverPhotoId;
+		Long newCoverPhotoId, currentCoverPhotoId;
+		
+		// Get the id of the photo that was selected to be the Main/Cover photo
+		// and see if it has been changed. If so, we need to update the Image objects
+		coverPhotoId = request.getParameter("mainPhotoRadio");
+		newCoverPhotoId = Long.valueOf(coverPhotoId);
+		currentCoverPhotoId = location.getCoverPhotoId();
+		
+		if(currentCoverPhotoId.equals(newCoverPhotoId) == false) {
+			// Change of id so we need to set the new values
+			// Set the location's cover photo URL and id
+			location.setCoverPhotoUrl(Long.valueOf(coverPhotoId));
+			location.setCoverPhotoId(newCoverPhotoId);
+			
+			// Save the change to the database.
+			providerService.modifyLocation(location);
+		}
+		
+		requestParameters = request.getParameterMap();
+		parameters = requestParameters.keySet();
+		iterator = parameters.iterator();
+		
+		// Iterate through the request variables and update the Image objects
+		// hidden variable and main photo settings.
+		while(iterator.hasNext() == true) {
+			String key;
+			String [] values;
+			int index;
+			
+			// Get the next request parameter
+			key = iterator.next();
+			// See if key has the word imageHideUnhideRadio in it.
+			index = key.indexOf("imageHideUnhideRadio");
+			if(index > -1) {
+				// Found one of the hide/unhide radio buttons
+				String imageId;
+				
+				// Pull the image id off the end of the "imageHideUnhideRadio" name
+				index = key.lastIndexOf('o');
+				
+				if(index > -1) {
+					// Found the id. Now retrieve and process the image.
+					Image image;
+					String hideUnhideValue;
+					
+					// Move the index past the 'o'.
+					index++;
+					
+					imageId = key.substring(index);
+					image = location.getImage(Long.valueOf(imageId));
+					
+					values = requestParameters.get(key);
+					
+					hideUnhideValue = values[0];
+					image.setHidden(new Boolean(hideUnhideValue));
+					
+					// Update the changes to the database
+					providerService.modifyImage(image);
+				}
+			}
+		}
+
+
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "editLocationListingsPage");
+
 		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
 	}
 	

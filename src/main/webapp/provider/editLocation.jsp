@@ -5,6 +5,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<link rel="stylesheet" type="text/css" href="./css/lmStyle.css">
 	<title>Edit Location</title>
 	<script type="text/javascript">
 		<!--
@@ -49,8 +50,8 @@
 				<td colspan="2">&nbsp;</td>
 			</tr>
 			<tr>
-				<td><input type="button" name="addPhoto" value="Add Photos..." onClick="bttnClick('gotoAddPhoto.request')"/></td>
-				<td><input type="button" name="deletePhoto" value="Delete Photos..." onClick="bttnClick('setupDeletePhotos.request')"/></td>
+				<td colspan="2"><input type="button" name="addPhoto" value="Add New Photos..." onClick="bttnClick('setupAddPhoto.request')"/></td>
+- 				<td><input type="button" name="managePhotos" value="Manage Existing Photos..." onClick="bttnClick('setupManageExistingPhotos.request')"/></td>
 			</tr>
 			<tr>
 				<td colspan="2">&nbsp;</td>

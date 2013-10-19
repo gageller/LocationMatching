@@ -12,7 +12,6 @@
 	<!--
 		function saveImages() {
 			document.forms("addPhoto").action="returnFromFileUpload.request";
-			document.forms("addPhoto").nextPage.value="providerNavigation";
 			document.forms("addPhoto").submit();
 		}
 	-->
@@ -24,10 +23,16 @@
 	<form:form name="addPhoto" method="POST" action="uploadFile.request" enctype="multipart/form-data">
 			<input name="multipartFile" type="file" size="75"/>
 			<input type="submit" value="Add Photo"/>
-			<input type="hidden" name="nextPage" value="addPhoto"/>
+			<input type="hidden" name="nextPage" value="addPhotoPage"/>
 			
+			<br/>
+			<br/>
+			<label class="boldText fontSize18">Number of Remaining Free Photos is ${numberOfRemainingFreePhotos}</label>
+			<br/>
+			<br/>
 			<p class="errorMessage">${errorMessage}</p>
 			<p class="successMessage">${fileuploadSuccessMessage}</p>
+			<p class="errorMessage">${payForPhotosMessage}</p>
 			<table cellspacing="10px" width="100%">
 				<tr>
 			<c:forEach items="${location.locationImages}" var="image" varStatus="iterationStatus">

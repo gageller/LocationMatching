@@ -1,13 +1,18 @@
 package com.locationmatching.service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
 import com.locationmatching.component.Image;
@@ -15,6 +20,7 @@ import com.locationmatching.component.Location;
 import com.locationmatching.component.ProviderSubmission;
 import com.locationmatching.domain.LocationProvider;
 import com.locationmatching.enums.PhotoStatus;
+import com.locationmatching.exception.DuplicateLocationException;
 import com.locationmatching.exception.LocationProcessingException;
 import com.locationmatching.util.HibernateUtil;
 
@@ -28,334 +34,77 @@ import com.locationmatching.util.HibernateUtil;
  */
 @Service
 public class LocationProviderServiceImpl extends LocationUserService {
-
-//	@Override
 	/**
-	 * Persists the new user to the database. Throws an HibernateException
-	 * if the commit or closing the session fails.
+	 * Check to make sure that the address for this Location is 
+	 * not already being used. We want to prevent users from creating 
+	 * multiple Location entries for one location to get around paying
+	 * for more than the free photo amount.
+	 * 
+	 * @param location - Location to validate.
 	 */
-	/*
-	public void createUser(User user) {
+	public void validateLocation(Location location) {
 		Session session = null;
 		Transaction transaction = null;
+		Criteria criteria = null;
+		Map<String, String> criterion = new HashMap<String, String>();
 		
 		try {
-			Criteria criteria;
-			String userName;
 			Integer rowCount;
-
+			
 			session = HibernateUtil.getSession();
 			transaction = session.beginTransaction();
 			
-			// We need to see if the userName is already being used
-			userName = user.getUserName();			
-			criteria = session.createCriteria(LocationProvider.class);
-			criteria.add(Restrictions.eq("userName", userName));
+			// Build the criteria object to search for the address fields and location name
+			// in the Location object that is passed in.
+			criteria = session.createCriteria(Location.class);
+			
+			criterion.put("locationAddress", location.getLocationAddress());
+			criterion.put("locationCity", location.getLocationCity());
+			criterion.put("locationState", location.getLocationState());
+			criterion.put("locationZipcode", location.getLocationZipcode());
+			
+//			criteria.add(Restrictions.eq("locationName", location.getLocationName()));
+			criteria.add(Restrictions.or(Restrictions.eq("locationName", location.getLocationName()), Restrictions.allEq(criterion)));
 			criteria.setProjection(Projections.rowCount());
 			rowCount = (Integer) criteria.uniqueResult();
-
+		
+			transaction.commit();
+			
 			if(rowCount > 0) {
-				// User name already exists so let the user know.
-				StringBuilder message = new StringBuilder();
+				// This Location already exists in the database so throw exception.
+				StringBuilder exceptionMessage;
 				
-				message.append("The user name, ");
-				message.append(userName);
-				message.append(", is already being used. Please select another user name.");
-				throw new UserAlreadyExistsException(message.toString());
+				exceptionMessage = new StringBuilder();
+				exceptionMessage.append("This location already exists in the database. The same location cannot be added multiple times.");
+				throw new DuplicateLocationException(exceptionMessage.toString());
 			}
-			else {
-				session.save(user);
-			}
-			transaction.commit();
 		}
 		catch(HibernateException ex) {
-			try{
-				if(transaction != null) {
-					// The commit failed so roll back the changes
-					transaction.rollback();
-				}
-			}
-			catch(HibernateException rollbackException) {
-				rollbackException.printStackTrace();
-				
-				throw rollbackException;
-			}
+			StringBuilder exceptionMessage;
+			
 			ex.printStackTrace();
 			
-			throw ex;
+			exceptionMessage = new StringBuilder();
+			exceptionMessage.append("There was an error adding Location ");
+			exceptionMessage.append(location.getLocationName());
+			exceptionMessage.append(". Please try to request at a later time. If the problem ");
+			exceptionMessage.append("persists, contact technical support. Sorry for the inconvience.");
+			
+			throw new LocationProcessingException(exceptionMessage.toString());
 		}
 		finally {
-			try {
-				if(session != null) {
+			if(session != null) {
+				try {
 					session.close();
 				}
-			}
-			catch(HibernateException ex) {
-				ex.printStackTrace();
-			}
-		}
-	}
-*/
-//	@Override
-	/**
-	 * Retrieve the user from the database based on the id passed in.
-	 * 
-	 * @return User
-	 */
-/*	public User getUser(Long id) {
-		Session session = null;
-		Transaction transaction = null;
-		LocationProvider user = null;
-		
-		try {
-			session = HibernateUtil.getSession();
-			transaction = session.beginTransaction();
-			
-			user = (LocationProvider) session.get(LocationProvider.class, id);
-			transaction.commit();
-		}
-		catch(HibernateException ex) {
-			try{
-				if(transaction != null) {
-					// The commit failed so roll back the changes
-					transaction.rollback();
+				catch(HibernateException ex) {
+					ex.printStackTrace();
 				}
 			}
-			catch(HibernateException rollbackException) {
-				rollbackException.printStackTrace();
-				
-				throw rollbackException;
-			}
-			ex.printStackTrace();
-			
-			throw ex;
-		}
-		finally {
-			try {
-				session.close();
-			}
-			catch(HibernateException ex) {
-				ex.printStackTrace();
-			}
 		}
 		
-		return user;
 	}
-
-//	@Override
-	/**
-	 * FOR ADMIN USE.
-	 * 
-	 * Delete the user based on the id passed in. This will cascade down through the collections
-	 * and delete them from the database. We also need to delete any image files associated with
-	 * this LocationProvider.
-	 * 
-	 * @param id - Id of the LocationProvider to delete.
-	 */
-/*	public void deleteUser(Long id) {
-		Session session = null;
-		Transaction transaction = null;
-		LocationProvider user;
-		Iterator<Location> locationIterator;
-		
-		try {
-			session = HibernateUtil.getSession();
-			transaction = session.beginTransaction();
-			
-			// Retrieve the user from its id and delete it.
-			user = (LocationProvider) session.get(LocationProvider.class, id);
-			// Delete the image files.
-			locationIterator = user.getProviderLocations().iterator();
-			
-			while(locationIterator.hasNext() == true) {
-				Location location;
-				
-				location = locationIterator.next();
-				deleteImageFiles(location.getLocationImages(), true);
-			}
-			
-			session.delete(user);
-			
-			transaction.commit();
-		}
-		catch(HibernateException ex) {
-			try{
-				if(transaction != null) {
-					// The commit failed so roll back the changes
-					transaction.rollback();
-				}
-			}
-			catch(HibernateException rollbackException) {
-				rollbackException.printStackTrace();
-				
-				throw rollbackException;
-			}
-			ex.printStackTrace();
-			
-			throw ex;
-		}
-		finally {
-			try {
-				session.close();
-			}
-			catch(HibernateException ex) {
-				ex.printStackTrace();
-			}
-		}
-	}
-*/
-//	@Override
-	/**
-	 * Persist the modified user to the database.
-	 */
-/*	public void modifyUser(User user) {
-		Session session = null;
-		Transaction transaction = null;
-		
-		try {
-			session = HibernateUtil.getSession();
-			transaction = session.beginTransaction();
-			
-			session.update(user);
-			
-			transaction.commit();
-		}
-		catch(HibernateException ex) {
-			try{
-				if(transaction != null) {
-					// The commit failed so roll back the changes
-					transaction.rollback();
-				}
-			}
-			catch(HibernateException rollbackException) {
-				rollbackException.printStackTrace();
-				
-				throw rollbackException;
-			}
-			ex.printStackTrace();
-			
-			throw ex;
-		}
-		finally {
-			try {
-				session.close();
-			}
-			catch(HibernateException ex) {
-				ex.printStackTrace();
-			}
-		}
-	}
-*/
-//	@Override
-	/**
-	 * Returns a list of all of the Location Providers.
-	 * 
-	 * @return List<User>
-	 */
-/*	public List<User> getAllUsers() {
-		List<User> providerList = null;
-		Session session = null;
-		Transaction transaction = null;
-		Query query = null;
-		
-		try {
-			session = HibernateUtil.getSession();
-			transaction = session.beginTransaction();
-			
-			query = session.createQuery(" from LocationProvider");
-			
-			providerList = query.list();
-			
-			transaction.commit();
-		}
-		catch(HibernateException ex) {
-			try{
-				if(transaction != null) {
-					// The commit failed so roll back the changes
-					transaction.rollback();
-				}
-			}
-			catch(HibernateException rollbackException) {
-				rollbackException.printStackTrace();
-				
-				throw rollbackException;
-			}
-			ex.printStackTrace();
-			
-			throw ex;
-		}
-		finally {
-			try {
-				session.close();
-			}
-			catch(HibernateException ex) {
-				ex.printStackTrace();
-			}
-		}
-		
-		return providerList;
-	}
-*/
-//	@Override
-	/**
-	 * Retrieve the user based on the user name and password passed in. If not
-	 * found, return null;
-	 * 
-	 * @return LocationProvider
-	 */
-/*	public User authenticateUser(String userName, String password) {
-		Session session = null;
-		Transaction transaction = null;
-		LocationProvider provider;
-		
-		try {
-			Criteria criteria;
-
-			session = HibernateUtil.getSession();
-			transaction = session.beginTransaction();
-			
-			criteria = session.createCriteria(LocationProvider.class);
-			criteria.add(Restrictions.eq("userName", userName));
-			criteria.add(Restrictions.eq("password", password));
-			provider = (LocationProvider) criteria.uniqueResult();
-
-			// Set the last access date and current access date values.
-			if(provider != null) {
-				// Set the last accessed date
-				provider.setLastAccessDate(new Date(System.currentTimeMillis()));
-			}
-			transaction.commit();
-		}
-		catch(HibernateException ex) {
-			try{
-				if(transaction != null) {
-					// The commit failed so roll back the changes
-					transaction.rollback();
-				}
-			}
-			catch(HibernateException rollbackException) {
-				rollbackException.printStackTrace();
-				
-				throw rollbackException;
-			}
-			ex.printStackTrace();
-			
-			throw ex;
-		}
-		finally {
-			try {
-				if(session != null) {
-					session.close();
-				}
-			}
-			catch(HibernateException ex) {
-				ex.printStackTrace();
-			}
-		}
-		
-		return provider;
-	}
-*/	
+	
 	/**
 	 * Add a new location for this provider to the database. 
 	 */

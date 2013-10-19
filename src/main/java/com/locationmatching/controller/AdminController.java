@@ -278,8 +278,9 @@ public class AdminController implements ServletContextAware {
 				}
 				if(radioBttnValue.equals("SKIPPED_ON_REVIEW") == true) {
 					image.setStatus(PhotoStatus.SKIPPED_ON_REVIEW);
-					
+					// As of right now we are going to send email for skipped photos.
 					// Setup email subject and body.
+/*					
 					emailSubject = "Photo still under review.";
 					emailBodyText.append("<html><body>");
 					emailBodyText.append("<h3>Photo Still Under Review.</h3>");
@@ -288,12 +289,16 @@ public class AdminController implements ServletContextAware {
 					emailBodyText.append(" <img src=\"cid:inlineImage\" width=\"330\" height=\"250\"/>");
 					emailBodyText.append("<br/>is still under review. You will receive an email once the review process has finished.</p><br/>");
 					emailBodyText.append("</body></html>");
+*/					
 				}
 				
 				service.modifyImage(image);
 				
 				// Send an email to the photo provider.
-				emailService.sendEmailWithInlinePicture(toEmailAddresses, image.getAbsoluteFilePath(), emailSubject, emailBodyText.toString());
+				// Do not send emails for skipped photos
+				if(image.getStatus() != PhotoStatus.SKIPPED_ON_REVIEW) {
+					emailService.sendEmailWithInlinePicture(toEmailAddresses, image.getAbsoluteFilePath(), emailSubject, emailBodyText.toString());
+				}
 				
 				if(deleteImage == true) {
 					// We can now delete the image since the email has been sent.
@@ -312,6 +317,30 @@ public class AdminController implements ServletContextAware {
 		
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "adminApproveDeclinePhotosPage");
+		
+		return GlobalVars.ADMIN_TEMPLATE_HOME_PAGE_URL;	
+	}
+	
+	/**
+	 * 
+	 * @param model - Set the template navigation attribute
+	 * @return
+	 */
+	@RequestMapping(value="setupReviewPhotoHistory.request", method=RequestMethod.GET)
+	protected String setupViewPhotoHistory(Model model) {
+		// Add in an Image object to be used for search criteria
+		Image searchImage = new Image();
+		Location searchLocation = new Location();
+		LocationProvider searchUser = new LocationProvider();
+		
+		// Set up the tree structure for the Image object
+		searchLocation.setLocationOwner(searchUser);
+		searchImage.setParentLocation(searchLocation);
+		
+		model.addAttribute("searchImage", searchImage);
+		
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "adminViewPhotoHistoryPage");
 		
 		return GlobalVars.ADMIN_TEMPLATE_HOME_PAGE_URL;	
 	}

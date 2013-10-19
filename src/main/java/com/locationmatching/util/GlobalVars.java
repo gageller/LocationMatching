@@ -42,6 +42,14 @@ public class GlobalVars {
 	public final static String PROVIDER_TEMPLATE_HOME_PAGE_URL = "/" + PROVIDER_JSP_FOLDER + "/" + PROVIDER_TEMPLATE_HOME_PAGE;
 	public final static String SCOUT_TEMPLATE_HOME_PAGE_URL = "/" + SCOUT_JSP_FOLDER + "/" + SCOUT_TEMPLATE_HOME_PAGE;
 	
+	// Credit Card Static Variables
+	//Message stating that further photos need to be paid for.
+	public final static String PAY_FOR_PHOTO_MESSAGE = "You have added the maximum amout of free photos for this location. If you would like to add more, you will need to pay for each additional photo at %s per photo. Please make sure that you have a credit card linked to this account.";
+	public final static String PRICE_PER_LOCATION_PHOTO = "$1.09";
+	public final static String CREDIT_CARD_EXPIRATION_WARNING = "";
+	public final static String CREDIT_CARD_HAS_EXPIRED_MESSAGE_PHOTO = "";
+	public final static String CREDIT_CARD_HAS_EXPIRED_PER_PLAN_TYPE = "";
+	
 	static {
 		stateMap.put("", "");
 		stateMap.put("Alabama", "Alabama(AL)");
@@ -100,8 +108,14 @@ public class GlobalVars {
 		locationTypes.put(LocationType.APARTMENT, "Apartment");
 		locationTypes.put(LocationType.CONDOMINIUM, "Condominium");
 		locationTypes.put(LocationType.HOUSE, "House");
-		locationTypes.put(LocationType.OFFICE, "Office Building");
+		locationTypes.put(LocationType.OFFICE_BUILDING, "Office Building");
 		locationTypes.put(LocationType.PARK, "Park");
 		locationTypes.put(LocationType.TOWNHOUSE, "Townhouse");	
+		locationTypes.put(LocationType.ART_GALLERY, "Art Gallery");
+		locationTypes.put(LocationType.CHURCH, "Church");
+		locationTypes.put(LocationType.SYNAGOGUE, "Synagogue");
+		locationTypes.put(LocationType.BUDDIST_TEMPLE, "Buddist Temple");
+		locationTypes.put(LocationType.HOSPITAL, "Hospital");
+		locationTypes.put(LocationType.MUSEUM, "Museum");
 	}
 }

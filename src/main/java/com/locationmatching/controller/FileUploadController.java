@@ -63,7 +63,7 @@ public class FileUploadController implements ServletContextAware{
 			Model model,
 			BindingResult result) {
 		String message;
-		Integer numberOfFreePhotos, numberOfPaidPhotos;
+		Integer numberOfFreePhotos;
 
 		if(result.hasErrors() == false) {
 			// Only proceed if the user has included a file for uploading.
@@ -101,6 +101,7 @@ public class FileUploadController implements ServletContextAware{
 					image.setRelativeUrlPath(relativeUrlPath);
 					image.setStatus(PhotoStatus.NOT_REVIEWED);
 					image.setFileName(fileName);
+					image.setHidden(false);
 					
 					// Set the image type based on the content type from the
 					// file item.
@@ -124,25 +125,22 @@ public class FileUploadController implements ServletContextAware{
 					image.setImageType(imageType);
 
 					numberOfFreePhotos = location.getNumberOfFreePhotos();
-					numberOfPaidPhotos = location.getNumberOfPaidPhotos();
 					// We need to see if the user must pay for the photo. First 
 					// we need to see what the Location Provider's plan type is.
 					// If it is basic, the max free photos to upload is BASIC_FREE_PHOTO_AMOUNT
 					// If the plan is premium, the max free photos is PREMIUM_FREE_PHOTO_AMOUNT
-					// If the photo exceed
+					// If the number of free photos == to the max free photos then the user
+					// needs to start paying for photos.
 					UserPlanType userPlanType;
 					boolean freePhoto = false;
+					int planTotalFreePhotos = GlobalVars.BASIC_FREE_PHOTO_AMOUNT, numberOfRemainingFreePhotos = 0;
 					
 					userPlanType = locationProvider.getUserPlanType();
 					if(userPlanType == UserPlanType.PREMIUM) {
-						if(numberOfFreePhotos < GlobalVars.PREMIUM_FREE_PHOTO_AMOUNT) {
-							freePhoto = true;
-						}
+						planTotalFreePhotos = GlobalVars.PREMIUM_FREE_PHOTO_AMOUNT;
 					}
-					else {
-						if(numberOfFreePhotos < GlobalVars.BASIC_FREE_PHOTO_AMOUNT) {
-							freePhoto = true;
-						}
+					if(numberOfFreePhotos < planTotalFreePhotos) {
+						freePhoto = true;
 					}
 					
 					PhotoPlanType photoPlanType;
@@ -159,7 +157,7 @@ public class FileUploadController implements ServletContextAware{
 					// We need to set the coverPhoto flag. If it is 
 					// the first image being added to the collection then
 					// set the coverPhoto flag to true.
-					if(numberOfFreePhotos == 0 && numberOfPaidPhotos == 0) {
+					if(numberOfFreePhotos == 0) {
 						image.setCoverPhoto(true);
 						// Set the url for the cover photo in the Location object.
 						location.setCoverPhotoUrl(image.getRelativeUrlPath());
@@ -171,6 +169,21 @@ public class FileUploadController implements ServletContextAware{
 					
 					providerService.addImage(image);
 
+					// Set the number of free photos left. It will be displayed on the jsp page.
+					if(freePhoto == true) {
+						// We need to bump up the number of free photos by one to include the one we are adding.
+						numberOfFreePhotos++;
+					}
+					numberOfRemainingFreePhotos = planTotalFreePhotos - numberOfFreePhotos;
+					model.addAttribute("numberOfRemainingFreePhotos", numberOfRemainingFreePhotos);
+					// Add message if number of remaining free photos is 0. The message will tell the user
+					// that they have to pay for additional images.
+					if(numberOfRemainingFreePhotos == 0) {
+						String payForPhotosMessage = new String();
+						
+						payForPhotosMessage = String.format(GlobalVars.PAY_FOR_PHOTO_MESSAGE, GlobalVars.PRICE_PER_LOCATION_PHOTO);
+						model.addAttribute("payForPhotosMessage", payForPhotosMessage);
+					}
 				} 
 				catch (FileNotFoundException e) {
 					e.printStackTrace();
@@ -205,7 +218,7 @@ public class FileUploadController implements ServletContextAware{
 		}
 		
 		// Set the name of the template to use for the view.
-		model.addAttribute("templateName", "addPhotoPage");
+		model.addAttribute("templateName", nextPage);
 		
 		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
 	}
