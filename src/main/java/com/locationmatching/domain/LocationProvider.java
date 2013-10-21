@@ -11,7 +11,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
-import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -75,7 +74,7 @@ public class LocationProvider extends User {
 	public Set<ProviderSubmission>getRequestSubmissions() {
 		return requestSubmissions;
 	}
-	
+
 	// Setter Methods
 	public void setProviderLocations(Set<Location> providerLocations) {
 		this.providerLocations = providerLocations;

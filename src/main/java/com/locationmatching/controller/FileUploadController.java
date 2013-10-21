@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.locationmatching.component.CreditCard;
 import com.locationmatching.component.Image;
 import com.locationmatching.component.Location;
 import com.locationmatching.domain.LocationProvider;
@@ -81,6 +82,72 @@ public class FileUploadController implements ServletContextAware{
 				relativeUrlPath = context.getInitParameter("UploadImageUrlDirectory") + providerId + "/" + locationId + "/" + fileName;
 				
 				try {
+					numberOfFreePhotos = location.getNumberOfFreePhotos();
+					// We need to see if the user must pay for the photo. First 
+					// we need to see what the Location Provider's plan type is.
+					// If it is basic, the max free photos to upload is BASIC_FREE_PHOTO_AMOUNT
+					// If the plan is premium, the max free photos is PREMIUM_FREE_PHOTO_AMOUNT
+					// If the number of free photos == to the max free photos then the user
+					// needs to start paying for photos.
+					UserPlanType userPlanType;
+					boolean freePhoto = false;
+					int planTotalFreePhotos = GlobalVars.BASIC_FREE_PHOTO_AMOUNT, numberOfRemainingFreePhotos = 0;
+					
+					userPlanType = locationProvider.getUserPlanType();
+					if(userPlanType == UserPlanType.PREMIUM) {
+						planTotalFreePhotos = GlobalVars.PREMIUM_FREE_PHOTO_AMOUNT;
+					}
+					if(numberOfFreePhotos < planTotalFreePhotos) {
+						freePhoto = true;
+					}
+					
+					// Check to see if user needs to start paying for photos. If so, we need to see if they
+					// have a credit card linked to their account. If not redirect them to the manageCreditCard page.
+					// If they do have one or more credit cards linked to the account, get the primary credit card and
+					// make sure the card has not expired. If not submit payment to credit card service to process
+					// the transaction. If the transaction goes through continue processing the photo. If not
+					// display a message to the user that their transaction was not accepted.
+					if(freePhoto != true) {
+						// Need to pay for photo. Check for valid credit card.
+						CreditCard creditCard = locationProvider.getPrimaryCreditCard();
+						
+						if(creditCard == null) {
+							// If no credit card linked to this account 
+							// send them to the Manage Credit Card page to 
+							// add a credit card, update the primary credit card information,
+							// or select a new primary credit card.
+							
+							// Display error message to the user
+							String errorMessage;
+							
+							errorMessage = "Please add a credit card to this account to pay for additional photos.";
+							model.addAttribute("errorMessage", errorMessage);
+							
+							// Set the name of the template to use for the view.
+							model.addAttribute("templateName", "manageProviderCreditCardsPage");
+							
+							return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
+						}
+						if(creditCard.hasCardExpired(new Date(System.currentTimeMillis())) == true) {
+							// If the primary credit card has expired, send them to the Manage Credit Card page to 
+							// add a credit card, update the primary credit card information,
+							// or select a new primary credit card.
+							
+							// Display error message to the user
+							String errorMessage;
+							
+							errorMessage = "The expiration date for the primary credit card on this account has expired."
+									+ " Please add a new credit card, edit the information of the primary card, or select a new primary credit card.";
+							model.addAttribute("errorMessage", errorMessage);
+
+							// Set the name of the template to use for the view.
+							model.addAttribute("templateName", "manageProviderCreditCardsPage");
+							
+							return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
+							
+						}
+					}
+					
 					// Create the directory if it does not exist.
 					File directory = new File(filePath);
 					
@@ -123,26 +190,7 @@ public class FileUploadController implements ServletContextAware{
 							// Need to add error handling
 					}
 					image.setImageType(imageType);
-
-					numberOfFreePhotos = location.getNumberOfFreePhotos();
-					// We need to see if the user must pay for the photo. First 
-					// we need to see what the Location Provider's plan type is.
-					// If it is basic, the max free photos to upload is BASIC_FREE_PHOTO_AMOUNT
-					// If the plan is premium, the max free photos is PREMIUM_FREE_PHOTO_AMOUNT
-					// If the number of free photos == to the max free photos then the user
-					// needs to start paying for photos.
-					UserPlanType userPlanType;
-					boolean freePhoto = false;
-					int planTotalFreePhotos = GlobalVars.BASIC_FREE_PHOTO_AMOUNT, numberOfRemainingFreePhotos = 0;
-					
-					userPlanType = locationProvider.getUserPlanType();
-					if(userPlanType == UserPlanType.PREMIUM) {
-						planTotalFreePhotos = GlobalVars.PREMIUM_FREE_PHOTO_AMOUNT;
-					}
-					if(numberOfFreePhotos < planTotalFreePhotos) {
-						freePhoto = true;
-					}
-					
+				
 					PhotoPlanType photoPlanType;
 					if(freePhoto == true) {
 						photoPlanType = PhotoPlanType.FREE_PHOTO;
@@ -151,8 +199,6 @@ public class FileUploadController implements ServletContextAware{
 						photoPlanType = PhotoPlanType.PAID_PHOTO;
 					}
 					image.setPhotoPlanType(photoPlanType);
-					
-					
 					
 					// We need to set the coverPhoto flag. If it is 
 					// the first image being added to the collection then

@@ -16,6 +16,8 @@
 			<a href="returnProviderMainPage.request">View Account Information and Locations</a>
 			<br/>
 			<a href="setupEditLocationProvider.request">Edit Account Information</a>
+			<br/>
+			<a href="setupManagePayments.request">Manage Payment Information</a>
 		</p>
 		<p>
 			<h3><u>Manage My Locations</u></h3>

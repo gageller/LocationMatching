@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.ServletContextAware;
 
+import com.locationmatching.component.CreditCardImpl;
 import com.locationmatching.component.Image;
 import com.locationmatching.component.Location;
 import com.locationmatching.component.LocationRequest;
@@ -34,6 +35,7 @@ import com.locationmatching.component.ProviderSubmission;
 import com.locationmatching.component.ScoutAlert;
 import com.locationmatching.domain.LocationProvider;
 import com.locationmatching.domain.LocationScout;
+import com.locationmatching.enums.CreditCardType;
 import com.locationmatching.enums.LocationType;
 import com.locationmatching.enums.SubmissionResponse;
 import com.locationmatching.enums.UserPlanType;
@@ -119,18 +121,34 @@ public class LocationProviderController implements ServletContextAware{
 
 	/**
 	 * Used for the State select controls on the jsp pages.
+	 * 
+	 * @return map containing state names and abbreviations.
 	 */
 	@ModelAttribute("stateSelectList")
 	protected Map<String, String> stateSelectList() {
 		return GlobalVars.stateMap;
 	}
 	
-	// Used for the request to set the type of property
+	/**
+	 * Used for the request to set the type of property
+	 * 
+	 * @return Map of Location Types
+	 */
 	@ModelAttribute("locationTypeList")
 	protected EnumMap<LocationType, String> locationTypeList() {
 		return GlobalVars.locationTypes;
 	}
 
+	/**
+	 *  Used for credit card type selection on Manage Credit Cards page
+	 *  
+	 * @return Map of credit cards that may be used.
+	 */
+	@ModelAttribute("creditCardTypesMap")
+	protected EnumMap<CreditCardType, String> creditCardTypesMap() {
+		return GlobalVars.creditCardTypes;
+	}
+	
 	////////////////////////////////////////////////////////////////////////////////
 	// Location Provider Actions
 	////////////////////////////////////////////////////////////////////////////////
@@ -878,6 +896,89 @@ public class LocationProviderController implements ServletContextAware{
 		
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "locationSubmissionsPage");
+		
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;	
+	}
+	
+	/**
+	 * Set the next page template attributes. Add a new CreditCardImpl
+	 * object and the primary CreditCardImpl object to the model to use
+	 * for information on the page.
+	 * 
+	 * @param locationProvider - The current user.
+	 * @param model - Set the next page template attributes.
+	 * @return Next Page
+	 */
+	@RequestMapping(value="setupManagePayments.request", method=RequestMethod.GET)
+	protected String setupManagePayments(@ModelAttribute("locationProvider") LocationProvider locationProvider, Model model) {
+		CreditCardImpl newCreditCard, primaryCreditCard = null;
+		Set<CreditCardImpl>creditCards = locationProvider.getCreditCards();
+		
+		// We will add this newly instantiated Credit Card to the model to
+		// be used if the user wants to add a new credit card.
+		newCreditCard = new CreditCardImpl();
+
+		// See if there is already an existing credit card assigned to this account.
+		// If there is, get the first card in the collection and we will use that as 
+		// the default billing address for adding a new card.
+		primaryCreditCard = locationProvider.getPrimaryCreditCard();
+		if(primaryCreditCard != null) {
+			// We have at least one entry so use it as the default
+			// address fields for the new Credit Card.
+			Iterator<CreditCardImpl>iterator;
+			
+			iterator = creditCards.iterator();
+			primaryCreditCard = iterator.next();
+			
+			newCreditCard.setBillingAddress(primaryCreditCard.getBillingAddress());
+			newCreditCard.setBillingAddress2(primaryCreditCard.getBillingAddress2());
+			newCreditCard.setBillingCity(primaryCreditCard.getBillingCity());
+			newCreditCard.setBillingState(primaryCreditCard.getBillingState());
+			newCreditCard.setBillingZipcode(primaryCreditCard.getBillingZipcode());
+		}
+		else {
+			// Add an empty credit card object to the model
+			primaryCreditCard = new CreditCardImpl();
+		}
+		
+		// Add the new credit card and existing credit card objects to the model
+		model.addAttribute("newCreditCard", newCreditCard);
+		model.addAttribute("primaryCreditCard", primaryCreditCard);
+		
+		// Add the GlobalVars class so it can be used on the page.
+		model.addAttribute("maxCreditCardsAllowed", GlobalVars.MAX_CREDIT_CARDS);
+		
+		
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "manageProviderCreditCardsPage");
+		
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;	
+	}
+	
+	
+	@RequestMapping(value="addCreditCard.request", method=RequestMethod.POST)
+	protected String addCreditCard(@ModelAttribute("newCreditCard") CreditCardImpl newCreditCard, 
+			@ModelAttribute("LocationProvider") LocationProvider locationProvider,
+			Model model) {
+		Date currentDate, expirationDate;
+		
+		// Make sure the expiration date is after the current date.
+		expirationDate =  newCreditCard.getExpirationDate();
+		currentDate = new Date(System.currentTimeMillis());
+		
+		if(expirationDate.after(currentDate) == true) {
+			newCreditCard.setCreationDate(currentDate);
+			newCreditCard.setActive(true);
+		}
+		else {
+			String errorMessage;
+			
+			// Card has already expired so display error message to the user.
+			errorMessage = "The expiration date entered has already expired. Please use an active credit card.";
+			model.addAttribute("errorMessage", errorMessage);
+		}
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "manageProviderCreditCardsPage");
 		
 		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;	
 	}

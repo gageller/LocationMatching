@@ -2,6 +2,11 @@ package com.locationmatching.component;
 
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import com.locationmatching.domain.User;
 import com.locationmatching.enums.CreditCardType;
 
 /**
@@ -24,14 +29,45 @@ public interface CreditCard {
 	 * @return
 	 */
 	public String getCvvNumber();
-	public String getUserName();
+	public String getCardHolderName();
 	public Date getExpirationDate();
+	public String getBillingAddress();
+	public String getBillingAddress2();
+	public String getBillingCity();
+	public String getBillingState();
+	public String getBillingZipcode();
+	public User getCreditCardHolder();
+	public Boolean getPrimaryCreditCard();
+	public Boolean getActive();
+	public Date getCreationDate();
+	public Date getModifiedDate();
+	public Date getDeactivationDate();
 	
 	// Setter Methods
 	public void setId(Long id);
 	public void setCreditCardType(CreditCardType creditCardType);
 	public void setAccountNumber(String accountNumber);
 	public void setCvvNumber(String cvvNumber);
-	public void setUserName(String userName);
+	public void setCardHolderName(String cardHolderName);
 	public void setExpirationDate(Date expirationDate);
+	public void setBillingAddress(String billingAddress);
+	public void setBillingAddress2(String billAddress2);
+	public void setBillingCity(String billingCity);
+	public void setBillingState(String billingState);
+	public void setBillingZipcode(String billingZipcode);
+	public void setCreditCardHolder(User creditCardHolder);
+	public void setPrimaryCreditCard(Boolean primaryCreditCard);
+	public void setActive(Boolean active);
+	public void setCreationDate(Date creationDate);
+	public void setModifiedDate(Date modifiedDate);
+	public void setDeactivationDate(Date deactivationDate);
+
+	// Check to see if this card is active.
+	public Boolean isActive();
+	
+	// Check to see if this card is the primary one for the account
+	public Boolean isPrimaryCreditCard();
+	
+	// See if the card has expired.
+	public Boolean hasCardExpired(Date currentDate);
 }

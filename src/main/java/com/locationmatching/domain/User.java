@@ -2,6 +2,9 @@ package com.locationmatching.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -13,10 +16,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
+import com.locationmatching.component.CreditCard;
+import com.locationmatching.component.CreditCardImpl;
 import com.locationmatching.enums.UserType;
 
 /**
@@ -104,6 +114,14 @@ public abstract class User implements Serializable{
 	@Column(name="USER_LEVEL")
 	private Short userLevel;
 	
+	/**
+	 * Collection of CreditCards linked to this account
+	 */
+	@OneToMany(mappedBy="creditCardHolder") // mappedBy is equivalent to inverse=true in the mapping file.
+	@LazyCollection(value = LazyCollectionOption.FALSE)
+	@Fetch(value=FetchMode.SELECT)
+	Set<CreditCardImpl>creditCards = new LinkedHashSet<CreditCardImpl>();
+	
 	// Getter Methods
 	public Long getId() {
 		return id;
@@ -140,6 +158,31 @@ public abstract class User implements Serializable{
 	}
 	public Short getUserLevel() {
 		return userLevel;
+	}
+	public Set<CreditCardImpl> getCreditCards() {
+		return creditCards;
+	}
+	/**
+	 * Iterate through the CreditCard collection and find the primary 
+	 * card for the account. If not found, return null.
+	 * 
+	 * @return creditCard - The primary credit card for this account.
+	 */
+	public CreditCardImpl getPrimaryCreditCard() {
+		Iterator<CreditCardImpl> iterator;
+		
+		iterator = creditCards.iterator();
+		
+		while(iterator.hasNext() == true) {
+			CreditCardImpl creditCard;
+			
+			creditCard = iterator.next();
+			if(creditCard.isPrimaryCreditCard() == true) {
+				return creditCard;
+			}
+		}
+			
+		return null;
 	}
 	
 	// Setter Methods
@@ -180,4 +223,58 @@ public abstract class User implements Serializable{
 //	public void setUserType(UserType userType) {
 //		this.userType = userType;
 //	}
+	
+	/**
+	 * Add the new CreditCardImpl object to the collection. Set the parent pointer
+	 * of the CreditCardImpl object.
+	 * 
+	 * @param newCreditCard
+	 */
+	public void addCreditCard(CreditCardImpl newCreditCard) {
+		newCreditCard.setCreditCardHolder(this);
+		creditCards.add(newCreditCard);
+	}
+	
+	/**
+	 * Remove credit card from the collection
+	 * 
+	 * @param creditCard - Credit card to remove.
+	 * @return - Whether removal was successful
+	 */
+	public boolean removeCreditCard(CreditCardImpl creditCard) {
+		 return creditCards.remove(creditCard);
+	}
+	
+	/**
+	 * Remove the CreditCardImpl object from the creditCards collection based
+	 * on the id that is passed it. If found, return the CreditCardImpl object to the
+	 * caller after removing it from the collection. If not found, return null.
+	 * 
+	 * @param removeById - Id of the CreditCardImpl object to remove.
+	 * 
+	 * @return - The removed object or null if it does not exist in the collection.
+	 */
+	public CreditCardImpl removeCreditCard(Long removeById) {
+		Iterator<CreditCardImpl>iterator;
+		
+		iterator = creditCards.iterator();
+		while(iterator.hasNext() == true) {
+			CreditCardImpl creditCard;
+			Long id;
+			
+			creditCard = iterator.next();
+			id = creditCard.getId();
+			if(id.equals(removeById) == true) {
+				// Found the matching id. Remove it
+				// from the collection and return it 
+				// to the caller.
+				creditCards.remove(creditCard);
+				
+				return creditCard;
+			}
+		}
+		
+		return null;
+	}
+
 }

@@ -4,11 +4,18 @@ import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.locationmatching.enums.CreditCardType;
 import com.locationmatching.enums.LocationType;
 
 public class GlobalVars {
 	public static Map<String, String> stateMap = new LinkedHashMap<String, String>();
+	
+	// Location types
 	public static EnumMap<LocationType, String> locationTypes = new EnumMap<LocationType, String>(LocationType.class);
+	
+	// Credit card types
+	public static EnumMap<CreditCardType, String> creditCardTypes = new EnumMap<CreditCardType, String>(CreditCardType.class);
+	
 	// Total number of free images for Basic and Premium plans
 	public final static int BASIC_FREE_PHOTO_AMOUNT = 5;
 	public final static int PREMIUM_FREE_PHOTO_AMOUNT = 10;
@@ -49,6 +56,7 @@ public class GlobalVars {
 	public final static String CREDIT_CARD_EXPIRATION_WARNING = "";
 	public final static String CREDIT_CARD_HAS_EXPIRED_MESSAGE_PHOTO = "";
 	public final static String CREDIT_CARD_HAS_EXPIRED_PER_PLAN_TYPE = "";
+	public final static int MAX_CREDIT_CARDS = 3;
 	
 	static {
 		stateMap.put("", "");
@@ -117,5 +125,14 @@ public class GlobalVars {
 		locationTypes.put(LocationType.BUDDIST_TEMPLE, "Buddist Temple");
 		locationTypes.put(LocationType.HOSPITAL, "Hospital");
 		locationTypes.put(LocationType.MUSEUM, "Museum");
+		locationTypes.put(LocationType.CEMETARY, "Cemetary");
+		
+		// Credit Card Type select box
+		creditCardTypes.put(CreditCardType.BLANK, "");
+		creditCardTypes.put(CreditCardType.VISA, "Visa");
+		creditCardTypes.put(CreditCardType.MASTERCARD, "MasterCard");
+		// Are not allowing American Express cards yet.
+		//creditCardTypes.put(CreditCardType.AMEX, "American Express");
+		creditCardTypes.put(CreditCardType.DISCOVER, "Discover");
 	}
 }
