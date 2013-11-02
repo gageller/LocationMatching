@@ -59,7 +59,7 @@ import com.sun.xml.internal.fastinfoset.util.StringArray;
  *
  */
 @Controller
-@SessionAttributes({"locationProvider", "location", "editLocation", "searchLocationRequest", "requestSearchResults"})
+@SessionAttributes({"locationProvider", "location", "editLocation", "searchLocationRequest", "requestSearchResults", "newCreditCard"})
 public class LocationProviderController implements ServletContextAware{
 	/**
 	 * We get the ServletContext so we have access to any init
@@ -917,7 +917,7 @@ public class LocationProviderController implements ServletContextAware{
 		// We will add this newly instantiated Credit Card to the model to
 		// be used if the user wants to add a new credit card.
 		newCreditCard = new CreditCardImpl();
-
+		
 		// See if there is already an existing credit card assigned to this account.
 		// If there is, get the first card in the collection and we will use that as 
 		// the default billing address for adding a new card.
@@ -948,7 +948,6 @@ public class LocationProviderController implements ServletContextAware{
 		// Add the GlobalVars class so it can be used on the page.
 		model.addAttribute("maxCreditCardsAllowed", GlobalVars.MAX_CREDIT_CARDS);
 		
-		
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "manageProviderCreditCardsPage");
 		
@@ -958,7 +957,7 @@ public class LocationProviderController implements ServletContextAware{
 	
 	@RequestMapping(value="addCreditCard.request", method=RequestMethod.POST)
 	protected String addCreditCard(@ModelAttribute("newCreditCard") CreditCardImpl newCreditCard, 
-			@ModelAttribute("LocationProvider") LocationProvider locationProvider,
+			@ModelAttribute("locationProvider") LocationProvider locationProvider,
 			Model model) {
 		Date currentDate, expirationDate;
 		
@@ -969,6 +968,12 @@ public class LocationProviderController implements ServletContextAware{
 		if(expirationDate.after(currentDate) == true) {
 			newCreditCard.setCreationDate(currentDate);
 			newCreditCard.setActive(true);
+			newCreditCard.setPrimaryCreditCard(true);
+			
+			locationProvider.addCreditCard(newCreditCard);
+			
+			// Save new credit card to the database.
+			providerService.addCreditCard(newCreditCard);
 		}
 		else {
 			String errorMessage;

@@ -56,21 +56,21 @@ public class LocationRequest {
 	/**
 	 * Submission Date
 	 */
-	@DateTimeFormat(style="S-")
+	@DateTimeFormat(pattern="MM/dd/yyyy")
 	@Column(name="SUBMISSION_DATE")
 	private Date submissionDate = new Date(System.currentTimeMillis());
 	
 	/**
 	 * Beginning date of the shoot
 	 */
-	@DateTimeFormat(style="S-")
+	@DateTimeFormat(pattern="MM/dd/yyyy")
 	@Column(name="SHOOT_BEGIN_DATE")
 	private Date shootBeginDate = new Date(System.currentTimeMillis());
 	
 	/**
 	 * End date of the shoot
 	 */
-	@DateTimeFormat(style="S-")
+	@DateTimeFormat(pattern="MM/dd/yyyy")
 	@Column(name="SHOOT_END_DATE")
 	private Date shootEndDate = new Date(System.currentTimeMillis());
 	

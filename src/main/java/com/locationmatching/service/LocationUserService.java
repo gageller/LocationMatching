@@ -14,11 +14,20 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
+import com.locationmatching.component.CreditCardImpl;
 import com.locationmatching.component.Image;
 import com.locationmatching.domain.User;
 import com.locationmatching.exception.UserAlreadyExistsException;
 import com.locationmatching.util.HibernateUtil;
 
+/**
+ * Generalized persistence service class that the LocationProviderService and LocationScoutService
+ * inherit from. Handles functionality such as user authentication at login and credit card services.
+ * 
+ * @author Greg Geller
+ * @since 0.0.1
+ * @version 0.0.1
+ */
 public abstract class LocationUserService {
 	
 	public User authenticateUser(String userName, String password) {
@@ -276,7 +285,6 @@ public abstract class LocationUserService {
 	 * 
 	 * @param image - Image object to add.
 	 */
-//	@Override
 	public void addImage(Image image) {
 		Session session = null;
 		Transaction transaction = null;
@@ -483,6 +491,92 @@ public abstract class LocationUserService {
 			
 			if(deleteFile.isDirectory() == true) {
 				deleteFile.delete();
+			}
+		}
+	}
+	
+	/**
+	 * Save the CreditCardImpl object to the database
+	 * 
+	 * @param creditCard - Object to write to the database
+	 */
+	public void addCreditCard(CreditCardImpl creditCard) {
+		Session session = null;
+		Transaction transaction = null;
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			session.save(creditCard);
+			
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			throw ex;
+		}
+		finally {
+			try {
+				session.close();
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * Update the CreditCardImpl object to the database
+	 * 
+	 * @param creditCard - Object to update in the database
+	 */
+	public void modifyCreditCard(CreditCardImpl creditCard) {
+		Session session = null;
+		Transaction transaction = null;
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			session.update(creditCard);
+			
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			throw ex;
+		}
+		finally {
+			try {
+				session.close();
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
 			}
 		}
 	}

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+	<!-- LOCATION PROVIDER TEMPLATES -->		
+  	<definition name="baseAdminLayout" template="/layouts/baseAdminLayout.jsp">
+	    <put-attribute name="title" value="Template" />
+	    <put-attribute name="header" value="/admin/adminHeader.jsp" />
+	    <put-attribute name="menu" value="/admin/adminNavigation.jsp" />
+	    <put-attribute name="body" expression="/admin/admin.jsp" />
+	</definition>
+  	<definition name="adminHomePage" extends="baseAdminLayout">
+      	<put-attribute name="title" value="Administrator Home Page" />
+      	<put-attribute name="body" value="/admin/admin.jsp" />
+	</definition>
+	<definition name="adminApproveDeclinePhotosPage" extends="baseAdminLayout">
+	    <put-attribute name="title" value="Approve/Decline Photos"/>
+	    <put-attribute name="body" value="/admin/adminApproveDeclinePhotos.jsp"/>
+	</definition>
+  	<definition name="adminViewPhotoHistoryPage" extends="baseAdminLayout">
+      	<put-attribute name="title" value="View Photo History" />
+      	<put-attribute name="body" value="/admin/adminViewPhotoHistory.jsp"></put-attribute>
+  	</definition>
+<!--   	<definition name="editLocationListingsPage" extends="baseAdminLayout">
+      	<put-attribute name="title" value="Locations to Edit"/>
+      	<put-attribute name="body" value="/admin/editLocationListings.jsp"/>
+  	</definition>
+  	<definition name="editLocationPage" extends="baseAdminLayout">
+      	<put-attribute name="title" value="Edit this Location"/>
+      	<put-attribute name="body" value="/admin/editLocation.jsp"/>
+  	</definition>
+  	<definition name="deleteLocationPage" extends="baseAdminLayout">
+  	    <put-attribute name="title" value="Delete this Location"/>
+  	    <put-attribute name="body" value="/admin/deleteLocations.jsp"/>
+  	</definition>
+  	<definition name="addPhotoPage" extends="baseAdminLayout">
+      	<put-attribute name="title" value="Add a New Photo"/>
+      	<put-attribute name="body" value="/admin/addPhoto.jsp"></put-attribute>
+  	</definition>
+  	<definition name="deletePhotosPage" extends="baseAdminLayout">
+ 		<put-attribute name="title" value="Delete Selected Photos"/> 	    
+  	    <put-attribute name="body" value="/admin/deletePhotos.jsp"/>
+  	</definition>
+  	<definition name="searchLocationRequestsPage" extends="baseAdminLayout">
+  	    <put-attribute name="title" value="Search Location Requests"/>
+  	    <put-attribute name="body" value="/admin/searchLocationRequests.jsp"/>
+  	</definition>
+  	<definition name="locationSubmissionsPage" extends="baseAdminLayout">
+  	    <put-attribute name="title" value="Location Submissions"/>
+  	    <put-attribute name="body" value="/admin/viewSubmissionsList.jsp"/>
+  	</definition>
+-->
+</tiles-definitions>

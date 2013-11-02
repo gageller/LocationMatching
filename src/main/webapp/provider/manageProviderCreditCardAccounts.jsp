@@ -16,15 +16,23 @@
 	<br/>
 	<br/>
 	<label class="boldText fontSize18">Existing Credit Card Accounts</label>
-	<form:form method="POST" modelAttribute="locationProvider" name="manageCreditCardsForm" action="addCreditCard.request">
+	<form:form method="POST" modelAttribute="newCreditCard" name="manageCreditCardsForm" action="addCreditCard.request">
+		<c:set var="hasCreditCards" scope="page" value="${locationProvider.creditCards.size()}"> </c:set>
 		<c:if test="${locationProvider.creditCards.size() > 0}">
 			<table width="1000">
 				<c:forEach items="${locationProvider.creditCards}" var="creditCard">
 					<tr>
-						<td><input type="radio" name="primaryCreditCard" value="creditCard.id"/><label>Primary Credit Card</label>
+						<td><input type="radio" name="primaryCreditCard" value="creditCard.id"
+							<c:if test="${creditCard.primaryCreditCard == true}">
+								checked
+							</c:if>
+							<c:if test="${hasCreditCards == 1}">
+								disabled
+							</c:if>
+						/><label>Primary Credit Card</label>
 						<!-- Display Last 4 Digits of Credit Card Number -->
-						<td><label>xxxxxxxxxxxx${creditCard.accountNumber.substring(creditCard.length() - 5)}</label></td>
-						<td><input type="button" name="deleteCard${creditCard.id}"/></td>
+						<td><label>Account Number</label><br/><label>xxxxxxxxxxxx${creditCard.accountNumber.substring(creditCard.accountNumber.length() - 5)}</label></td>
+						<td><input type="button" name="deleteCard${creditCard.id}" value="Delete Credit Card"/></td>
 					</tr>
 				</c:forEach>
 			</table>
@@ -33,37 +41,48 @@
 		<label class="boldText fontSize18">Add New Credit Card</label>
 		<table width="500">
 			<tr>
-				<td width="275"><label>Name as it appears on the credit card</label><br/><form:input path="${creditCard.cardHolderName}" size="35"/></td>
-				<td width="225"><label>Credit Card Type</label><br/><form:select path="${newCreditCard.creditCardType}" items="${creditCardTypesMap}"></form:select></td>
+				<td width="275"><label>Name as it appears on the credit card</label><br/><form:input path="cardHolderName" size="35"/></td>
+				<td width="225"><label>Credit Card Type</label><br/><form:select path="creditCardType" items="${creditCardTypesMap}"></form:select></td>
 			</tr>
 			<tr>
-				<td width="275"><label>Account Number</label><br/><form:input path="${newCreditCard.accountNumber}" size="20"/></td>
-				<td width="225"><label>CVV Number</label><br/><form:input path="${newCreditCard.cvvNumber}" size="3"/></td>
+				<td width="275"><label>Account Number</label><br/><form:input path="accountNumber" size="20"/></td>
+				<td width="225"><label>CVV Number</label><br/><form:input path="cvvNumber" size="3"/></td>
 			</tr>
 			<tr>
-				<td colspan="2"><label>Expiration Date (MM/DD/YYYY)</label><br/><form:input path="${newCreditCard.expirationDate}"/>
+				<td colspan="2"><label>Expiration Date<br/>(MM/YYYY)</label><br/><form:input path="expirationDate" size="7"/>
 			</tr>
 			<tr>
 				<td colspan="2">&nbsp;</td>
 			</tr>
 			<tr>
-				<td width="275"><input type="radio" name="addressGroupRadio" value="currentAddress"/><label>Use default billing address</label></td>
-				<td width="225"><input type="radio" name="addressGroupRadio" value="newAddress"/><label>Add new billing address</label></td>
+				<td width="275"><input type="radio" name="addressGroupRadio" value="currentAddress"
+					<c:choose>
+						<c:when test="${hasCreditCards > 0}">
+							checked
+						</c:when>
+						<c:otherwise>
+							disabled
+						</c:otherwise>
+					</c:choose>
+				 /><label>Use default billing address</label></td>
+				<td width="225"><input type="radio" name="addressGroupRadio" value="newAddress"
+					<c:if test="${hasCreditCards == 0}"> checked</c:if>
+				/><label>Add new billing address</label></td>
 			</tr>
 			<tr>
-				<td colspan="2"><label>Street Address</label><br/><form:input path="${newCreditCard.billingAddress}" size="35" name="newBillingAddress"/></td>
+				<td colspan="2"><label>Street Address</label><br/><form:input path="billingAddress" size="35" name="newBillingAddress"/></td>
 			</tr>
 			<tr>
-				<td colspan="2"><label>Street Address 2(Optional)</label><br/><form:input path="${newCreditCard.billingAddress2}" size="20" name="newBillingAddress2"/></td>
+				<td colspan="2"><label>Street Address 2(Optional)</label><br/><form:input path="billingAddress2" size="20" name="newBillingAddress2"/></td>
 			</tr>
 			<tr>
-				<td colspan="2"><label>City</label><br/><form:input path="${newCreditCard.billingCity}" size="35" name="newBillingCity"/></td>
+				<td colspan="2"><label>City</label><br/><form:input path="billingCity" size="35" name="newBillingCity"/></td>
 			</tr>
 			<tr>
-				<td colspan="2"><label>State</label><br/><form:select path="${newCreditCard.billingState}" items="${stateSelectList}" name="newBillingState"/></td>
+				<td colspan="2"><label>State</label><br/><form:select path="billingState" items="${stateSelectList}" name="newBillingState"/></td>
 			</tr>
 			<tr>
-				<td colspan="2"><label>Zip Code</label><br/><form:input path="${newCreditCard.billingZipcode}" size="5" name="newBillingZipcode"/></td>
+				<td colspan="2"><label>Zip Code</label><br/><form:input path="billingZipcode" size="5" name="newBillingZipcode"/></td>
 			</tr>
 		</table>
 		<br/>

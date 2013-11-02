@@ -37,7 +37,11 @@
   	</definition>
   	<definition name="addPhotoPage" extends="baseProviderLayout">
       	<put-attribute name="title" value="Add a New Photo"/>
-      	<put-attribute name="body" value="/provider/addPhoto.jsp"></put-attribute>
+      	<put-attribute name="body" value="/provider/addPhoto.jsp"/>
+  	</definition>
+  	<definition name="managePhotosPage" extends="baseProviderLayout">
+  	    <put-attribute name="title" value="Manage Your Photos"/>
+  	    <put-attribute name="body" value="/provider/managePhotos.jsp"/>
   	</definition>
   	<definition name="deletePhotosPage" extends="baseProviderLayout">
  		<put-attribute name="title" value="Delete Selected Photos"/> 	    
@@ -50,5 +54,9 @@
   	<definition name="locationSubmissionsPage" extends="baseProviderLayout">
   	    <put-attribute name="title" value="Location Submissions"/>
   	    <put-attribute name="body" value="/provider/viewSubmissionsList.jsp"/>
+  	</definition>
+  	<definition name="manageProviderCreditCardsPage" extends="baseProviderLayout">
+  	    <put-attribute name="title" value="Manage Your Credit Card Accounts"/>
+  	    <put-attribute name="body" value="/provider/manageProviderCreditCardAccounts.jsp"/>
   	</definition>
 </tiles-definitions>

@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.locationmatching.domain.User;
 import com.locationmatching.enums.CreditCardType;
@@ -68,6 +69,7 @@ public class CreditCardImpl implements CreditCard {
 	/**
 	 * Expiration Date of the credit card
 	 */
+	@DateTimeFormat(pattern="MM/yyyy")
 	@Column(name="EXPIRATION_DATE")
 	Date expirationDate;
 	
@@ -266,7 +268,7 @@ public class CreditCardImpl implements CreditCard {
 	}
 	
 	@Override
-	public void setBillingAddress2(String billAddress2) {
+	public void setBillingAddress2(String billingAddress2) {
 		this.billingAddress2 = billingAddress2;
 	}
 	

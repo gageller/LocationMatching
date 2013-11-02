@@ -131,8 +131,8 @@ public class GlobalVars {
 		creditCardTypes.put(CreditCardType.BLANK, "");
 		creditCardTypes.put(CreditCardType.VISA, "Visa");
 		creditCardTypes.put(CreditCardType.MASTERCARD, "MasterCard");
-		// Are not allowing American Express cards yet.
+		// Are not allowing American Express or Discover cards yet.
 		//creditCardTypes.put(CreditCardType.AMEX, "American Express");
-		creditCardTypes.put(CreditCardType.DISCOVER, "Discover");
+		//creditCardTypes.put(CreditCardType.DISCOVER, "Discover");
 	}
 }
