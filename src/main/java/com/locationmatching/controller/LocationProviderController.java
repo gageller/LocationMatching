@@ -59,7 +59,7 @@ import com.sun.xml.internal.fastinfoset.util.StringArray;
  *
  */
 @Controller
-@SessionAttributes({"locationProvider", "location", "editLocation", "searchLocationRequest", "requestSearchResults", "newCreditCard"})
+@SessionAttributes({"locationProvider", "location", "editLocation", "searchLocationRequest", "requestSearchResults", "newCreditCard", "editCreditCard"})
 public class LocationProviderController implements ServletContextAware{
 	/**
 	 * We get the ServletContext so we have access to any init
@@ -954,7 +954,28 @@ public class LocationProviderController implements ServletContextAware{
 		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;	
 	}
 	
-	
+	/**
+	 * We are coming here from the FileUploadController because the user did not have a credit
+	 * card set or the expiration of the primary credit card has already expired.
+	 * 
+	 * @param locationProvider - Pass the model to the setupManagePayments method.
+	 * @param model - Pass the model to the setupManagePayments method.
+	 * 
+	 * @return - Next page
+	 */
+	@RequestMapping(value="setupManagePayments.request", method=RequestMethod.POST)
+	protected String gotoCreditCardManagePageFromFileUploadController(@ModelAttribute("locationProvider") LocationProvider locationProvider, Model model) {
+		return setupManagePayments(locationProvider, model);
+	}
+	/**
+	 * Add a new credit card entry.
+	 * 
+	 * @param newCreditCard - New Credit Card object with data filled from the manageProviderCreditCardAccounts.jsp
+	 * @param locationProvider
+	 * @param model - Set the navigation template variables
+	 * 
+	 * @return
+	 */
 	@RequestMapping(value="addCreditCard.request", method=RequestMethod.POST)
 	protected String addCreditCard(@ModelAttribute("newCreditCard") CreditCardImpl newCreditCard, 
 			@ModelAttribute("locationProvider") LocationProvider locationProvider,
@@ -982,6 +1003,83 @@ public class LocationProviderController implements ServletContextAware{
 			errorMessage = "The expiration date entered has already expired. Please use an active credit card.";
 			model.addAttribute("errorMessage", errorMessage);
 		}
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "manageProviderCreditCardsPage");
+		
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;	
+	}
+	
+	/**
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="setupEditCreditCard.request", method=RequestMethod.POST)
+	protected String setupEditCreditCard(@ModelAttribute("creditCardId") long creditCardId, Model model) {
+		CreditCardImpl editCreditCard;
+		
+		// Get the CreditCard object and add it to the model
+		editCreditCard = providerService.getCreditCard(creditCardId);
+		model.addAttribute("editCreditCard", editCreditCard);
+		
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "editProviderCreditCardsPage");
+		
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;	
+	}
+	
+	/**
+	 * Edit the Credit Card info.
+	 * 
+	 * @param editCreditCard - Credit Card object to update
+	 * @param model - Set the navigation parameters
+	 * 
+	 * @return - Next page
+	 */
+	@RequestMapping(value="editCreditCard.request", method=RequestMethod.POST)
+	protected String updateCreditCardInfo(@ModelAttribute("editCreditCard") CreditCardImpl editCreditCard, Model model) {
+		// Set the modification date
+		editCreditCard.setModifiedDate(new Date(System.currentTimeMillis()));
+		
+		providerService.modifyCreditCard(editCreditCard);
+		
+		// Add the GlobalVars class so it can be used on the page.
+		model.addAttribute("maxCreditCardsAllowed", GlobalVars.MAX_CREDIT_CARDS);
+
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "manageProviderCreditCardsPage");
+		
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;	
+	}
+	
+	/**
+	 * Deleting a credit card does actually delete the entry from the database.
+	 * We mark the credit card active variable to false.
+	 * 
+	 * @param creditCardId - Id of the CreditCard object to mark as deleted
+	 * @param model - Setting navigation attributes.
+	 * 
+	 * @return - Next Page
+	 */
+	@RequestMapping(value="deleteCreditCard.request", method=RequestMethod.POST)
+	protected String deleteCreditCard(@ModelAttribute("locationProvicer") LocationProvider locationProvider,
+			@ModelAttribute("creditCardId") long creditCardId, Model model) {
+		CreditCardImpl creditCard;
+		
+		creditCard = providerService.getCreditCard(creditCardId);
+		// Set the deletion attributes
+		creditCard.setActive(false);
+		creditCard.setDeactivationDate(new Date(System.currentTimeMillis()));
+		creditCard.setPrimaryCreditCard(false);
+		
+		// Update in the database
+		providerService.modifyCreditCard(creditCard);
+		// Remove the credit card from the provider collection
+		locationProvider.removeCreditCard(creditCard);
+		
+		// Add the GlobalVars class so it can be used on the page.
+		model.addAttribute("maxCreditCardsAllowed", GlobalVars.MAX_CREDIT_CARDS);
+
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "manageProviderCreditCardsPage");
 		

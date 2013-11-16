@@ -2,6 +2,7 @@
     pageEncoding="ISO-8859-1"%>
     <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+    <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
     
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
@@ -14,7 +15,7 @@
 <title>Add a New Location</title>
 </head>
 <body> 
-<h2>Add a New Location</h2>
+<h2><spring:message code="addLocation.pageHeader"/></h2>
 	<br/>
 	<p class="errorMessage">${errorMessage}</p>
 	<br/>
@@ -22,40 +23,40 @@
 		<input type="hidden" name="source" value="${locationProvider.id}" />
 		<table>
 			<tr>
-				<td>Location Name*</td>
+				<td><label class="boldText"><spring:message code="common.field.locationName"/></label></td>
 				<td><form:input path="locationName"/></td>
 			</tr>
 			<tr>
-				<td>Address*</td>
+				<td><label class="boldText"><spring:message code="common.field.address"/></label></td>
 				<td><form:input path="locationAddress"/></td>
 			</tr>
 			<tr>
-				<td>Address 2</td>
+				<td><label class="boldText"><spring:message code="common.field.address2Optional"/></label></td>
 				<td><form:input path="locationAddress2"/></td>
 			</tr>
 			<tr>
-				<td>City*</td>
+				<td><label class="boldText"><spring:message code="common.field.city"/></label></td>
 				<td><form:input path="locationCity"/></td>
 			</tr>
 			<tr>
-				<td>State*</td>
+				<td><label class="boldText"><spring:message code="common.field.state"/></label></td>
 				<td><form:select path="locationState" items="${stateSelectList}"/></td>
 			</tr>
 			<tr>
-				<td>Zip Code*</td>
+				<td><label class="boldText"><spring:message code="common.field.zipcode"/></label></td>
 				<td><form:input path="locationZipcode"/></td>
 			</tr>
 		</table>
 		<br/>
 		<br/>
 		<br/>
-		<p>After finishing adding the Location information, click on the "Finish Adding Location" button. You will then be 
-		<br/>taken to the "Add Photo" page where you can upload photos of your property.</p>
+		<p><spring:message code="addLocation.instructionsPart1"/> 
+		<br/><spring:message code="addLocation.instructionsPart2"/></p>
 
 		<br/>
 		<br/>
 
-		<input type="submit" value="Finish Adding Location"/>		
+		<input type="submit" value="<spring:message code="addLocation.submitButtonText"/>"/>		
 		</form:form>
 </body>
 </html>

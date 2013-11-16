@@ -14,6 +14,15 @@
 			document.forms("addPhoto").action="returnFromFileUpload.request";
 			document.forms("addPhoto").submit();
 		}
+		var freePhoto = ${freePhoto};
+		window.onbeforeunload = function() {
+			if(freePhoto == true) {
+				alert("Free Photo");
+			}
+			else {
+				alert("Pay for photos.")
+			}
+		}
 	-->
 </script>
 <title>Add Photo</title>

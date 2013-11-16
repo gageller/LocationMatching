@@ -2,10 +2,6 @@ package com.locationmatching.component;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import com.locationmatching.domain.User;
 import com.locationmatching.enums.CreditCardType;
 

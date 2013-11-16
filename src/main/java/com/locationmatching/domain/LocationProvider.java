@@ -57,7 +57,6 @@ public class LocationProvider extends User {
 	@LazyCollection(value=LazyCollectionOption.FALSE)
 	@Fetch(value=FetchMode.SELECT)
 	@OrderBy(value="submissionDate")
-//	@MapKey(name="locationRequestId")
 	Set<ProviderSubmission> requestSubmissions = new LinkedHashSet<ProviderSubmission>();
 	
 	@Enumerated(EnumType.STRING)

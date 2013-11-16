@@ -90,7 +90,7 @@ public class FileUploadController implements ServletContextAware{
 					// If the number of free photos == to the max free photos then the user
 					// needs to start paying for photos.
 					UserPlanType userPlanType;
-					boolean freePhoto = false;
+					Boolean freePhoto = false;
 					int planTotalFreePhotos = GlobalVars.BASIC_FREE_PHOTO_AMOUNT, numberOfRemainingFreePhotos = 0;
 					
 					userPlanType = locationProvider.getUserPlanType();
@@ -126,7 +126,7 @@ public class FileUploadController implements ServletContextAware{
 							// Set the name of the template to use for the view.
 							model.addAttribute("templateName", "manageProviderCreditCardsPage");
 							
-							return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
+							return "forward:/setupManagePayments.request";
 						}
 						if(creditCard.hasCardExpired(new Date(System.currentTimeMillis())) == true) {
 							// If the primary credit card has expired, send them to the Manage Credit Card page to 
@@ -143,8 +143,7 @@ public class FileUploadController implements ServletContextAware{
 							// Set the name of the template to use for the view.
 							model.addAttribute("templateName", "manageProviderCreditCardsPage");
 							
-							return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
-							
+							return "forward:/setupManagePayments.request";
 						}
 					}
 					
@@ -230,6 +229,8 @@ public class FileUploadController implements ServletContextAware{
 						payForPhotosMessage = String.format(GlobalVars.PAY_FOR_PHOTO_MESSAGE, GlobalVars.PRICE_PER_LOCATION_PHOTO);
 						model.addAttribute("payForPhotosMessage", payForPhotosMessage);
 					}
+					// Add the free photo flag to the model to be used on the addPhoto page.
+					model.addAttribute("freePhoto", freePhoto);
 				} 
 				catch (FileNotFoundException e) {
 					e.printStackTrace();

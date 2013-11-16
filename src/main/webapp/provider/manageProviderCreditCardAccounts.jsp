@@ -3,10 +3,38 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
     <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+    <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <link rel="stylesheet" type="text/css" href="./css/lmStyle.css">
+<script type="text/javascript">
+	function deleteCreditCardClick(id) {
+		var deleteCreditCard;
+		
+		deleteCreditCard = confirm("Are you sure you want to delete this Credit Card?");
+		if(deleteCreditCard == true) {
+			document.forms("manageCreditCardsForm").action = "deleteCreditCard.request";
+			document.forms("manageCreditCardsForm").creditCardId.value = id;
+			document.forms("manageCreditCardsForm").submit();
+		}
+	}
+	
+	function editCreditCardClick(id) {
+		document.forms("manageCreditCardsForm").action = "setupEditCreditCard.request";
+		document.forms("manageCreditCardsForm").creditCardId.value = id;
+		document.forms("manageCreditCardsForm").submit();
+	}
+	
+	function useDefaultAddress(useDefault) {
+		if(useDefault == true) {
+			var obj;
+			
+			obj = getElementsByName("newBillingAddress");
+//			obj.value = ${newCreditCard.billingAddress};
+		}
+	}
+</script>
 </head>
 <body>
 	<h2>Manage Your Credit Card Accounts</h2>
@@ -17,6 +45,7 @@
 	<br/>
 	<label class="boldText fontSize18">Existing Credit Card Accounts</label>
 	<form:form method="POST" modelAttribute="newCreditCard" name="manageCreditCardsForm" action="addCreditCard.request">
+		<input type="hidden" name="creditCardId"/>
 		<c:set var="hasCreditCards" scope="page" value="${locationProvider.creditCards.size()}"> </c:set>
 		<c:if test="${locationProvider.creditCards.size() > 0}">
 			<table width="1000">
@@ -24,7 +53,7 @@
 					<tr>
 						<td><input type="radio" name="primaryCreditCard" value="creditCard.id"
 							<c:if test="${creditCard.primaryCreditCard == true}">
-								checked
+								checked disabled
 							</c:if>
 							<c:if test="${hasCreditCards == 1}">
 								disabled
@@ -32,11 +61,13 @@
 						/><label>Primary Credit Card</label>
 						<!-- Display Last 4 Digits of Credit Card Number -->
 						<td><label>Account Number</label><br/><label>xxxxxxxxxxxx${creditCard.accountNumber.substring(creditCard.accountNumber.length() - 5)}</label></td>
-						<td><input type="button" name="deleteCard${creditCard.id}" value="Delete Credit Card"/></td>
+						<td><input type="button" name="editCard${creditCard.id}" value="Edit Credit Card" onClick="editCreditCardClick(${creditCard.id})">  <input type="button" name="deleteCard${creditCard.id}" value="Delete Credit Card" onClick="deleteCreditCardClick(${creditCard.id})"/></td>
 					</tr>
 				</c:forEach>
 			</table>
 		</c:if>
+		<br/>
+		<hr class="lineWidth2" />
 		<br/>
 		<label class="boldText fontSize18">Add New Credit Card</label>
 		<table width="500">

@@ -59,4 +59,8 @@
   	    <put-attribute name="title" value="Manage Your Credit Card Accounts"/>
   	    <put-attribute name="body" value="/provider/manageProviderCreditCardAccounts.jsp"/>
   	</definition>
+  	<definition name="editProviderCreditCardsPage" extends="baseProviderLayout">
+  	    <put-attribute name="title" value="Edit Credit Card Information"/>
+  	    <put-attribute name="body" value="/provider/editProviderCreditCardInfo.jsp"/>
+  	</definition>
 </tiles-definitions>

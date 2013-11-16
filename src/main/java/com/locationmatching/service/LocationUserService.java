@@ -539,6 +539,54 @@ public abstract class LocationUserService {
 	}
 
 	/**
+	 * Get the CreditCard object represented by the passed in id.
+	 * 
+	 * @param id - Id of the CreditCard object to retrieve.
+	 * 
+	 * @return CreditCard object
+	 */
+	public CreditCardImpl getCreditCard(Long id) {
+		Session session = null;
+		Transaction transaction = null;
+		CreditCardImpl creditCard = null;
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			creditCard = (CreditCardImpl) session.get(CreditCardImpl.class, id);
+			
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			throw ex;
+		}
+		finally {
+			try {
+				session.close();
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
+		}
+		
+		return creditCard;
+	}
+	
+	/**
 	 * Update the CreditCardImpl object to the database
 	 * 
 	 * @param creditCard - Object to update in the database
@@ -580,4 +628,50 @@ public abstract class LocationUserService {
 			}
 		}
 	}
+	
+	/**
+	 * Delete the CreditCard object represented by the passed in id.
+	 * 
+	 * @param id - Id of the CreditCard object to delete.
+	 */
+	public void deleteCreditCard(Long id) {
+		Session session = null;
+		Transaction transaction = null;
+		CreditCardImpl creditCard = null;
+		
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+			
+			creditCard = (CreditCardImpl) session.get(CreditCardImpl.class, id);
+			session.delete(creditCard);
+			
+			transaction.commit();
+		}
+		catch(HibernateException ex) {
+			try{
+				if(transaction != null) {
+					// The commit failed so roll back the changes
+					transaction.rollback();
+				}
+			}
+			catch(HibernateException rollbackException) {
+				rollbackException.printStackTrace();
+				
+				throw rollbackException;
+			}
+			ex.printStackTrace();
+			
+			throw ex;
+		}
+		finally {
+			try {
+				session.close();
+			}
+			catch(HibernateException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
 }
