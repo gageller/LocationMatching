@@ -70,17 +70,21 @@
 		<hr class="lineWidth2" />
 		<br/>
 		<label class="boldText fontSize18">Add New Credit Card</label>
-		<table width="500">
+		<table width="600">
 			<tr>
-				<td width="275"><label>Name as it appears on the credit card</label><br/><form:input path="cardHolderName" size="35"/></td>
-				<td width="225"><label>Credit Card Type</label><br/><form:select path="creditCardType" items="${creditCardTypesMap}"></form:select></td>
+				<td width="300"><label><spring:message code="common.field.firstNameOnCreditCard"/></label><br/><form:input path="cardHolderFirstName" size="35"/></td>
+				<td width="300"><label><spring:message code="common.field.lastNameOnCreditCard"/></label><br/><form:input path="cardHolderLastName" size="35"/></td>
 			</tr>
 			<tr>
-				<td width="275"><label>Account Number</label><br/><form:input path="accountNumber" size="20"/></td>
-				<td width="225"><label>CVV Number</label><br/><form:input path="cvvNumber" size="3"/></td>
+				<td width="225"><label><spring:message code="common.field.creditCardType"/></label><br/><form:select path="creditCardType" items="${creditCardTypesMap}"></form:select></td>
 			</tr>
 			<tr>
-				<td colspan="2"><label>Expiration Date<br/>(MM/YYYY)</label><br/><form:input path="expirationDate" size="7"/>
+				<td width="275"><label><spring:message code="common.field.creditCardAccountNumber"/></label><br/><form:input path="accountNumber" size="20"/></td>
+				<td width="225"><label><spring:message code="common.field.cvvNumber"/></label><br/><form:input path="cvvNumber" size="3" maxlength="4"/></td>
+			</tr>
+			<tr>
+				<td><label><spring:message code="common.field.expirationMonth"/><br/><spring:message code="common.field.MMDateFormat"/></label><br/><form:input path="expirationMonth" size="2" maxlength="2"/>
+				<td><label><spring:message code="common.field.expirationYear"/><br/><spring:message code="common.field.YYYYDateFormat"/></label><br/><form:input path="expirationYear" size="4" maxlength="4"/>
 			</tr>
 			<tr>
 				<td colspan="2">&nbsp;</td>
@@ -92,28 +96,28 @@
 							checked
 						</c:when>
 						<c:otherwise>
-							disabled
+							disabled  
 						</c:otherwise>
 					</c:choose>
-				 /><label>Use default billing address</label></td>
+				 /><label><spring:message code="common.field.useDefaultBillingAddress"/></label></td>
 				<td width="225"><input type="radio" name="addressGroupRadio" value="newAddress"
 					<c:if test="${hasCreditCards == 0}"> checked</c:if>
-				/><label>Add new billing address</label></td>
+				/><label><spring:message code="common.field.addBillingAddress"/></label></td>
 			</tr>
 			<tr>
-				<td colspan="2"><label>Street Address</label><br/><form:input path="billingAddress" size="35" name="newBillingAddress"/></td>
+				<td colspan="2"><label class="boldText"><spring:message code="common.field.address"/></label><br/><form:input path="billingAddress" size="35" name="newBillingAddress"/></td>
 			</tr>
 			<tr>
-				<td colspan="2"><label>Street Address 2(Optional)</label><br/><form:input path="billingAddress2" size="20" name="newBillingAddress2"/></td>
+				<td colspan="2"><label class="boldText"><spring:message code="common.field.address2Optional"/></label><br/><form:input path="billingAddress2" size="20" name="newBillingAddress2"/></td>
 			</tr>
 			<tr>
-				<td colspan="2"><label>City</label><br/><form:input path="billingCity" size="35" name="newBillingCity"/></td>
+				<td colspan="2"><label class="boldText"><spring:message code="common.field.city"/></label><br/><form:input path="billingCity" size="35" name="newBillingCity"/></td>
 			</tr>
 			<tr>
-				<td colspan="2"><label>State</label><br/><form:select path="billingState" items="${stateSelectList}" name="newBillingState"/></td>
+				<td colspan="2"><label class="boldText"><spring:message code="common.field.state"/></label><br/><form:select path="billingState" items="${stateSelectList}" name="newBillingState"/></td>
 			</tr>
 			<tr>
-				<td colspan="2"><label>Zip Code</label><br/><form:input path="billingZipcode" size="5" name="newBillingZipcode"/></td>
+				<td colspan="2"><label class="boldText"><spring:message code="common.field.zipcode"/></label><br/><form:input path="billingZipcode" size="5" name="newBillingZipcode"/></td>
 			</tr>
 		</table>
 		<br/>

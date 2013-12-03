@@ -145,6 +145,8 @@ public class FileUploadController implements ServletContextAware{
 							
 							return "forward:/setupManagePayments.request";
 						}
+						
+						// Process credit card payment
 					}
 					
 					// Create the directory if it does not exist.
@@ -229,6 +231,15 @@ public class FileUploadController implements ServletContextAware{
 						payForPhotosMessage = String.format(GlobalVars.PAY_FOR_PHOTO_MESSAGE, GlobalVars.PRICE_PER_LOCATION_PHOTO);
 						model.addAttribute("payForPhotosMessage", payForPhotosMessage);
 					}
+					
+					// Update the Location with any updates such as number of photo counts.
+					providerService.modifyLocation(location);
+					
+					// Set the processPhotos flag on the addPhoto page to true so if the user tries to navigate away
+					// from the page without saving the added photos data, we can let them know that they need to save
+					// the photo data or they will lose it.
+					model.addAttribute("processPhotos", "true");
+
 					// Add the free photo flag to the model to be used on the addPhoto page.
 					model.addAttribute("freePhoto", freePhoto);
 				} 

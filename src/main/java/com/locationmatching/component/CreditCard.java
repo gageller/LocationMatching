@@ -25,8 +25,10 @@ public interface CreditCard {
 	 * @return
 	 */
 	public String getCvvNumber();
-	public String getCardHolderName();
-	public Date getExpirationDate();
+	public String getCardHolderFirstName();
+	public String getCardHolderLastName();
+	public String getExpirationMonth();
+	public String getExpirationYear();
 	public String getBillingAddress();
 	public String getBillingAddress2();
 	public String getBillingCity();
@@ -44,8 +46,10 @@ public interface CreditCard {
 	public void setCreditCardType(CreditCardType creditCardType);
 	public void setAccountNumber(String accountNumber);
 	public void setCvvNumber(String cvvNumber);
-	public void setCardHolderName(String cardHolderName);
-	public void setExpirationDate(Date expirationDate);
+	public void setCardHolderFirstName(String cardHolderFirstName);
+	public void setCardHolderLastName(String cardHolderLastName);
+	public void setExpirationMonth(String expirationMonth);
+	public void setExpirationYear(String expirationYear);
 	public void setBillingAddress(String billingAddress);
 	public void setBillingAddress2(String billAddress2);
 	public void setBillingCity(String billingCity);

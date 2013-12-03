@@ -16,5 +16,7 @@
   <mapping class="com.locationmatching.component.CreditCardImpl"/>
   <mapping class="com.locationmatching.component.ProviderSubmission"/>
   <mapping class="com.locationmatching.component.ScoutAlert"/>
+  <mapping class="com.locationmatching.component.PaymentTransaction"/>
+  <mapping class="com.locationmatching.component.PayPalPaymentService"/>
  </session-factory>
 </hibernate-configuration>

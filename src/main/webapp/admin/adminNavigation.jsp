@@ -22,10 +22,12 @@
 			<h3><u>Manage Photos</u></h3>
 			<a href="setupApproveDeclinePhotos.request">Approve/Decline Photos</a>
 			<br/>
-			<a href="setupReviewPhotoHistory">Review Photo History</a>
+			<a href="setupReviewPhotoHistory.request">Review Photo History</a>
 		
 		<br/>
-		<a href="./index.jsp">Home</a>
+		<p>
+			<a href="./index.jsp">Home</a>
+		</p>
 	</form:form>
 
 </body>

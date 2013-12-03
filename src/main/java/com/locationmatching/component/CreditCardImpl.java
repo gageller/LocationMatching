@@ -1,5 +1,6 @@
 package com.locationmatching.component;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -54,10 +56,15 @@ public class CreditCardImpl implements CreditCard {
 	@Column(name="ACCOUNT_NUMBER")
 	private String accountNumber;
 	/**
-	 * User Name as it appears on the credit card
+	 * User First Name as it appears on the credit card
 	 */
-	@Column(name="CARD_HOLDER_NAME")
-	private String cardHolderName;
+	@Column(name="CARD_HOLDER_FIRST_NAME")
+	private String cardHolderFirstName;
+	/**
+	 * User First Name as it appears on the credit card
+	 */
+	@Column(name="CARD_HOLDER_LAST_NAME")
+	private String cardHolderLastName;
 	/**
 	 * CVV number is the three-digit number on the back of a Discover, Visa or MasterCard;
 	 * or the four-digit number on the front of the American Express card.
@@ -67,11 +74,16 @@ public class CreditCardImpl implements CreditCard {
 	private String cvvNumber;
 	
 	/**
-	 * Expiration Date of the credit card
+	 * Expiration Month of the credit card
 	 */
-	@DateTimeFormat(pattern="MM/yyyy")
-	@Column(name="EXPIRATION_DATE")
-	Date expirationDate;
+	@Column(name="EXPIRATION_MONTH")
+	private String expirationMonth;
+	
+	/**
+	 * Expiration Year on the credit card
+	 */
+	@Column(name="EXPIRATION_YEAR")
+	private String expirationYear;
 	
 	/**
 	 * Owner of the Credit Card
@@ -140,6 +152,12 @@ public class CreditCardImpl implements CreditCard {
 	@Column(name="DEACTIVATION_DATE")
 	Date deactivationDate;
 	
+	/**
+	 * Service to process the payment.
+	 */
+	@Transient
+	PaymentService paymentService;
+	
 	// Getter Methods
 	@Override
 	public Long getId() {
@@ -162,13 +180,23 @@ public class CreditCardImpl implements CreditCard {
 	}
 
 	@Override
-	public String getCardHolderName() {
-		return cardHolderName;
+	public String getCardHolderFirstName() {
+		return cardHolderFirstName;
 	}
 
 	@Override
-	public Date getExpirationDate() {
-		return expirationDate;
+	public String getCardHolderLastName() {
+		return cardHolderLastName;
+	}
+
+	@Override
+	public String getExpirationMonth() {
+		return expirationMonth;
+	}
+	
+	@Override
+	public String getExpirationYear() {
+		return expirationYear;
 	}
 	
 	@Override
@@ -226,12 +254,26 @@ public class CreditCardImpl implements CreditCard {
 		return deactivationDate;
 	}
 
+	public PaymentService getPaymentService() {
+		return paymentService;
+	}
+	
 	// Setter Methods
 	@Override
 	public void setId(Long id) {
 		this.id = id;
 	}
 
+	@Override
+	public void setCardHolderFirstName(String cardHolderFirstName) {
+		this.cardHolderFirstName = cardHolderFirstName;
+	}
+
+	@Override
+	public void setCardHolderLastName(String cardHolderLastName) {
+		this.cardHolderLastName = cardHolderLastName;
+	}
+	
 	@Override
 	public void setCreditCardType(CreditCardType creditCardType) {
 		this.creditCardType = creditCardType;
@@ -248,13 +290,13 @@ public class CreditCardImpl implements CreditCard {
 	}
 
 	@Override
-	public void setCardHolderName(String cardHolderName) {
-		this.cardHolderName = cardHolderName;
+	public void setExpirationMonth(String expirationMonth) {
+		this.expirationMonth = expirationMonth;
 	}
-
+	
 	@Override
-	public void setExpirationDate(Date expirationDate) {
-		this.expirationDate = expirationDate;
+	public void setExpirationYear(String expirationYear) {
+		this.expirationYear = expirationYear;
 	}
 	
 	@Override
@@ -311,6 +353,9 @@ public class CreditCardImpl implements CreditCard {
 	public void setDeactivationDate(Date deactivationDate) {
 		this.deactivationDate = deactivationDate;
 	}
+	public void setPaymentService(PaymentService paymentService) {
+		this.paymentService = paymentService;
+	}
 	
 	/**
 	 *  Check to see if this card is the primary one for the account
@@ -325,6 +370,13 @@ public class CreditCardImpl implements CreditCard {
 	 */
 	@Override
 	public Boolean hasCardExpired(Date currentDate) {
+		Calendar calendar = Calendar.getInstance();
+		
+		// Subtract 1 because Months are 0 based.
+		calendar.set(Calendar.MONTH, Integer.valueOf(expirationMonth) - 1);
+		calendar.set(Calendar.YEAR, Integer.valueOf(expirationYear));
+		Date expirationDate = calendar.getTime();
+		
 		return currentDate.after(expirationDate);
 	}
 	

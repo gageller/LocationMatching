@@ -11,16 +11,32 @@
 <script type="text/javascript">
 	<!--
 		function saveImages() {
+			document.forms("addPhoto").addingPhoto.value = "true";
 			document.forms("addPhoto").action="returnFromFileUpload.request";
 			document.forms("addPhoto").submit();
 		}
-		var freePhoto = ${freePhoto};
+	/*
+	if(document.addEventListener) {
+		document.addEventListener('click', function(e){
+			window.event=e;
+		}, true);
+	}
+	function linkClicked() {
+		var src = event.target || event.srcElement;
+		alert(src.href);
+	}
+	*/
+		var processPhotos = ${processPhotos};
+	
 		window.onbeforeunload = function() {
-			if(freePhoto == true) {
-				alert("Free Photo");
-			}
-			else {
-				alert("Pay for photos.")
+			if(document.forms("addPhoto").addingPhoto.value == "false") {
+				if(processPhotos == true) {
+					var savePhotos = confirm("Your newly uploaded photos still need to be processed.\r\nIf you want to finish processing the photos, select \"OK\" otherwise select \"Cancel\".")
+					if(savePhotos == true) {
+						document.forms("addPhoto").action="addPhotoPageReturn.request";
+						document.forms("addPhoto").submit();
+					}
+				}
 			}
 		}
 	-->
@@ -33,7 +49,7 @@
 			<input name="multipartFile" type="file" size="75"/>
 			<input type="submit" value="Add Photo"/>
 			<input type="hidden" name="nextPage" value="addPhotoPage"/>
-			
+			<input type="hidden" name="addingPhoto" value="false"/>
 			<br/>
 			<br/>
 			<label class="boldText fontSize18">Number of Remaining Free Photos is ${numberOfRemainingFreePhotos}</label>

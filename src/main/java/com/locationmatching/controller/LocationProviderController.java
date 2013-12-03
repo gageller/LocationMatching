@@ -2,6 +2,7 @@ package com.locationmatching.controller;
 
 import java.net.URI;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.Iterator;
@@ -589,7 +590,20 @@ public class LocationProviderController implements ServletContextAware{
 		
 		// Display the number of free photos left.
 		model.addAttribute("numberOfRemainingFreePhotos", Long.valueOf(numberOfFreePhotosRemaining));
-
+		
+		// Set whether we need to process photos yet to false. This is used in case the user tries
+		// to navigate away from the addPhoto page with out saving uploaded photo data.
+		model.addAttribute("processPhotos", "false");
+		
+		// Set the name of the template to use for the next view
+		model.addAttribute("templateName", "addPhotoPage");
+		
+		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
+	}
+	
+	@RequestMapping(value="addPhotoPageReturn.request", method=RequestMethod.POST)
+	protected String addPhotoPageReturn(Model model) {
+		
 		// Set the name of the template to use for the next view
 		model.addAttribute("templateName", "addPhotoPage");
 		
@@ -967,6 +981,7 @@ public class LocationProviderController implements ServletContextAware{
 	protected String gotoCreditCardManagePageFromFileUploadController(@ModelAttribute("locationProvider") LocationProvider locationProvider, Model model) {
 		return setupManagePayments(locationProvider, model);
 	}
+	
 	/**
 	 * Add a new credit card entry.
 	 * 
@@ -981,9 +996,16 @@ public class LocationProviderController implements ServletContextAware{
 			@ModelAttribute("locationProvider") LocationProvider locationProvider,
 			Model model) {
 		Date currentDate, expirationDate;
+		Calendar calendar;
+		
+		calendar = Calendar.getInstance();
+		
+		// Subtract 1 because Months are 0 based.
+		calendar.set(Calendar.MONTH, Integer.valueOf(newCreditCard.getExpirationMonth()) - 1);
+		calendar.set(Calendar.YEAR, Integer.valueOf(newCreditCard.getExpirationYear()));
 		
 		// Make sure the expiration date is after the current date.
-		expirationDate =  newCreditCard.getExpirationDate();
+		expirationDate =  calendar.getTime();
 		currentDate = new Date(System.currentTimeMillis());
 		
 		if(expirationDate.after(currentDate) == true) {

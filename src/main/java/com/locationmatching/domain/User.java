@@ -24,8 +24,8 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.annotations.Where;
 
-import com.locationmatching.component.CreditCard;
 import com.locationmatching.component.CreditCardImpl;
 import com.locationmatching.enums.UserType;
 
@@ -120,6 +120,7 @@ public abstract class User implements Serializable{
 	@OneToMany(mappedBy="creditCardHolder") // mappedBy is equivalent to inverse=true in the mapping file.
 	@LazyCollection(value = LazyCollectionOption.FALSE)
 	@Fetch(value=FetchMode.SELECT)
+	@Where(clause="active = 1")
 	Set<CreditCardImpl>creditCards = new LinkedHashSet<CreditCardImpl>();
 	
 	// Getter Methods
@@ -177,7 +178,7 @@ public abstract class User implements Serializable{
 			CreditCardImpl creditCard;
 			
 			creditCard = iterator.next();
-			if(creditCard.isPrimaryCreditCard() == true) {
+			if(creditCard.isPrimaryCreditCard() == true && creditCard.isActive() == true) {
 				return creditCard;
 			}
 		}
