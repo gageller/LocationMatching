@@ -15,10 +15,10 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import com.locationmatching.domain.User;
 import com.locationmatching.enums.CreditCardType;
+import com.locationmatching.enums.States;
 
 /**
  * Class for gathering and storing the credit card information.
@@ -113,8 +113,9 @@ public class CreditCardImpl implements CreditCard {
 	/**
 	 * Billing State
 	 */
+	@Enumerated(EnumType.STRING)
 	@Column(name="BILLING_STATE")
-	private String billingState;
+	private States billingState;
 	
 	/**
 	 * Billing Zipcode
@@ -220,7 +221,7 @@ public class CreditCardImpl implements CreditCard {
 	}
 	
 	@Override
-	public String getBillingState() {
+	public States getBillingState() {
 		return billingState;
 	}
 	
@@ -320,7 +321,7 @@ public class CreditCardImpl implements CreditCard {
 	}
 	
 	@Override
-	public void setBillingState(String billingState) {
+	public void setBillingState(States billingState) {
 		this.billingState = billingState;
 	}
 	

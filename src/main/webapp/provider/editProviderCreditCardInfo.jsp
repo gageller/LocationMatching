@@ -32,7 +32,18 @@
 				<td><label class="boldText"><spring:message code="common.field.expirationYear"/><br/><spring:message code="common.field.YYYYDateFormat"/></label><br/><form:input path="expirationYear" size="4" maxlength="4"/></td>
 			</tr>
 			<tr>
-				<td><form:checkbox path="primaryCreditCard"/><label class="boldText"><spring:message code="common.field.primaryCreditCard"/></label></td>
+				<!-- Disable check box if there is only one active credit card -->
+				<td>
+				<c:choose>
+					<c:when test="${locationProvider.creditCards.size() == 1}">
+						<form:checkbox path="primaryCreditCard"  disabled="true"/>
+					</c:when>
+					<c:otherwise>
+						<form:checkbox path="primaryCreditCard"  disabled="false"/>
+					</c:otherwise>
+				</c:choose>
+				
+				<label class="boldText"><spring:message code="common.field.primaryCreditCard"/></label></td>
 			</tr>
 			<tr>
 				<td colspan="2">&nbsp;</td>

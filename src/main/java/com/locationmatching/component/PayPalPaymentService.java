@@ -20,7 +20,7 @@ import com.paypal.core.rest.PayPalRESTException;
 public class PayPalPaymentService implements PaymentService {
 
 	@Override
-	public String processPayment(CreditCardImpl primaryCreditCard) {
+	public String processPayment(com.locationmatching.component.CreditCard primaryCreditCard) {
 		try {
 			Map<String, String> sdkConfig = new HashMap<String, String>();
 			String accessToken;
@@ -51,12 +51,12 @@ public class PayPalPaymentService implements PaymentService {
 			billingAddress.setCountryCode("US");
 			
 			creditCard.setBillingAddress(billingAddress);
-			creditCard.setExpireMonth(12);
-			creditCard.setExpireYear(2012);
-			creditCard.setNumber("4094574594958608");
-			creditCard.setCvv2("874");
-			creditCard.setFirstName("Gregory");
-			creditCard.setLastName("Geller");
+			creditCard.setExpireMonth(Integer.valueOf(primaryCreditCard.getExpirationMonth()));
+			creditCard.setExpireYear(Integer.valueOf(primaryCreditCard.getExpirationYear()));
+			creditCard.setNumber(primaryCreditCard.getAccountNumber());
+			creditCard.setCvv2(primaryCreditCard.getCvvNumber());
+			creditCard.setFirstName(primaryCreditCard.getCardHolderFirstName());
+			creditCard.setLastName(primaryCreditCard.getCardHolderLastName());
 			creditCard.setType("visa");
 			
 			fundingInstrument.setCreditCard(creditCard);
@@ -92,11 +92,18 @@ public class PayPalPaymentService implements PaymentService {
 				System.out.println(createdPayment);
 				String response = Payment.getLastResponse();
 				System.out.println(response);
+				throw ex;
 			}
 			
 			String url = "https://api.sandbox.paypal.com/v1/";
-		} catch (PayPalRESTException e) {
-			e.printStackTrace();
+		} 
+		catch (PayPalRESTException ex) {
+			ex.printStackTrace();
+			try {
+				throw ex;
+			} catch (PayPalRESTException e) {
+				e.printStackTrace();
+			}
 		}
 		return "Success";
 	}

@@ -308,7 +308,7 @@ public class LocationScoutServiceImpl extends LocationUserService {
 			}
 
 			// Location Request State
-			value = searchRequest.getLocationRequestState();
+			value = searchRequest.getLocationRequestState().getStateCode();
 			if(value != null && value.isEmpty() == false) {
 				criteria.add(Restrictions.eq("locationRequestState", value));				
 			}

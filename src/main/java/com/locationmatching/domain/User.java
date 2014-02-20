@@ -278,4 +278,35 @@ public abstract class User implements Serializable{
 		return null;
 	}
 
+	/**
+	 * Check to see if an active credit card with this account number
+	 * already exists.
+	 * 
+	 * @param accountNumber
+	 * @return boolean - Whether a duplicate account number was found.
+	 */
+	public boolean duplicateActiveCreditCard(String accountNumber) {
+		Iterator<CreditCardImpl>iterator;
+		
+		iterator = creditCards.iterator();
+		
+		// Iterator through the credit card collection to see if this account
+		// number already exists. The credit cards in this collection are all
+		// active cards.
+		while(iterator.hasNext() == true) {
+			String activeAccountNumber;
+			CreditCardImpl activeCreditCard;
+			
+			activeCreditCard = iterator.next();
+			
+			activeAccountNumber = activeCreditCard.getAccountNumber();
+			
+			if(activeAccountNumber.equalsIgnoreCase(accountNumber) == true) {
+				// Found a duplicate account number so return true.
+				return true;
+			}
+		}
+		
+		return false;
+	}
 }

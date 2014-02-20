@@ -26,6 +26,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.locationmatching.component.CreditCard;
 import com.locationmatching.component.Image;
 import com.locationmatching.component.Location;
+import com.locationmatching.component.PayPalPaymentService;
+import com.locationmatching.component.PaymentService;
 import com.locationmatching.domain.LocationProvider;
 import com.locationmatching.enums.ImageType;
 import com.locationmatching.enums.PhotoPlanType;
@@ -147,6 +149,23 @@ public class FileUploadController implements ServletContextAware{
 						}
 						
 						// Process credit card payment
+						PaymentService paymentService = new PayPalPaymentService();
+						
+						try {
+							paymentService.processPayment(creditCard);
+						}
+						catch(Exception exception) {
+							// Display error message to the user
+							String errorMessage;
+							
+							errorMessage = exception.getMessage();
+							model.addAttribute("errorMessage", errorMessage);
+
+							// Set the name of the template to use for the view.
+							model.addAttribute("templateName", "manageProviderCreditCardsPage");
+							
+							return "forward:/setupManagePayments.request";
+						}
 					}
 					
 					// Create the directory if it does not exist.

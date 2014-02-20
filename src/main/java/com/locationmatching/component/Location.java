@@ -8,6 +8,8 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -24,6 +26,7 @@ import org.hibernate.annotations.Where;
 
 import com.locationmatching.domain.LocationProvider;
 import com.locationmatching.enums.PhotoPlanType;
+import com.locationmatching.enums.States;
 
 /**
  * Location details including any pictures provided by the Location Provider.
@@ -84,8 +87,9 @@ public class Location {
 	/**
 	 * State code of the location
 	 */
+	@Enumerated(EnumType.STRING)
 	@Column(name="LOCATION_STATE")
-	private String locationState;
+	private States locationState;
 	
 	/**
 	 * Zipcode of the location
@@ -172,7 +176,7 @@ public class Location {
 	public String getLocationCity() {
 		return locationCity;
 	}
-	public String getLocationState() {
+	public States getLocationState() {
 		return locationState;
 	}
 	public String getLocationZipcode() {
@@ -228,7 +232,7 @@ public class Location {
 	public void setLocationCity(String locationCity) {
 		this.locationCity = locationCity;
 	}
-	public void setLocationState(String locationState) {
+	public void setLocationState(States locationState) {
 		this.locationState = locationState;
 	}
 	public void setLocationZipcode(String locationZipcode) {

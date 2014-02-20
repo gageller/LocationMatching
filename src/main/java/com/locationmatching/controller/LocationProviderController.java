@@ -937,18 +937,13 @@ public class LocationProviderController implements ServletContextAware{
 		// the default billing address for adding a new card.
 		primaryCreditCard = locationProvider.getPrimaryCreditCard();
 		if(primaryCreditCard != null) {
-			// We have at least one entry so use it as the default
-			// address fields for the new Credit Card.
-			Iterator<CreditCardImpl>iterator;
-			
-			iterator = creditCards.iterator();
-			primaryCreditCard = iterator.next();
-			
-			newCreditCard.setBillingAddress(primaryCreditCard.getBillingAddress());
-			newCreditCard.setBillingAddress2(primaryCreditCard.getBillingAddress2());
-			newCreditCard.setBillingCity(primaryCreditCard.getBillingCity());
+			// Set the new credit card address fields to default to the primary card
+			// address fields.
+			newCreditCard.setBillingAddress(new String(primaryCreditCard.getBillingAddress()));
+			newCreditCard.setBillingAddress2(new String(primaryCreditCard.getBillingAddress2()));
+			newCreditCard.setBillingCity(new String(primaryCreditCard.getBillingCity()));
 			newCreditCard.setBillingState(primaryCreditCard.getBillingState());
-			newCreditCard.setBillingZipcode(primaryCreditCard.getBillingZipcode());
+			newCreditCard.setBillingZipcode(new String(primaryCreditCard.getBillingZipcode()));
 		}
 		else {
 			// Add an empty credit card object to the model
@@ -998,6 +993,9 @@ public class LocationProviderController implements ServletContextAware{
 		Date currentDate, expirationDate;
 		Calendar calendar;
 		
+		// Add the GlobalVars class so it can be used on the page.
+		model.addAttribute("maxCreditCardsAllowed", GlobalVars.MAX_CREDIT_CARDS);
+		
 		calendar = Calendar.getInstance();
 		
 		// Subtract 1 because Months are 0 based.
@@ -1009,14 +1007,34 @@ public class LocationProviderController implements ServletContextAware{
 		currentDate = new Date(System.currentTimeMillis());
 		
 		if(expirationDate.after(currentDate) == true) {
-			newCreditCard.setCreationDate(currentDate);
-			newCreditCard.setActive(true);
-			newCreditCard.setPrimaryCreditCard(true);
-			
-			locationProvider.addCreditCard(newCreditCard);
-			
-			// Save new credit card to the database.
-			providerService.addCreditCard(newCreditCard);
+			// Check to see if there is already an active credit card with
+			// this account number.
+			if(locationProvider.duplicateActiveCreditCard(newCreditCard.getAccountNumber()) == false) {
+				// No duplicates found so add credit card
+				boolean primaryCreditCard;
+				
+				primaryCreditCard = false;
+				newCreditCard.setCreationDate(currentDate);
+				newCreditCard.setActive(true);
+				if((locationProvider.getPrimaryCreditCard()) == null) {
+					// This is the first one so set it as default.
+					primaryCreditCard = true;
+				}
+				newCreditCard.setPrimaryCreditCard(primaryCreditCard);
+				
+				locationProvider.addCreditCard(newCreditCard);
+				providerService.addCreditCard(newCreditCard);			
+			}
+			else {
+				// Duplicate found so display error message to the user.
+				String errorMessage;
+				
+				errorMessage = "A credit card with this account number already exists. Please use a different credit card.";
+				model.addAttribute("errorMessage", errorMessage);
+				model.addAttribute("templateName", "manageProviderCreditCardsPage");
+				
+				return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;			
+			}
 		}
 		else {
 			String errorMessage;
@@ -1024,17 +1042,24 @@ public class LocationProviderController implements ServletContextAware{
 			// Card has already expired so display error message to the user.
 			errorMessage = "The expiration date entered has already expired. Please use an active credit card.";
 			model.addAttribute("errorMessage", errorMessage);
+			model.addAttribute("templateName", "manageProviderCreditCardsPage");
+			
+			return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;			
 		}
 		// Set the name of the template to use for the next view
-		model.addAttribute("templateName", "manageProviderCreditCardsPage");
+//		model.addAttribute("templateName", "manageProviderCreditCardsPage");
 		
-		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;	
+//		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;	
+		return "forward:/setupManagePayments.request";
 	}
 	
 	/**
+	 * Setup the editCreditCard page.
 	 * 
-	 * @param model
-	 * @return
+	 * @param creditCardId - Id of the CreditCardImpl object to edit.
+	 * @param model - Add data to the model to be used on the web page
+	 * 
+	 * @return - The name of the page that we are going to.
 	 */
 	@RequestMapping(value="setupEditCreditCard.request", method=RequestMethod.POST)
 	protected String setupEditCreditCard(@ModelAttribute("creditCardId") long creditCardId, Model model) {
@@ -1054,16 +1079,26 @@ public class LocationProviderController implements ServletContextAware{
 	 * Edit the Credit Card info.
 	 * 
 	 * @param editCreditCard - Credit Card object to update
+	 * @param locationProvider - Modify the Credit Card object in the provider collection
 	 * @param model - Set the navigation parameters
 	 * 
 	 * @return - Next page
 	 */
 	@RequestMapping(value="editCreditCard.request", method=RequestMethod.POST)
-	protected String updateCreditCardInfo(@ModelAttribute("editCreditCard") CreditCardImpl editCreditCard, Model model) {
+	protected String updateCreditCardInfo(@ModelAttribute("editCreditCard") CreditCardImpl editCreditCard, 
+			@ModelAttribute("locationProvider")LocationProvider locationProvider, Model model) {
+		Long creditCardId;
+		
+		creditCardId = editCreditCard.getId();
+		
 		// Set the modification date
 		editCreditCard.setModifiedDate(new Date(System.currentTimeMillis()));
 		
 		providerService.modifyCreditCard(editCreditCard);
+		
+		// Remove the existing Credit Card object and add the updated one.
+		locationProvider.removeCreditCard(creditCardId);
+		locationProvider.addCreditCard(editCreditCard);
 		
 		// Add the GlobalVars class so it can be used on the page.
 		model.addAttribute("maxCreditCardsAllowed", GlobalVars.MAX_CREDIT_CARDS);
@@ -1084,11 +1119,15 @@ public class LocationProviderController implements ServletContextAware{
 	 * @return - Next Page
 	 */
 	@RequestMapping(value="deleteCreditCard.request", method=RequestMethod.POST)
-	protected String deleteCreditCard(@ModelAttribute("locationProvicer") LocationProvider locationProvider,
+	protected String deleteCreditCard(@ModelAttribute("locationProvider") LocationProvider locationProvider,
 			@ModelAttribute("creditCardId") long creditCardId, Model model) {
 		CreditCardImpl creditCard;
+		boolean isPrimaryCard;
 		
 		creditCard = providerService.getCreditCard(creditCardId);
+		// See if this is the primary credit card for this account.
+		isPrimaryCard = creditCard.isPrimaryCreditCard();
+		
 		// Set the deletion attributes
 		creditCard.setActive(false);
 		creditCard.setDeactivationDate(new Date(System.currentTimeMillis()));
@@ -1097,7 +1136,23 @@ public class LocationProviderController implements ServletContextAware{
 		// Update in the database
 		providerService.modifyCreditCard(creditCard);
 		// Remove the credit card from the provider collection
-		locationProvider.removeCreditCard(creditCard);
+		locationProvider.removeCreditCard(creditCard.getId());
+		
+		// If this is the primary card, we need to set another card as
+		// the primary card.
+		Iterator<CreditCardImpl>iterator;
+		creditCard = null;
+		
+		iterator = locationProvider.getCreditCards().iterator();
+		
+		if(iterator.hasNext() == true) {
+			creditCard = iterator.next();
+		}
+		
+		if(creditCard != null) {
+			creditCard.setPrimaryCreditCard(true);
+			providerService.modifyCreditCard(creditCard);
+		}
 		
 		// Add the GlobalVars class so it can be used on the page.
 		model.addAttribute("maxCreditCardsAllowed", GlobalVars.MAX_CREDIT_CARDS);

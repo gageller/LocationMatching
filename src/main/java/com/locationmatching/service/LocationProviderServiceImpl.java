@@ -50,6 +50,7 @@ public class LocationProviderServiceImpl extends LocationUserService {
 		
 		try {
 			Integer rowCount;
+			String stateCode;
 			
 			session = HibernateUtil.getSession();
 			transaction = session.beginTransaction();
@@ -60,7 +61,7 @@ public class LocationProviderServiceImpl extends LocationUserService {
 			
 			criterion.put("locationAddress", location.getLocationAddress());
 			criterion.put("locationCity", location.getLocationCity());
-			criterion.put("locationState", location.getLocationState());
+//			criterion.put("locationState", location.getLocationState().getStateCode());
 			criterion.put("locationZipcode", location.getLocationZipcode());
 			
 //			criteria.add(Restrictions.eq("locationName", location.getLocationName()));

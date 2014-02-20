@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.locationmatching.domain.User;
 import com.locationmatching.enums.CreditCardType;
+import com.locationmatching.enums.States;
 
 /**
  * Interface for Credit Cards. Made this an interface in case we need to
@@ -32,7 +33,7 @@ public interface CreditCard {
 	public String getBillingAddress();
 	public String getBillingAddress2();
 	public String getBillingCity();
-	public String getBillingState();
+	public States getBillingState();
 	public String getBillingZipcode();
 	public User getCreditCardHolder();
 	public Boolean getPrimaryCreditCard();
@@ -53,7 +54,7 @@ public interface CreditCard {
 	public void setBillingAddress(String billingAddress);
 	public void setBillingAddress2(String billAddress2);
 	public void setBillingCity(String billingCity);
-	public void setBillingState(String billingState);
+	public void setBillingState(States billingState);
 	public void setBillingZipcode(String billingZipcode);
 	public void setCreditCardHolder(User creditCardHolder);
 	public void setPrimaryCreditCard(Boolean primaryCreditCard);

@@ -37,7 +37,7 @@
 					<td>${location.locationAddress}</td>				
 					<td>${location.locationAddress2}</td>
 					<td>${location.locationCity}</td>												
-					<td>${location.locationState}</td>
+					<td>${location.locationState.stateName}</td>
 					<td>${location.locationZipcode}</td>					
 				</tr>
 			</table>

@@ -16,6 +16,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.locationmatching.domain.LocationScout;
 import com.locationmatching.enums.LocationType;
+import com.locationmatching.enums.States;
 
 /**
  * This is the request object that the Location Scout fills out and is posted
@@ -95,8 +96,9 @@ public class LocationRequest {
 	/**
 	 * Location Request State
 	 */
+	@Enumerated(EnumType.STRING)
 	@Column(name="LOCATION_REQUEST_STATE")
-	private String locationRequestState;
+	private States locationRequestState;
 	
 	/**
 	 * Location Request Zip Code
@@ -150,7 +152,7 @@ public class LocationRequest {
 	public String getLocationRequestCity() {
 		return locationRequestCity;
 	}
-	public String getLocationRequestState() {
+	public States getLocationRequestState() {
 		return locationRequestState;
 	}
 	public String getLocationRequestZipcode() {
@@ -194,7 +196,7 @@ public class LocationRequest {
 	public void setLocationRequestCity(String locationRequestCity) {
 		this.locationRequestCity = locationRequestCity;
 	}
-	public void setLocationRequestState(String locationRequestState) {
+	public void setLocationRequestState(States locationRequestState) {
 		this.locationRequestState = locationRequestState;
 	}
 	public void setLocationRequestZipcode(String locationRequestZipcode) {
