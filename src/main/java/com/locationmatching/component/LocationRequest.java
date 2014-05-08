@@ -116,7 +116,7 @@ public class LocationRequest {
 	 * of the location.
 	 */
 	@Column(name="RATE")
-	private Double rate;
+	private String rate;
 	
 	// Getter Methods
 	public Long getId() {
@@ -143,7 +143,7 @@ public class LocationRequest {
 	public String getLocationDescription() {
 		return locationDescription;
 	}
-	public Double getRate() {
+	public String getRate() {
 		return rate;
 	}
 	public LocationScout getRequestOwner() {
@@ -187,7 +187,7 @@ public class LocationRequest {
 	public void setLocationDescription(String locationDescription) {
 		this.locationDescription = locationDescription;
 	}
-	public void setRate(Double rate) {
+	public void setRate(String rate) {
 		this.rate = rate;
 	}
 	public void setRequestOwner(LocationScout requestOwner) {

@@ -23,10 +23,10 @@ public class GlobalVars {
 	// Email Parameters
 	// Email Server Parameters
 //	public final static String EMAIL_HOST_SERVER = "smtp-server.socal.rr.com";
-//	public final static String EMAIL_HOST_SERVER = "smtp-server.roadrunner.com";
-//	public final static int EMAIL_HOST_PORT = 587;
-	public final static String EMAIL_HOST_SERVER = "yourlocationaccess.com";
-	public final static int EMAIL_HOST_PORT = 25;
+	public final static String EMAIL_HOST_SERVER = "smtp-server.roadrunner.com";
+	public final static int EMAIL_HOST_PORT = 587;
+//	public final static String EMAIL_HOST_SERVER = "yourlocationaccess.com";
+//	public final static int EMAIL_HOST_PORT = 25;
 	// Support Email Address
 //	public final static String SUPPORT_EMAIL_ADDRESS = "gageller@adelphia.net";
 	public final static String SUPPORT_EMAIL_ADDRESS = "support@yourlocationaccess.com";

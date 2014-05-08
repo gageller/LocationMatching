@@ -30,7 +30,7 @@
   	</definition>
    	<definition name="editLocationRequestPage" extends="baseScoutLayout">
       	<put-attribute name="title" value="Edit this Location"/>
-      	<put-attribute name="body" value="/editLocationRequest.jsp"/>
+      	<put-attribute name="body" value="/scout/editLocationRequest.jsp"/>
   	</definition>
  	<definition name="deleteLocationRequestsPage" extends="baseScoutLayout">
   	    <put-attribute name="title" value="Delete this Location"/>

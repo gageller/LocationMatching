@@ -355,7 +355,8 @@ public class LocationScoutController {
 		Set<ScoutAlert>alerts;
 		Iterator<ScoutAlert> iterator;
 		
-		alerts = locationScout.getRequestAlerts();
+		alerts = scoutService.getScoutAlerts();
+		locationScout.setRequestAlerts(alerts);
 		iterator = alerts.iterator();
 		
 		while(iterator.hasNext() == true) {

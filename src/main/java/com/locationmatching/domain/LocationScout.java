@@ -1,14 +1,15 @@
 package com.locationmatching.domain;
 
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
-import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -140,7 +141,7 @@ public class LocationScout extends User {
 	public void removeLocationRequest(LocationRequest locationRequest) {
 		boolean b;
 		b = locationRequests.remove(locationRequest);
-		System.out.println("remove location object = " + b);
+		//System.out.println("remove location object = " + b);
 	}
 	
 	/**

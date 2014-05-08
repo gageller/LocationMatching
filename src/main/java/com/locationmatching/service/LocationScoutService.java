@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.locationmatching.component.LocationRequest;
+import com.locationmatching.component.ScoutAlert;
 import com.locationmatching.domain.LocationScout;
 import com.locationmatching.domain.User;
 
@@ -18,4 +19,5 @@ public interface LocationScoutService {
 			LocationRequest locationRequest);
 	public Map<Long, LocationRequest> getLocationRequests(LocationRequest searchRequest);
 	public LocationRequest getLocationRequest(Long locationRequestId);
+	public Map<Long, ScoutAlert>getScoutAlerts();
 }
