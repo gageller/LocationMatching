@@ -430,7 +430,7 @@ public class LocationProviderController implements ServletContextAware{
 		emailBodyText.append(format.format(new Date(System.currentTimeMillis())));
 		emailBodyText.append(" that need to be reviewed");
 		
-		toEmailAddresses.add(GlobalVars.SUPPORT_EMAIL_ADDRESS);
+		toEmailAddresses.add(GlobalVars.UPLOAD_APPROVAL_EMAIL_NAME);
 		
 		// Send the email to support to alert them that there are photos to review.
 		emailService.sendEmail(toEmailAddresses, emailSubject, emailBodyText.toString());

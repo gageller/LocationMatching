@@ -80,8 +80,8 @@ public class EmailServiceImpl implements EmailService {
 			sender.setJavaMailProperties(props);
 			sender.setHost(GlobalVars.EMAIL_HOST_SERVER);
 			sender.setPort(GlobalVars.EMAIL_HOST_PORT);
-			sender.setUsername(GlobalVars.ADMIN_EMAIL_NAME);
-			sender.setPassword(GlobalVars.ADMIN_EMAIL_PASSWORD);
+			sender.setUsername(GlobalVars.SUPPORT_EMAIL_ADDRESS);
+			sender.setPassword(GlobalVars.SUPPORT_EMAIL_PASSWORD);
 	
 			message = sender.createMimeMessage();
 			
@@ -96,7 +96,7 @@ public class EmailServiceImpl implements EmailService {
 			// use the true flag to indicate you need a multipart message
 			messageHelper = new MimeMessageHelper(message, true);
 			messageHelper.setTo(toAddresses.toString());
-			messageHelper.setFrom("gageller@roadrunner.com");
+			messageHelper.setFrom(GlobalVars.UPLOAD_APPROVAL_EMAIL_NAME);
 			messageHelper.setSubject(subject);
 			messageHelper.setText(bodyText, true);
 			

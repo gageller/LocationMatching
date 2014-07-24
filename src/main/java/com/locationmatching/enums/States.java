@@ -6,7 +6,7 @@ public enum States {
 	AZ(Values.AZ, Values.AZ_NAME),
 	AR(Values.AR, Values.AR_NAME),
 	CA(Values.CA, Values.CA_NAME),
-	C0(Values.CO, Values.CO_NAME),
+	CO(Values.CO, Values.CO_NAME),
 	CT(Values.CT, Values.CT_NAME),
 	DE(Values.DE, Values.DE_NAME),
 	DC(Values.DC, Values.DC_NAME),
