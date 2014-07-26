@@ -3,6 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
     <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+    <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -46,7 +47,7 @@
 		</table>
 		<br/>
 		<input type="submit" value="Search..."/>
-	</form:form>
+
 	<c:if test="${errorSubmissionMessage.length() > 0}">
 		<p class="errorMessage">${errorSubmissionMessage}</p>
 	</c:if>
@@ -86,9 +87,12 @@
 						<th width="250" align="left">Rate:</th>
 					</tr>
 					<tr>
-						<td>${locationRequest.value.submissionDate}</td>
-						<td>${locationRequest.value.shootBeginDate}</td>
-						<td>${locationRequest.value.shootEndDate}</td>
+						<fmt:formatDate  type="date" pattern="M/dd/yyyy" var="formattednDate" value="${locationRequest.value.submissionDate}" />
+						<td>${formattednDate}</td>
+						<fmt:formatDate  type="date" pattern="M/dd/yyyy" var="formattednDate" value="${locationRequest.value.shootBeginDate}"/>
+						<td>${formattednDate}</td>
+						<fmt:formatDate  type="date" pattern="M/dd/yyyy" var="formattednDate" value="${locationRequest.value.shootEndDate}"/>
+						<td>${formattednDate}</td>
 						<td>${locationRequest.value.rate}</td>
 					</tr>
 					<tr>
@@ -103,6 +107,7 @@
 				</table>
 				<br/>
 	</c:forEach>
+		</form:form>
 <!-- 
 	<br/>
 	<a href="./providerNavigation.jsp">My Main Page</a>

@@ -2,6 +2,7 @@
     pageEncoding="ISO-8859-1"%>
     <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+    <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -25,7 +26,8 @@
 				</tr>
 				<tr>
 					<td>${submission.location.locationName}</td>
-					<td>${submission.submissionDate}</td>
+					<fmt:formatDate  type="date" pattern="M/dd/yyyy" var="formattednDate" value="${submission.submissionDate}" />
+					<td style="text-align:center;">${formattednDate}</td>
 					<td></td>
 					<td></td>
 				<tr>
@@ -45,9 +47,12 @@
 				</tr>
 				<tr>
 					<td>${submission.locationRequest.rate}</td>
-					<td>${submission.locationRequest.submissionDate}</td>
-					<td>${submission.locationRequest.shootBeginDate}</td>
-					<td>${submission.locationRequest.shootEndDate}</td>
+					<fmt:formatDate  type="date" pattern="M/dd/yyyy" var="formattednDate" value="${submission.locationRequest.submissionDate}" />
+					<td style="text-align:center;">${formattednDate}</td>
+					<fmt:formatDate  type="date" pattern="M/dd/yyyy" var="formattednDate" value="${submission.locationRequest.shootBeginDate}" />
+					<td style="text-align:center;">${formattednDate}</td>
+					<fmt:formatDate  type="date" pattern="M/dd/yyyy" var="formattednDate" value="${submission.locationRequest.shootEndDate}" />
+					<td style="text-align:center;">${formattednDate}</td>
 				</tr>
 				<tr>
 					<th width="250">Location Request City</th>
