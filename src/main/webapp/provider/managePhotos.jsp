@@ -97,7 +97,8 @@
 		</table>
 		<br/>
 	<!-- 	<input type="button" onClick="saveImages()" value="Save Photos for this Location"/> -->
-	<input type="submit" value="Update Photos"/>
+	
+	<input type="submit" value="Update Photos" <c:if test="${location.numberOfFreePhotos == 5}">disabled='true'</c:if>/>
 	</form:form>
 </body>
 </html>
