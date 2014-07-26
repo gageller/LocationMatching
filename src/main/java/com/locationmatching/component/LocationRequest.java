@@ -1,5 +1,7 @@
 package com.locationmatching.component;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -144,7 +146,21 @@ public class LocationRequest {
 		return locationDescription;
 	}
 	public String getRate() {
-		return rate;
+		// Format to currency unless it is text
+		String formattedRate = "";
+		
+		NumberFormat format = DecimalFormat.getCurrencyInstance();
+		format.setMaximumFractionDigits(2);
+		format.setMinimumFractionDigits(2);
+		
+		try {
+			formattedRate = format.format(Double.parseDouble(rate));
+		}
+		catch(NumberFormatException ex){
+			formattedRate = rate;
+		}
+		
+		return formattedRate;
 	}
 	public LocationScout getRequestOwner() {
 		return requestOwner;
