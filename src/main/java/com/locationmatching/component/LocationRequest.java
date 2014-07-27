@@ -59,21 +59,21 @@ public class LocationRequest {
 	/**
 	 * Submission Date
 	 */
-	@DateTimeFormat(pattern="MM/dd/yyyy")
+	@DateTimeFormat(pattern="M/dd/yyyy")
 	@Column(name="SUBMISSION_DATE")
 	private Date submissionDate = new Date(System.currentTimeMillis());
 	
 	/**
 	 * Beginning date of the shoot
 	 */
-	@DateTimeFormat(pattern="MM/dd/yyyy")
+	@DateTimeFormat(pattern="M/dd/yyyy")
 	@Column(name="SHOOT_BEGIN_DATE")
 	private Date shootBeginDate = new Date(System.currentTimeMillis());
 	
 	/**
 	 * End date of the shoot
 	 */
-	@DateTimeFormat(pattern="MM/dd/yyyy")
+	@DateTimeFormat(pattern="M/dd/yyyy")
 	@Column(name="SHOOT_END_DATE")
 	private Date shootEndDate = new Date(System.currentTimeMillis());
 	
@@ -149,17 +149,18 @@ public class LocationRequest {
 		// Format to currency unless it is text
 		String formattedRate = "";
 		
-		NumberFormat format = DecimalFormat.getCurrencyInstance();
-		format.setMaximumFractionDigits(2);
-		format.setMinimumFractionDigits(2);
-		
-		try {
-			formattedRate = format.format(Double.parseDouble(rate));
+		if(rate != null) {
+			NumberFormat format = DecimalFormat.getCurrencyInstance();
+			format.setMaximumFractionDigits(2);
+			format.setMinimumFractionDigits(2);
+			
+			try {
+				formattedRate = format.format(Double.parseDouble(rate));
+			}
+			catch(NumberFormatException ex){
+				formattedRate = rate;
+			}
 		}
-		catch(NumberFormatException ex){
-			formattedRate = rate;
-		}
-		
 		return formattedRate;
 	}
 	public LocationScout getRequestOwner() {

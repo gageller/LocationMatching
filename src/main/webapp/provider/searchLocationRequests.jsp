@@ -13,14 +13,19 @@
 
 <body>
 <script>
-	<!--
+	
 		function submissionBttnClick(locationRequestId, locationId){
-			document.forms("searchLocationRequest").locationRequestId.value = locationRequestId;
-			document.forms("searchLocationRequest").action = "processLocationRequestSubmission.request";
-			document.forms("searchLocationRequest").locationId.value = locationId;
-			document.forms("searchLocationRequest").submit();
+			if(locationId.length > 0){
+				document.forms("searchLocationRequest").locationRequestId.value = locationRequestId;
+				document.forms("searchLocationRequest").action = "processLocationRequestSubmission.request";
+				document.forms("searchLocationRequest").locationId.value = locationId;
+				document.forms("searchLocationRequest").submit();
+			}
+			else {
+				alert("Please make a selection from My Locations to contact the Requestor.")
+			}
 		}
-	-->
+	
 </script>
 
 	<form:form modelAttribute="searchLocationRequest" action="processSearchLocationRequest.request" method="POST">

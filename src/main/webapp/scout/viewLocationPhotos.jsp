@@ -43,7 +43,7 @@
 		<c:set var="itemCount" value="0"/>
 			<tr>
 		<c:forEach items="${alertLocation.locationImages}" var="image">
-		 	<c:if test="${image.status.value.equals(\"APPROVED\") == true && image.isHidden == false}"> 
+		 	<c:if test="${image.status.value.equals(\"APPROVED\") == true && image.isHidden() == false}"> 
 				<c:if test="${itemCount == 3}">
 					</tr>
 					<tr>

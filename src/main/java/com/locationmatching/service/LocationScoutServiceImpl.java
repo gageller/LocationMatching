@@ -103,7 +103,7 @@ public class LocationScoutServiceImpl extends LocationUserService {
 			States states;
 			states = searchRequest.getLocationRequestState();
 			if(states != null) {
-				criteria.add(Restrictions.eq("locationRequestState", states.getStateCode()));				
+				criteria.add(Restrictions.eq("locationRequestState", states));				
 			}
 
 			// Location Request Zip Code

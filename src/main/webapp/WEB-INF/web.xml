@@ -41,7 +41,7 @@
   </context-param>
   <context-param>
       <param-name>appBaseUrl</param-name>
-      <param-value>http://localhost:8080/LocationMatching/</param-value>
+      <param-value>http://localhost:8080/locationmatching/</param-value>
   </context-param>
   <filter>
   	<filter-name>httpHiddenMethodFilter</filter-name>
@@ -58,6 +58,6 @@
        <session-timeout>30</session-timeout>
    </session-config>
    <welcome-file-list>
-    	<welcome-file>login.jsp</welcome-file>
+    	<welcome-file>index.jsp</welcome-file>
    </welcome-file-list>
    </web-app>

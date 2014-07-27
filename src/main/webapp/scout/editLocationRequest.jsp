@@ -30,7 +30,7 @@
  				<td><form:select path="locationType" items="${locationTypeList}"/></td>
 			</tr>
 			<tr>
-				<td>Location City*</td>
+				<td>Location City</td>
 				<td><form:input path="locationRequestCity"/></td>
 			</tr>
 			<tr>
@@ -38,11 +38,11 @@
  				<td><form:select path="locationRequestState" items="${stateSelectList}"/></td> 
 			</tr>
 			<tr>
-				<td>Location Zip Code*</td>
+				<td>Location Zip Code</td>
 				<td><form:input path="locationRequestZipcode"/></td>
 			</tr>
 			<tr>
-				<td>County where Location resides</td>
+				<td>County where Location resides*</td>
 				<td><form:input path="locationRequestCounty"/>
 			</tr>
 			<tr>
