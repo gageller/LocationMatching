@@ -19,7 +19,7 @@ public enum PhotoPlanType {
 	}
 	
 	static class Values {
-		public final static String FREE_PHOTO = "FREE_PHOTO";
-		public final static String PAID_PHOTO = "PAID_PHOTO";
+		public final static String FREE_PHOTO = "Free Photo";
+		public final static String PAID_PHOTO = "Paid Photo";
 	}
 }

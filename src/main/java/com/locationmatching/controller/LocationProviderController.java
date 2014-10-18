@@ -433,7 +433,7 @@ public class LocationProviderController implements ServletContextAware{
 		toEmailAddresses.add(GlobalVars.UPLOAD_APPROVAL_EMAIL_NAME);
 		
 		// Send the email to support to alert them that there are photos to review.
-		emailService.sendEmail(toEmailAddresses, emailSubject, emailBodyText.toString());
+		emailService.sendEmail(toEmailAddresses, emailSubject, emailBodyText.toString(), GlobalVars.UPLOAD_APPROVAL_EMAIL_NAME);
 		
 		return GlobalVars.PROVIDER_TEMPLATE_HOME_PAGE_URL;
 	}
@@ -824,7 +824,7 @@ public class LocationProviderController implements ServletContextAware{
 			
 			emailAddress.add(scout.getEmailAddress());
 			if(coverImage != null && scout != null) {
-				emailService.sendEmailWithInlinePicture(emailAddress, coverImage.getAbsoluteFilePath(), "Location Submitted", emailBodyText.toString());
+				emailService.sendEmailWithInlinePicture(emailAddress, coverImage.getAbsoluteFilePath(), "Location Submitted", emailBodyText.toString(), GlobalVars.SUPPORT_EMAIL_ADDRESS);
 			}
 			message = "Submission successful.";
 			model.addAttribute("successfulSubmissionMessage", message);

@@ -20,16 +20,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.ServletContextAware;
 
+import com.locationmatching.util.GlobalVars;
 import com.locationmatching.component.Image;
 import com.locationmatching.component.Location;
 import com.locationmatching.domain.AdminUser;
 import com.locationmatching.domain.LocationProvider;
-import com.locationmatching.domain.User;
 import com.locationmatching.enums.PhotoStatus;
 import com.locationmatching.service.AdminServiceImpl;
 import com.locationmatching.service.EmailServiceImpl;
 import com.locationmatching.service.LocationProviderServiceImpl;
-import com.locationmatching.util.GlobalVars;
+import com.locationmatching.service.LocationScoutServiceImpl;
 import com.sun.xml.internal.fastinfoset.util.StringArray;
 
 /**
@@ -297,7 +297,7 @@ public class AdminController implements ServletContextAware {
 				// Send an email to the photo provider.
 				// Do not send emails for skipped photos
 				if(image.getStatus() != PhotoStatus.SKIPPED_ON_REVIEW) {
-					emailService.sendEmailWithInlinePicture(toEmailAddresses, image.getAbsoluteFilePath(), emailSubject, emailBodyText.toString());
+					emailService.sendEmailWithInlinePicture(toEmailAddresses, image.getAbsoluteFilePath(), emailSubject, emailBodyText.toString(),GlobalVars.UPLOAD_APPROVAL_EMAIL_NAME);
 				}
 				
 				if(deleteImage == true) {

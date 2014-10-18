@@ -18,7 +18,7 @@ public class EmailServiceImpl implements EmailService {
 
 	@Override
 	public void sendEmailWithInlinePicture(StringArray toEmailAddresses,
-			String imageFilePath, String subject, String bodyText) {
+			String imageFilePath, String subject, String bodyText, String fromAddress) {
 		JavaMailSenderImpl sender = new JavaMailSenderImpl();
 		MimeMessage message;
 		MimeMessageHelper messageHelper;
@@ -49,7 +49,7 @@ public class EmailServiceImpl implements EmailService {
 			// use the true flag to indicate you need a multipart message
 			messageHelper = new MimeMessageHelper(message, true);
 			messageHelper.setTo(toAddresses.toString());
-			messageHelper.setFrom(GlobalVars.FROM_EMAIL_ADDRESS);
+			messageHelper.setFrom(fromAddress);
 			messageHelper.setSubject(subject);
 			messageHelper.setText(bodyText, true);
 			
@@ -65,7 +65,7 @@ public class EmailServiceImpl implements EmailService {
 	}
 
 	@Override
-	public void sendEmail(StringArray toEmailAddresses, String subject,	String bodyText) {
+	public void sendEmail(StringArray toEmailAddresses, String subject,	String bodyText, String fromAddress) {
 		JavaMailSenderImpl sender = new JavaMailSenderImpl();
 		MimeMessage message;
 		MimeMessageHelper messageHelper;
@@ -96,7 +96,7 @@ public class EmailServiceImpl implements EmailService {
 			// use the true flag to indicate you need a multipart message
 			messageHelper = new MimeMessageHelper(message, true);
 			messageHelper.setTo(toAddresses.toString());
-			messageHelper.setFrom(GlobalVars.UPLOAD_APPROVAL_EMAIL_NAME);
+			messageHelper.setFrom(fromAddress);
 			messageHelper.setSubject(subject);
 			messageHelper.setText(bodyText, true);
 			

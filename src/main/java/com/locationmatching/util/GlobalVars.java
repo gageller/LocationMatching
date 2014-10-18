@@ -23,21 +23,27 @@ public class GlobalVars {
 	// Email Parameters
 	// Email Server Parameters
 //	public final static String EMAIL_HOST_SERVER = "smtp-server.socal.rr.com";
-	public final static String EMAIL_HOST_SERVER = "smtp-server.roadrunner.com";
-	public final static int EMAIL_HOST_PORT = 587;
-//	public final static String EMAIL_HOST_SERVER = "yourlocationaccess.com";
-//	public final static int EMAIL_HOST_PORT = 25;
+//	public final static String EMAIL_HOST_SERVER = "smtp-server.roadrunner.com";
+//	public final static int EMAIL_HOST_PORT = 587;
+	public final static String EMAIL_HOST_SERVER = "dedrelay.secureserver.net";
+	public final static int EMAIL_HOST_PORT = 25;
+//	public final static int EMAIL_HOST_PORT = 3535;
+//	public final static int EMAIL_HOST_PORT = 80;
+//	public final static int EMAIL_HOST_SSL_PORT = 465;
 	// Support Email Address
 //	public final static String SUPPORT_EMAIL_ADDRESS = "gageller@adelphia.net";
 	public final static String SUPPORT_EMAIL_ADDRESS = "support@yourlocationaccess.com";
 	// Customer Service Email Address
 	public final static String CUSTOMER_SERVICE_EMAIL_ADDRESS = "gageller@adelphia.net";
 	// Admin Email Server Login Credentials
-	public final static String ADMIN_EMAIL_NAME = "gageller";
-	public final static String ADMIN_EMAIL_PASSWORD = "rayray";
+	public final static String ADMIN_EMAIL_NAME = "support@yourlocationaccess.com";
+	public final static String ADMIN_EMAIL_PASSWORD = "MainwauwiE2";
 	
 	public final static String SUPPORT_EMAIL_NAME = "support@yourlocationaccess.com";
 	public final static String SUPPORT_EMAIL_PASSWORD = "MainwauwiE2";
+
+	public final static String UPLOAD_APPROVAL_EMAIL_NAME = "uploadApproval@yourlocationaccess.com";
+	public final static String UPLOAD_APPROVAL_PASSWORD = "MainwauwiE2";
 
 	public final static String FROM_EMAIL_ADDRESS = SUPPORT_EMAIL_ADDRESS;
 	
@@ -134,6 +140,10 @@ public class GlobalVars {
 		locationTypes.put(LocationType.HOSPITAL, "Hospital");
 		locationTypes.put(LocationType.MUSEUM, "Museum");
 		locationTypes.put(LocationType.CEMETARY, "Cemetary");
+		locationTypes.put(LocationType.POOL, "Pool");
+		locationTypes.put(LocationType.SCHOOL, "School");
+		locationTypes.put(LocationType.BARN, "Barn");
+		locationTypes.put(LocationType.OTHER, "Other");
 		
 		// Credit Card Type select box
 		creditCardTypes.put(CreditCardType.BLANK, "");
