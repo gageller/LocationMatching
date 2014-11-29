@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.locationmatching.domain.User;
 import com.locationmatching.enums.UserType;
 import com.locationmatching.service.GeneralUserServiceImpl;
+import com.locationmatching.util.Utils;
 
 /**
  * Controller that handles the Login and creating accounts functionality
@@ -49,10 +50,13 @@ public class LoginCreateAccountController {
 	protected String login(@RequestParam("userName")String userName,
 			@RequestParam("password") String password
 			, Model model) {
-		String nextPage = "index";
+		String nextPage = "index", encryptedPassword;
 		User user;
 		
-		user = service.authenticateUser(userName, password);
+		// Passwords are stored encrypted in the database so encrypt
+		// passed in password before authenticating
+		encryptedPassword = Utils.encrypt(password);
+		user = service.authenticateUser(userName, encryptedPassword);
 		
 		if(user == null) {
 			// User does not exist so return to the login page and display an error message.
@@ -62,6 +66,8 @@ public class LoginCreateAccountController {
 		else {
 			UserType userType;
 			
+			// Decrypt the credit card numbers for display
+			//user.decryptCreditCardNumbers();
 			userType = user.getUserType();
 			
 			if(userType == UserType.PROVIDER) {

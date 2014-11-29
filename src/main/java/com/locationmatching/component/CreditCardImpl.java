@@ -19,6 +19,7 @@ import org.hibernate.annotations.GenericGenerator;
 import com.locationmatching.domain.User;
 import com.locationmatching.enums.CreditCardType;
 import com.locationmatching.enums.States;
+import com.locationmatching.util.Utils;
 
 /**
  * Class for gathering and storing the credit card information.
@@ -159,6 +160,9 @@ public class CreditCardImpl implements CreditCard {
 	@Transient
 	PaymentService paymentService;
 	
+	@Transient
+	String decryptedAccountNumber;
+	
 	// Getter Methods
 	@Override
 	public Long getId() {
@@ -175,6 +179,13 @@ public class CreditCardImpl implements CreditCard {
 		return accountNumber;
 	}
 
+	public String getDecryptedAccountNumber() {
+		String returnStr;
+		
+		returnStr = Utils.decrypt(accountNumber);
+		return returnStr;
+	}
+	
 	@Override
 	public String getCvvNumber() {
 		return cvvNumber;

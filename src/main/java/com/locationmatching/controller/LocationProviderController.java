@@ -47,6 +47,7 @@ import com.locationmatching.service.EmailService;
 import com.locationmatching.service.LocationProviderServiceImpl;
 import com.locationmatching.service.LocationScoutServiceImpl;
 import com.locationmatching.util.GlobalVars;
+import com.locationmatching.util.Utils;
 import com.sun.xml.internal.fastinfoset.util.StringArray;
 
 /**
@@ -187,7 +188,12 @@ public class LocationProviderController implements ServletContextAware{
 	@ResponseStatus(HttpStatus.CREATED)
 	public String createLocationProvider(LocationProvider locationProvider, HttpServletResponse response, Model model) {
 		Date date = new Date(System.currentTimeMillis());
-		String nextPage;
+		String nextPage, password, encryptedPassword;
+		
+		// Encrypted the password entered by the user
+		password = locationProvider.getPassword();
+		encryptedPassword = Utils.encrypt(password);
+		locationProvider.setPassword(encryptedPassword);
 		
 		// Set the current time and last accessed time for this new provider.
 		locationProvider.setCreationDate(date);
@@ -926,7 +932,6 @@ public class LocationProviderController implements ServletContextAware{
 	@RequestMapping(value="setupManagePayments.request", method=RequestMethod.GET)
 	protected String setupManagePayments(@ModelAttribute("locationProvider") LocationProvider locationProvider, Model model) {
 		CreditCardImpl newCreditCard, primaryCreditCard = null;
-		Set<CreditCardImpl>creditCards = locationProvider.getCreditCards();
 		
 		// We will add this newly instantiated Credit Card to the model to
 		// be used if the user wants to add a new credit card.
@@ -1020,10 +1025,19 @@ public class LocationProviderController implements ServletContextAware{
 					// This is the first one so set it as default.
 					primaryCreditCard = true;
 				}
+				// Encrypt the credit card number;
+				String creditCardNumber, encryptedCreditCardNumber;
+				
+				creditCardNumber = newCreditCard.getAccountNumber();
+				encryptedCreditCardNumber = Utils.encrypt(creditCardNumber);
+				// Set the new encyrpted credit card number before saving.
+				newCreditCard.setAccountNumber(encryptedCreditCardNumber);
 				newCreditCard.setPrimaryCreditCard(primaryCreditCard);
 				
 				locationProvider.addCreditCard(newCreditCard);
-				providerService.addCreditCard(newCreditCard);			
+				providerService.addCreditCard(newCreditCard);	
+				// Set the credit card number back to decrypted form for displaying.
+//				newCreditCard.setAccountNumber(creditCardNumber);
 			}
 			else {
 				// Duplicate found so display error message to the user.
@@ -1064,9 +1078,11 @@ public class LocationProviderController implements ServletContextAware{
 	@RequestMapping(value="setupEditCreditCard.request", method=RequestMethod.POST)
 	protected String setupEditCreditCard(@ModelAttribute("creditCardId") long creditCardId, Model model) {
 		CreditCardImpl editCreditCard;
+		String encryptedCreditCardNumber, decryptedCreditCardNumber;
 		
 		// Get the CreditCard object and add it to the model
 		editCreditCard = providerService.getCreditCard(creditCardId);
+
 		model.addAttribute("editCreditCard", editCreditCard);
 		
 		// Set the name of the template to use for the next view
@@ -1088,7 +1104,7 @@ public class LocationProviderController implements ServletContextAware{
 	protected String updateCreditCardInfo(@ModelAttribute("editCreditCard") CreditCardImpl editCreditCard, 
 			@ModelAttribute("locationProvider")LocationProvider locationProvider, Model model) {
 		Long creditCardId;
-		
+		String creditCardNumber, encryptedCreditCardNumber;
 		creditCardId = editCreditCard.getId();
 		
 		// Set the modification date
@@ -1100,6 +1116,29 @@ public class LocationProviderController implements ServletContextAware{
 		locationProvider.removeCreditCard(creditCardId);
 		locationProvider.addCreditCard(editCreditCard);
 		
+		// If the primary credit card flag is set for this edited card, we need to go through the other cards in
+		// collection and set their primary flags to false. We also need to update the database as well so we don't
+		// have multiple primary cards.
+		if(editCreditCard.isPrimaryCreditCard() == true && locationProvider.getCreditCards().size() > 1) {
+			Set<CreditCardImpl> creditCards;
+			Iterator<CreditCardImpl> itr;
+			
+			creditCards = locationProvider.getCreditCards();
+			itr = creditCards.iterator();
+			
+			while(itr.hasNext() == true) {
+				CreditCardImpl creditCard;
+				
+				creditCard = itr.next();
+				// If this credit card is the one that was just 
+				// edited, move to the next one.
+				if(creditCardId.equals(creditCard.getId()) == true) {
+					continue;
+				}
+				creditCard.setPrimaryCreditCard(false);
+				providerService.modifyCreditCard(creditCard);
+			}
+		}
 		// Add the GlobalVars class so it can be used on the page.
 		model.addAttribute("maxCreditCardsAllowed", GlobalVars.MAX_CREDIT_CARDS);
 
