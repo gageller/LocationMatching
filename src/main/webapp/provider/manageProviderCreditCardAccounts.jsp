@@ -4,6 +4,7 @@
     <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
     <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -75,7 +76,7 @@
 							</c:if>
 						</td>
 						<!-- Display Last 5 Digits of Credit Card Number -->
-						<td><label>Account Number</label><br/><label>xxxxxxxxxxxx${creditCard.accountNumber.substring(creditCard.accountNumber.length() - 5)}</label></td>
+						<td><label>Account Number</label><br/><label>xxxxxxxxxxxx${creditCard.decryptedAccountNumber.substring(creditCard.decryptedAccountNumber.length() - 5)}</label></td>
 						<td><input type="button" name="editCard${creditCard.id}" value="Edit Credit Card" onClick="editCreditCardClick(${creditCard.id})">  <input type="button" name="deleteCard${creditCard.id}" value="Delete Credit Card" onClick="deleteCreditCardClick(${creditCard.id})"/></td>
 					</tr>
 				</c:forEach>
@@ -138,7 +139,8 @@
 			</tr>
 		</table>
 		<br/>
-		<input type="submit" value="Add Credit Card"/>
+		<input type="submit" value="Add Credit Card" <c:if test="${locationProvider.creditCards.size() == 3}">disabled</c:if> />
+		
 	</form:form>
 </body>
 </html>

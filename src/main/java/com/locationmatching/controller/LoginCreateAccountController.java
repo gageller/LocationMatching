@@ -66,8 +66,6 @@ public class LoginCreateAccountController {
 		else {
 			UserType userType;
 			
-			// Decrypt the credit card numbers for display
-			//user.decryptCreditCardNumbers();
 			userType = user.getUserType();
 			
 			if(userType == UserType.PROVIDER) {

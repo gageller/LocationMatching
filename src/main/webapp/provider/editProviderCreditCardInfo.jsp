@@ -17,15 +17,15 @@
 		<br/>
 		<table width="600">
 			<tr>
-				<td width="300"><label class="boldText"><spring:message code="common.field.firstNameOnCreditCard"/></label><br/><form:input path="cardHolderFirstName" size="35"/></td>
-				<td width="300"><Label class="boldText"><spring:message code="common.field.lastNameOnCreditCard"/></Label><br/><form:input path="cardHolderLastName" size="35"/></td>
+				<td width="275"><label class="boldText"><spring:message code="common.field.creditCardAccountNumber"/></label><br/><label class="boldText">${editCreditCard.decryptedAccountNumber}</label></td>
 			</tr>
 			<tr>
 				<td width="225"><label class="boldText"><spring:message code="common.field.creditCardType"/></label><br/><form:select path="creditCardType" items="${creditCardTypesMap}"></form:select></td>
+				<td width="225"><label class="boldText"><spring:message code="common.field.cvvNumber"/></label><br/><form:input path="cvvNumber" size="3" maxlength="4"/></td>
 			</tr>
 			<tr>
-				<td width="275"><label class="boldText"><spring:message code="common.field.creditCardAccountNumber"/></label><br/><form:input path="accountNumber" size="20"/></td>
-				<td width="225"><label class="boldText"><spring:message code="common.field.cvvNumber"/></label><br/><form:input path="cvvNumber" size="3" maxlength="4"/></td>
+				<td width="300"><label class="boldText"><spring:message code="common.field.firstNameOnCreditCard"/></label><br/><form:input path="cardHolderFirstName" size="35"/></td>
+				<td width="300"><Label class="boldText"><spring:message code="common.field.lastNameOnCreditCard"/></Label><br/><form:input path="cardHolderLastName" size="35"/></td>
 			</tr>
 			<tr>
 				<td><label class="boldText"><spring:message code="common.field.expirationMonth"/><br/><spring:message code="common.field.MMDateFormat"/></label><br/><form:input path="expirationMonth" size="2" maxlength="2"/></td>
@@ -35,7 +35,7 @@
 				<!-- Disable check box if there is only one active credit card -->
 				<td>
 				<c:choose>
-					<c:when test="${locationProvider.creditCards.size() == 1}">
+					<c:when test="${locationProvider.creditCards.size() == 1 || editCreditCard.primaryCreditCard == true}">
 						<form:checkbox path="primaryCreditCard"  disabled="true"/>
 					</c:when>
 					<c:otherwise>
