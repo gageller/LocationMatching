@@ -7,8 +7,16 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<div align="center">
-	<H1>Location Matching Application</H1>
-	</div>
+	<table>
+		<tr>
+			<td><a href="createNewProvider.request">Create a Location Provider Account</a></td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="createNewScout.request">Create a Location Requester Account</a></td>
+		</tr>
+	</table>
 </body>
 </html>
