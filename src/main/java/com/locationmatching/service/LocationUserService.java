@@ -470,28 +470,33 @@ public abstract class LocationUserService {
 		String absoluteFilePath = "";
 		File deleteFile;
 
-		// Delete the image files from the server.
-		for(Image image: deleteImages) {
-			absoluteFilePath = image.getAbsoluteFilePath();
-			deleteFile = new File(absoluteFilePath);
-			deleteFile.delete();
-		}
-
-		// If we are deleting the directory as well, we need to strip off
-		// the file name and create a new file object for the directory and
-		// delete it.
-		if(deleteDirectory == true) {
-			int index;
-			
-			// Strip off the file name and delete the entire directory.
-			index = absoluteFilePath.lastIndexOf(File.separator);
-			absoluteFilePath = absoluteFilePath.substring(0, index);
-			
-			deleteFile = new File(absoluteFilePath);
-			
-			if(deleteFile.isDirectory() == true) {
+		try {
+			// Delete the image files from the server.
+			for(Image image: deleteImages) {
+				absoluteFilePath = image.getAbsoluteFilePath();
+				deleteFile = new File(absoluteFilePath);
 				deleteFile.delete();
 			}
+	
+			// If we are deleting the directory as well, we need to strip off
+			// the file name and create a new file object for the directory and
+			// delete it.
+			if(deleteDirectory == true) {
+				int index;
+				
+				// Strip off the file name and delete the entire directory.
+				index = absoluteFilePath.lastIndexOf(File.separator);
+				absoluteFilePath = absoluteFilePath.substring(0, index);
+				
+				deleteFile = new File(absoluteFilePath);
+				
+				if(deleteFile.isDirectory() == true) {
+					deleteFile.delete();
+				}
+			}
+		}
+		catch(Exception ex) {
+			System.out.println(ex.getMessage());
 		}
 	}
 	

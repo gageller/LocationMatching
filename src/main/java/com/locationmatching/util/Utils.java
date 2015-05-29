@@ -21,7 +21,7 @@ public class Utils {
 	 * @return Encrypted String
 	 */
 	public static String encrypt(String unencrypted) {
-		return new String(Base64.encodeBase64(unencrypted.getBytes(), false, true));
+		return new String(Base64.encodeBase64(unencrypted.getBytes()));
 	}
 	
 	/**
